@@ -1,4 +1,4 @@
-# Created by https://www.gitignore.io/api/macos,windows,intellij+iml,gradle,node,eclipse
+# Created by https://www.gitignore.io/api/macos,windows,intellij+iml,gradle,node,eclipse,batch
 
 ### app ###
 
@@ -212,5 +212,12 @@ gradle-app.setting
 
 # # Work around https://youtrack.jetbrains.com/issue/IDEA-116898
 # gradle/wrapper/gradle-wrapper.properties
+
+### Batch ###
+# BatchFiles
+*.bat
+*.cmd
+*.btm
+
 
 # End of https://www.gitignore.io/api/macos,windows,intellij+iml,gradle,node,eclipse
