@@ -25,7 +25,6 @@ public class GameInfoHelper {
         IntByReference puLen = new IntByReference();
         IntByReference puLenName = new IntByReference();
 
-        //DON'T DELETE, THEY ARE NEEDED
         boolean fileInfoResult = com.sun.jna.platform.win32.Version.INSTANCE.GetFileVersionInfo(filePath, 0, versionlength, lpData);
         boolean verQueryVal = com.sun.jna.platform.win32.Version.INSTANCE.VerQueryValue(lpData, "\\", lplpBuffer, puLen);
         boolean verQueryValName = com.sun.jna.platform.win32.Version.INSTANCE.VerQueryValue(lpData, "\\StringFileInfo\\040904e4\\ProductName", lplpBufferName, puLenName);
@@ -44,8 +43,9 @@ public class GameInfoHelper {
         lplpBufferName.getValue().read(0, charBuf,0,nameLen);
         fileInfo[1] = new String(charBuf);
 
-
         return fileInfo;
     }
+
+    private GameInfoHelper(){}
 
 }
