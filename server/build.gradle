@@ -13,4 +13,6 @@ repositories {
 dependencies {
 	compile project(':core')
     testCompile group: 'junit', name: 'junit', version: '4.12'
+    // https://mvnrepository.com/artifact/com.esotericsoftware/kryonet
+    compile group: 'com.esotericsoftware', name: 'kryonet', version: '2.22.0-RC1'
 }
