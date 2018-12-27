@@ -1,20 +1,33 @@
 package entities;
 
 import helper.GameInfoHelper;
+import helper.PropertiesHelper;
+
+import java.util.Properties;
 
 public class Game {
 
     private String name,
                    version,
-                   exePath,
-                   folderPath;
+                   connectParam,
+                   exePath;
+    private boolean connectDirect;
 
-    public Game(String folderPath, String exePathR){
-        this.folderPath = folderPath;
-        this.exePath = folderPath + exePathR;
-        this.name = GameInfoHelper.getFileInfo(exePath)[1];
-        this.version = GameInfoHelper.getFileInfo(exePath)[0];
-
+    public Game(Properties properties){
+        this.name = properties.getProperty("name");
+        this.exePath = properties.getProperty("exe.path");
+        switch (properties.getProperty("version.format")){
+            case "file": GameInfoHelper.fileVersion(properties.getProperty("version.path"), properties.getProperty("version.query"));break;
+            case "date": GameInfoHelper.dateVersion(properties.getProperty("exe.path"));break;
+            default: GameInfoHelper.getVersion(properties.getProperty("exe.path"));break;
+        }
+        if(Boolean.getBoolean(properties.getProperty("connect.direct"))){
+            connectDirect = true;
+            connectParam = properties.getProperty("connect.param");
+        }else{
+            connectDirect = false;
+            connectParam = null;
+        }
     }
 
     public String getName() {
@@ -28,11 +41,4 @@ public class Game {
     public String getExePath() {
         return exePath;
     }
-
-    public String getFolderPath() {
-        return folderPath;
-    }
-
-
-
 }

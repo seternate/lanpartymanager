@@ -3,7 +3,7 @@ package requests;
 import entities.Game;
 
 
-public class Download {
+public class downloadRequest {
 
     private Game game;
 

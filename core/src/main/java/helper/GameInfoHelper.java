@@ -7,10 +7,17 @@ import com.sun.jna.platform.win32.VerRsrc.VS_FIXEDFILEINFO;
 import com.sun.jna.ptr.IntByReference;
 import com.sun.jna.ptr.PointerByReference;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.text.SimpleDateFormat;
+import java.util.Scanner;
 
 
 public class GameInfoHelper {
+    public static final String PRODUCTNAME = "ProductName",
+                               FILEVERSION = "FileVersion";
 
+    /*
     public static String[] getFileInfo(String filePath){
         String[] fileInfo = new String[2];
         IntByReference dwDummy = new IntByReference();
@@ -19,6 +26,10 @@ public class GameInfoHelper {
         int versionlength = com.sun.jna.platform.win32.Version.INSTANCE.GetFileVersionInfoSize(filePath, dwDummy);
 
         byte[] bufferarray = new byte[versionlength];
+        if(bufferarray.length == 0){
+            String[] str = {"",""};
+            return str;
+        }
         Pointer lpData = new Memory(bufferarray.length);
         PointerByReference lplpBuffer = new PointerByReference();
         PointerByReference lplpBufferName = new PointerByReference();
@@ -45,7 +56,59 @@ public class GameInfoHelper {
 
         return fileInfo;
     }
+    */
+
+    private static String getInfo(String info, String filePath){
+        IntByReference dwDummy = new IntByReference();
+        dwDummy.setValue(0);
+
+        int versionlength = com.sun.jna.platform.win32.Version.INSTANCE.GetFileVersionInfoSize(filePath, dwDummy);
+
+        byte[] bufferarray = new byte[versionlength];
+        Pointer lpData = new Memory(bufferarray.length);
+        PointerByReference lplpBuffer = new PointerByReference();
+        IntByReference puLen = new IntByReference();
+
+        boolean fileInfoResult = com.sun.jna.platform.win32.Version.INSTANCE.GetFileVersionInfo(filePath, 0, versionlength, lpData);
+        boolean verQueryVal = com.sun.jna.platform.win32.Version.INSTANCE.VerQueryValue(lpData, "\\StringFileInfo\\040904e4\\" + info, lplpBuffer, puLen);
+
+        int infoLen = new Integer(puLen.getValue());
+        char[] charBuf = new char[infoLen];
+        lplpBuffer.getValue().read(0, charBuf,0,infoLen);
+        return new String(charBuf);
+    }
+
+    //Todo
+    public static String getVersion(String filePath){
+        String root = GameFolderHelper.getRootFolder(filePath);
+        return getInfo(FILEVERSION, root);
+    }
+
+    public static String fileVersion(String file, String query){
+        String root = GameFolderHelper.getRootFolder(file);
+        File vFile = new File(root);
+        System.out.println(vFile.getAbsolutePath());
+        Scanner scr = null;
+        try {
+            scr = new Scanner(vFile);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        while(scr.hasNextLine()){
+            String line = scr.nextLine();
+            if(line.contains(query)){
+                return line.substring(query.length());
+            }
+        }
+        return "";
+    }
+
+    public static String dateVersion(String filePath){
+        String root = GameFolderHelper.getRootFolder(filePath);
+        File file = new File(root);
+        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+        return sdf.format(file.lastModified());
+    }
 
     private GameInfoHelper(){}
-
 }
