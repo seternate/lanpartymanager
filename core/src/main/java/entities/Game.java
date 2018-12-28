@@ -57,7 +57,7 @@ public class Game {
         this.name = properties.getProperty("name");
         this.exeFileRelative = properties.getProperty("exe.file");
         this.version = GameInfoHelper.getVersion(properties);
-        if(Boolean.getBoolean(properties.getProperty("connect.direct"))){
+        if(Boolean.valueOf(properties.getProperty("connect.direct"))){
             connectDirect = true;
             connectParam = properties.getProperty("connect.param");
         }else{
