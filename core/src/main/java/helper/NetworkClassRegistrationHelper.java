@@ -4,10 +4,10 @@ import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Server;
 import entities.Game;
-import requests.downloadRequest;
-import requests.gameinfoRequest;
-import requests.gamelistRequest;
-import requests.userlistRequest;
+import requests.DownloadRequest;
+import requests.GameinfoRequest;
+import requests.GamelistRequest;
+import requests.UserlistRequest;
 
 public final class NetworkClassRegistrationHelper {
 
@@ -24,10 +24,10 @@ public final class NetworkClassRegistrationHelper {
         kryo.register(Game.class);
 
         //registered requests
-        kryo.register(downloadRequest.class);
-        kryo.register(gameinfoRequest.class);
-        kryo.register(gamelistRequest.class);
-        kryo.register(userlistRequest.class);
+        kryo.register(DownloadRequest.class);
+        kryo.register(GameinfoRequest.class);
+        kryo.register(GamelistRequest.class);
+        kryo.register(UserlistRequest.class);
     }
 
     private NetworkClassRegistrationHelper(){}

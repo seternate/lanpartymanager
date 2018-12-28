@@ -5,20 +5,29 @@ import com.esotericsoftware.kryonet.Listener;
 import entities.Game;
 import helper.NetworkClassRegistrationHelper;
 import helper.PropertiesHelper;
-import requests.gamelistRequest;
+import requests.GamelistRequest;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Properties;
 
+/**
+ * {@link Server} class for the lan-server. It sets up the whole {@link Server} and registers all needed classes for
+ * the communication with the <code>clients</code>. It creates and stores the <code>game-list and user-list</code>.
+ * Also it registers all needed <code>listener</code> for the {@link Server}.
+ * <p>
+ * Any changes at the <code>settings.properties</code> file need a {@link Server} restart. In this case use the
+ * {@link #rebuild()} method provided by the {@link Server} class.
+ *
+ * @see com.esotericsoftware.kryonet.Server
+ */
 public final class Server {
 
     /**
      * <code>String</code> representation for a key from <code>settings.properties</code>.
      */
     private final static String SERVERTCP = "servertcp",
-                                SERVERUDP = "serverudp",
-                                GAMEPATH = "gamepath";
+                                SERVERUDP = "serverudp";
     private static Server serverObj = null;
 
     /**
@@ -49,18 +58,21 @@ public final class Server {
         }
         throw new NullPointerException("No server running.");
     }
-    //ToDo: Server distroy
+    /**
+     * Save stop for the {@link Server}. Closing any connections and stop the running {@link Server}.
+     */
+    public static void stop(){
+        serverObj.server.close();
+        serverObj.server.stop();
+        serverObj.gameList = null;
+        serverObj = null;
+    }
 
 
     /**
      * {@link com.esotericsoftware.kryonet.Server} object used for the server base functionality.
      */
     private com.esotericsoftware.kryonet.Server server;
-    /**
-     * {@link Properties} used by the game-streaming server.
-     * Any changes requires a {@link #rebuild()} method call.
-     */
-    private final Properties properties = PropertiesHelper.getProperties();
     /**
      * <code>Game-list</code> with all available games on the {@link Server}.
      */
@@ -82,6 +94,7 @@ public final class Server {
         NetworkClassRegistrationHelper.registerClasses(server);
 
         //Bind the ports for the server
+        Properties properties = PropertiesHelper.getProperties();
         int tcp = Integer.valueOf(properties.getProperty(SERVERTCP));
         int udp = Integer.valueOf(properties.getProperty(SERVERUDP));
         try {
@@ -111,7 +124,7 @@ public final class Server {
     private void registerListener(){
         server.addListener(new Listener() {
             public void received(Connection connection, Object object){
-                if(object instanceof gamelistRequest){
+                if(object instanceof GamelistRequest){
                     connection.sendTCP(gameList);
                 }
             }
@@ -124,10 +137,12 @@ public final class Server {
         return this.gameList;
     }
     /**
-     * Refreshes <code>game-list</code> of the {@link Server}.
+     * Refreshes <code>game-list</code> of the {@link Server} and send the new <code>game-list</code> to all connected
+     * <code>clients</code>.
      */
     public void refreshGamelist(){
         gameList = GameListBuilder.build();
+        server.sendToAllTCP(gameList);
     }
 
 }

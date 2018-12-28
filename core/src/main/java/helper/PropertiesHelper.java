@@ -12,6 +12,10 @@ public class PropertiesHelper {
         return getProperties(PROPERTIES);
     }
 
+    public static String getGamepath(){
+        return getProperties().getProperty("gamepath");
+    }
+
     public static Properties getProperties(String path){
         Properties properties = new Properties();
         InputStream pFile = null;

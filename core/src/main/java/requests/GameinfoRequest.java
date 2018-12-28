@@ -1,6 +1,6 @@
 package requests;
 
-public class gameinfoRequest {
+public class GameinfoRequest {
 
     String query;
 
