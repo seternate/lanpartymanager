@@ -44,7 +44,12 @@ public class Game {
                    connectParam,
                    exeFileRelative;
     private boolean connectDirect;
+    private Properties properties;
 
+    /**
+     * No function at all. Just for the {@link com.esotericsoftware.kryonet} library.
+     */
+    public Game(){}
     /**
      * Constructs a new {@link Game} object. Initialize all {@link Game} variables with the values from the specified
      * {@link Properties} file.
@@ -56,7 +61,7 @@ public class Game {
     public Game(Properties properties){
         this.name = properties.getProperty("name");
         this.exeFileRelative = properties.getProperty("exe.file");
-        this.version = GameInfoHelper.getVersion(properties);
+        this.version = properties.getProperty("version");
         if(Boolean.valueOf(properties.getProperty("connect.direct"))){
             connectDirect = true;
             connectParam = properties.getProperty("connect.param");
@@ -64,6 +69,7 @@ public class Game {
             connectDirect = false;
             connectParam = "";
         }
+        this.properties = properties;
     }
     /**
      * @return Proper name of the Game.
@@ -116,5 +122,29 @@ public class Game {
         if(!isConnectDirect()) return getConnectParam();
         String cParam = getConnectParam();
         return cParam.replace("?", ip);
+    }
+    /**
+     * Local version of the game on the <code>Client</code> side. Could be used to compare server and client version of
+     * the game.
+     *
+     * @return local version of the game on the <code>Client</code> side or an empty {@link String} if the {@link Game}
+     * is not found.
+     *
+     * @see #getVersion()
+     */
+    public String getLocalVersion(){
+        return GameInfoHelper.getVersion(properties);
+    }
+    /**
+     * Compairing the local {@link Game} version with the {@link Game} version from the <code>Server</code>.
+     *
+     * @return <code>true</code> if the local {@link Game} has the same version as the {@link Game} on the
+     * <code>Server</code>. If the version is not the same or the <code>Client</code> don't have the {@link Game}
+     * <code>false</code> is returned.
+     *
+     * @see #getLocalVersion()
+     */
+    public boolean isUpToDate(){
+        return this.version.equals(getLocalVersion());
     }
 }

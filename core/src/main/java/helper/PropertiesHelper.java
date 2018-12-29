@@ -16,6 +16,18 @@ public class PropertiesHelper {
         return getProperties().getProperty("gamepath");
     }
 
+    public static String getUsername() {
+        return getProperties().getProperty("username");
+    }
+
+    public static String getServerUdp(){
+        return getProperties().getProperty("serverudp");
+    }
+
+    public static String getServerTcp(){
+        return getProperties().getProperty("servertcp");
+    }
+
     public static Properties getProperties(String path){
         Properties properties = new Properties();
         InputStream pFile = null;

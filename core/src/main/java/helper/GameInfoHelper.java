@@ -25,6 +25,7 @@ public class GameInfoHelper {
 
     private static String fileVersion(String file, String query){
         String absolutePath = GameFolderHelper.getAbsolutePath(file);
+        if(absolutePath.equals("")) return "";
         File versionFile = new File(absolutePath);
         Scanner scr = null;
         try {
@@ -43,6 +44,7 @@ public class GameInfoHelper {
 
     private static String dateVersion(String filePath){
         String absolutePath = GameFolderHelper.getAbsolutePath(filePath);
+        if(absolutePath.equals("")) return "";
         File file = new File(absolutePath);
         SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
         return sdf.format(file.lastModified());
@@ -50,6 +52,7 @@ public class GameInfoHelper {
 
     private static String getVersion(String filePath){
         String absolutePath = GameFolderHelper.getAbsolutePath(filePath);
+        if(absolutePath.equals("")) return "";
         IntByReference dwDummy = new IntByReference();
         dwDummy.setValue(0);
 

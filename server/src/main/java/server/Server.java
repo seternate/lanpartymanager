@@ -3,12 +3,14 @@ package server;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import entities.Game;
+import entities.User;
 import helper.NetworkClassRegistrationHelper;
 import helper.PropertiesHelper;
 import requests.GamelistRequest;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Properties;
 
 /**
@@ -64,7 +66,7 @@ public final class Server {
     public static void stop(){
         serverObj.server.close();
         serverObj.server.stop();
-        serverObj.gameList = null;
+        serverObj.gamelist = null;
         serverObj = null;
     }
 
@@ -76,7 +78,8 @@ public final class Server {
     /**
      * <code>Game-list</code> with all available games on the {@link Server}.
      */
-    private ArrayList<Game> gameList;
+    private ArrayList<Game> gamelist;
+    private HashMap<Integer, User> userlist;
 
     /**
      * Constructs a new {@link Server} object.
@@ -107,7 +110,10 @@ public final class Server {
         this.registerListener();
 
         //build the game-list
-        gameList = GameListBuilder.build();
+        gamelist = GameListBuilder.build();
+
+        //initialize user-list
+        userlist = new HashMap<>();
     }
     /**
      * Starts the {@link Server}.
@@ -123,26 +129,44 @@ public final class Server {
      */
     private void registerListener(){
         server.addListener(new Listener() {
+            @Override
+            public void connected(Connection connection) {
+                connection.sendTCP(gamelist);
+            }
+            @Override
+            public void disconnected(Connection connection) {
+                userlist.remove(connection.getID());
+                server.sendToAllTCP(userlist);
+            }
+            @Override
             public void received(Connection connection, Object object){
                 if(object instanceof GamelistRequest){
-                    connection.sendTCP(gameList);
+                    connection.sendTCP(gamelist);
+                    System.out.println("User: " + userlist.get(connection.getID()).toString() + " has requested gamelist.");
+                }
+                if(object instanceof User){
+                    User user = (User)object;
+                    userlist.put(connection.getID(), user);
+                    server.sendToAllTCP(user);
+                    System.out.println("User: " + userlist.get(connection.getID()).toString() + " has connected.");
                 }
             }
+
         });
     }
     /**
      * @return <code>game-list</code> of the {@link Server}.
      */
     public ArrayList<Game> getGamelist(){
-        return this.gameList;
+        return this.gamelist;
     }
     /**
      * Refreshes <code>game-list</code> of the {@link Server} and send the new <code>game-list</code> to all connected
      * <code>clients</code>.
      */
     public void refreshGamelist(){
-        gameList = GameListBuilder.build();
-        server.sendToAllTCP(gameList);
+        gamelist = GameListBuilder.build();
+        server.sendToAllTCP(gamelist);
     }
 
 }
