@@ -53,11 +53,14 @@ abstract class GameListBuilder {
         File resources = new File(uri);
         String[] list = resources.list();
         if (list == null) throw new AssertionError();
-        Properties[] properties = new Properties[list.length];
+        Properties[] properties = new Properties[list.length-1];
 
         //Load all properties-files and return them
-        for(int i = 0; i < list.length; i++){
-            properties[i] = PropertiesHelper.getProperties(list[i]);
+        for(int i = 0, k = 0; i < list.length; i++){
+            if(!list[i].equals("server.properties")){
+                properties[k] = PropertiesHelper.getProperties(list[i]);
+                k++;
+            }
         }
         return properties;
     }

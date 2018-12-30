@@ -72,7 +72,11 @@ public final class Server {
      * <code>Game-list</code> with all available games on the {@link Server}.
      */
     private ArrayList<Game> gamelist;
+    /**
+     * <code>User-list</code> with all connected users on the {@link Server}.
+     */
     private HashMap<Integer, User> userlist;
+    public String gamepath;
 
     /**
      * Constructs a new {@link Server} object.
@@ -106,6 +110,8 @@ public final class Server {
 
         //initialize user-list
         userlist = new HashMap<>();
+
+        gamepath = PropertiesHelper.getProperties("server.properties").getProperty("gamepath");
     }
     /**
      * Starts the {@link Server}.

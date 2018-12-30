@@ -89,19 +89,15 @@ public class Client {
         return this.userlist;
     }
 
-    public boolean download(Game game){
+    public boolean downloadGame(Game game){
         if(!game.isUpToDate()){
             //Todo: Download logic.
         }
         return false;
     }
 
-    public boolean download(String gameName){
+    public boolean downloadGame(String gameName){
         //Todo: get Game-object with gameName-string.
         return false;
-    }
-
-    public void startGame(Game game){
-        //Todo
     }
 }
