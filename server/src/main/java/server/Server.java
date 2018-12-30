@@ -76,7 +76,7 @@ public final class Server {
      * <code>User-list</code> with all connected users on the {@link Server}.
      */
     private HashMap<Integer, User> userlist;
-    public String gamepath;
+    private String gamepath;
 
     /**
      * Constructs a new {@link Server} object.

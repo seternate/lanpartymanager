@@ -6,6 +6,7 @@ import entities.Game;
 import entities.User;
 import helper.NetworkClassRegistrationHelper;
 import helper.PropertiesHelper;
+import main.Main;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -17,6 +18,7 @@ public class Client {
     private User user;
     private ArrayList<Game> gamelist;
     private HashMap<Integer, User> userlist;
+    private int init = 0;
 
     public Client(){
         client = new com.esotericsoftware.kryonet.Client();
@@ -31,7 +33,7 @@ public class Client {
             while(true){
                 if(client.isConnected()) {
                     try {
-                        Thread.sleep(500);
+                        Thread.sleep(2000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -40,6 +42,14 @@ public class Client {
                 }
             }
         }).start();
+        synchronized (this){
+            try {
+                wait();
+                init = 0;
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private void connect(){
@@ -75,6 +85,13 @@ public class Client {
                     if(hashmap.containsKey(connection.getID())){
                         System.out.println("Received user-list.");
                         userlist = hashmap;
+                        if(init == 0){
+                            synchronized (Main.client){
+                                Main.client.notifyAll();
+                                init = 1;
+                            }
+                        }
+
                     }
                 }
             }
@@ -99,5 +116,9 @@ public class Client {
     public boolean downloadGame(String gameName){
         //Todo: get Game-object with gameName-string.
         return false;
+    }
+
+    public boolean isConnected(){
+        return client.isConnected();
     }
 }
