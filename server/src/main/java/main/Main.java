@@ -6,7 +6,7 @@ import server.Server;
 /**
  * Entrypoint for the lan-server.
  */
-public class Main {
+public final class Main {
     /**
      * {@link Server} object used for the lan-server.
      */
@@ -20,6 +20,7 @@ public class Main {
         server = Server.build();
         server.start();
 
+        //Logging
         for(Game game : server.getGamelist()){
             System.out.println("Name: " + game.getName());
             System.out.println("Version: " + game.getVersion());

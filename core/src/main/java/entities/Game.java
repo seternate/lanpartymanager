@@ -23,6 +23,8 @@ import java.util.Properties;
  * <code>version.query</code> - a query to find the version in <code>version.file</code>, if <code>version.format=file
  * </code>. Else this field is empty.
  * <p>
+ * <code>version</code> - version of the game on the server.
+ * <p>
  * <code>connect.direct</code> - boolean value to to determine if the game supports direct connecting to the game-
  * server.
  * <p>
@@ -37,7 +39,7 @@ import java.util.Properties;
  *
  * @see GameInfoHelper
  */
-public class Game {
+public final class Game {
 
     private String name,
                    version,
@@ -72,7 +74,7 @@ public class Game {
         this.properties = properties;
     }
     /**
-     * @return Proper name of the Game.
+     * @return Proper name of the game.
      */
     public String getName() {
         return name;
@@ -90,6 +92,12 @@ public class Game {
      */
     public String getExeFileRelative() {
         return exeFileRelative;
+    }
+    /**
+     * @return properties of this game.
+     */
+    public Properties getProperties(){
+        return this.properties;
     }
     /**
      * If <code>true</code> the connection-parameter can be accessed via
@@ -133,7 +141,7 @@ public class Game {
      * @see #getVersion()
      */
     public String getLocalVersion(){
-        return GameInfoHelper.getVersion(properties);
+        return GameInfoHelper.getVersion(this);
     }
     /**
      * Compairing the local {@link Game} version with the {@link Game} version from the <code>Server</code>.

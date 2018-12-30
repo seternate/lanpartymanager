@@ -15,11 +15,11 @@ import java.util.Properties;
  * A new game is added by adding the game-folder of the game to the specified folder in <code>settings.properties</code>
  * and by adding a new {@link Properties} file in the <code>resource</code> folder.
  * <p>
- * No object can be created from this class, because it only functions as a helper class for the {@link Server}.
+ * No object can be created from this class, because it only functions as a <code>helper class</code> for the {@link Server}.
  *
  * @see Game
  */
-final class GameListBuilder {
+abstract class GameListBuilder {
 
     /**
      * Builds the <code>game-list</code> from all {@link Properties} files in the <code>resource</code> folder.
@@ -34,7 +34,6 @@ final class GameListBuilder {
         }
         return gameList;
     }
-
     /**
      * All {@link Properties} from the games in the <code>resource</code> folder.
      *
@@ -62,6 +61,4 @@ final class GameListBuilder {
         }
         return properties;
     }
-
-    private GameListBuilder(){}
 }

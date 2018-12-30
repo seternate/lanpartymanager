@@ -11,7 +11,6 @@ import requests.GamelistRequest;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Properties;
 
 /**
  * {@link Server} class for the lan-server. It sets up the whole {@link Server} and registers all needed classes for
@@ -25,11 +24,6 @@ import java.util.Properties;
  */
 public final class Server {
 
-    /**
-     * <code>String</code> representation for a key from <code>settings.properties</code>.
-     */
-    private final static String SERVERTCP = "servertcp",
-                                SERVERUDP = "serverudp";
     private static Server serverObj = null;
 
     /**
@@ -70,7 +64,6 @@ public final class Server {
         serverObj = null;
     }
 
-
     /**
      * {@link com.esotericsoftware.kryonet.Server} object used for the server base functionality.
      */
@@ -97,9 +90,8 @@ public final class Server {
         NetworkClassRegistrationHelper.registerClasses(server);
 
         //Bind the ports for the server
-        Properties properties = PropertiesHelper.getProperties();
-        int tcp = Integer.valueOf(properties.getProperty(SERVERTCP));
-        int udp = Integer.valueOf(properties.getProperty(SERVERUDP));
+        int tcp = Integer.valueOf(PropertiesHelper.getServerTcp());
+        int udp = Integer.valueOf(PropertiesHelper.getServerUdp());
         try {
             server.bind(tcp, udp);
         } catch (IOException e) {
@@ -147,7 +139,7 @@ public final class Server {
                 if(object instanceof User){
                     User user = (User)object;
                     userlist.put(connection.getID(), user);
-                    server.sendToAllTCP(user);
+                    server.sendToAllTCP(userlist);
                     System.out.println("User: " + userlist.get(connection.getID()).toString() + " has connected.");
                 }
             }
@@ -168,5 +160,4 @@ public final class Server {
         gamelist = GameListBuilder.build();
         server.sendToAllTCP(gamelist);
     }
-
 }
