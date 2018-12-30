@@ -10,6 +10,6 @@ public class Main {
         client = new Client();
         client.start();
         System.out.println("Request downloading game...");
-        System.out.println(client.downloadGame(client.getGamelist().get(1)));
+        System.out.println(client.downloadGame(client.getGamelist().get(0)));
     }
 }

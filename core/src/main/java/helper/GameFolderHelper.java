@@ -22,6 +22,7 @@ abstract class GameFolderHelper {
      */
     static String getAbsolutePath(String path){
         File root = new File(PropertiesHelper.getGamepath());
+        if(!root.exists()) root.mkdirs();
         String[] dirs = root.list();
         for(String dir : dirs){
             File child = new File(root.getAbsolutePath()+"\\"+dir+path);
