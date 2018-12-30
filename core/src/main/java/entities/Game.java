@@ -10,6 +10,8 @@ import java.util.Properties;
  * To create a {@link Game} object a proper {@link Properties} file is needed. The {@link Properties} file has the
  * following fields:
  * <p>
+ * <code>file</code> - name of the game-data on the <code>Server</code>.
+ * <p>
  * <code>exe.file</code> - the relative <code>.exe</code>-path without the root game-folder.
  * <p>
  * <code>name</code> - the name of the game.

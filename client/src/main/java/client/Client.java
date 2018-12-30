@@ -7,9 +7,13 @@ import entities.User;
 import helper.NetworkClassRegistrationHelper;
 import helper.PropertiesHelper;
 import main.Main;
+import messages.GamesizeMessage;
+import requests.DownloadRequest;
+import requests.GamesizeRequest;
 
 import java.io.IOException;
 import java.net.InetAddress;
+import java.net.ServerSocket;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -80,7 +84,8 @@ public class Client {
                         gamelist = list;
                         System.out.println("Received game-list.");
                     }
-                }else if(object instanceof HashMap){
+                }
+                if(object instanceof HashMap){
                     HashMap hashmap = (HashMap)object;
                     if(hashmap.containsKey(connection.getID())){
                         System.out.println("Received user-list.");
@@ -93,6 +98,12 @@ public class Client {
                         }
 
                     }
+                }
+                if(object instanceof GamesizeMessage){
+                    GamesizeMessage gsMessage = (GamesizeMessage)object;
+                    int openport = getOpenPort();
+                    FileServer fServer = new FileServer(openport, gsMessage.game, gsMessage.filesize);
+                    client.sendTCP(new DownloadRequest(gsMessage.game, openport));
                 }
             }
         });
@@ -108,17 +119,30 @@ public class Client {
 
     public boolean downloadGame(Game game){
         if(!game.isUpToDate()){
-            //Todo: Download logic.
+            client.sendTCP(new GamesizeRequest(game));
+            return true;
         }
         return false;
     }
 
-    public boolean downloadGame(String gameName){
-        //Todo: get Game-object with gameName-string.
-        return false;
+    private int getOpenPort(){
+        ServerSocket server = null;
+        try {
+            server = new ServerSocket(0);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        int freeport = server.getLocalPort();
+        try {
+            server.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return freeport;
     }
 
-    public boolean isConnected(){
-        return client.isConnected();
+    public boolean downloadGame(String gameName){
+
+        return false;
     }
 }

@@ -6,8 +6,12 @@ import entities.Game;
 import entities.User;
 import helper.NetworkClassRegistrationHelper;
 import helper.PropertiesHelper;
+import messages.GamesizeMessage;
+import requests.DownloadRequest;
 import requests.GamelistRequest;
+import requests.GamesizeRequest;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -147,6 +151,20 @@ public final class Server {
                     userlist.put(connection.getID(), user);
                     server.sendToAllTCP(userlist);
                     System.out.println("User: " + userlist.get(connection.getID()).toString() + " has connected.");
+                }
+                if(object instanceof DownloadRequest){
+                    DownloadRequest dRequest = (DownloadRequest)object;
+                    String ip = connection.getRemoteAddressTCP().getAddress().getHostAddress();
+                    String filePath = PropertiesHelper.getProperties("server.properties").getProperty("gamepath")+
+                            dRequest.game.getProperties().getProperty("file");
+                    FileClient fc = new FileClient(ip, dRequest.port, filePath);
+                }
+                if(object instanceof GamesizeRequest){
+                    GamesizeRequest gsRequest = (GamesizeRequest)object;
+                    String filePath = PropertiesHelper.getProperties("server.properties").getProperty("gamepath")+
+                            gsRequest.game.getProperties().getProperty("file");
+                    File gFile = new File(filePath);
+                    connection.sendTCP(new GamesizeMessage(gsRequest.game, gFile.length()));
                 }
             }
 
