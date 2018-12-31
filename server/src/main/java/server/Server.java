@@ -8,7 +8,6 @@ import helper.NetworkClassRegistrationHelper;
 import helper.PropertiesHelper;
 import messages.GamesizeMessage;
 import requests.DownloadRequest;
-import requests.GamelistRequest;
 import requests.GamesizeRequest;
 
 import java.io.File;
@@ -91,6 +90,10 @@ public final class Server {
      * @see com.esotericsoftware.kryonet.Server
      */
     private Server(){
+        //Create gamepath directory, if it dont exists
+        File dFile = new File(PropertiesHelper.getGamepath());
+        if(!dFile.exists()) dFile.mkdirs();
+
         //Initialize the Server-Object
         server = new com.esotericsoftware.kryonet.Server();
 
@@ -137,15 +140,12 @@ public final class Server {
             }
             @Override
             public void disconnected(Connection connection) {
+                System.out.println(userlist.get(connection.getID()) + " disconnected.");
                 userlist.remove(connection.getID());
                 server.sendToAllTCP(userlist);
             }
             @Override
             public void received(Connection connection, Object object){
-                if(object instanceof GamelistRequest){
-                    connection.sendTCP(gamelist);
-                    System.out.println("User: " + userlist.get(connection.getID()).toString() + " has requested gamelist.");
-                }
                 if(object instanceof User){
                     User user = (User)object;
                     userlist.put(connection.getID(), user);
@@ -157,13 +157,15 @@ public final class Server {
                     String ip = connection.getRemoteAddressTCP().getAddress().getHostAddress();
                     String filePath = PropertiesHelper.getProperties("server.properties").getProperty("gamepath")+
                             dRequest.game.getProperties().getProperty("file");
-                    FileClient fc = new FileClient(ip, dRequest.port, filePath);
+                    System.out.println("Sending " + dRequest.game.getName() + " to " + userlist.get(connection.getID()));
+                    new FileClient(ip, dRequest.port, filePath);
                 }
                 if(object instanceof GamesizeRequest){
                     GamesizeRequest gsRequest = (GamesizeRequest)object;
                     String filePath = PropertiesHelper.getProperties("server.properties").getProperty("gamepath")+
                             gsRequest.game.getProperties().getProperty("file");
                     File gFile = new File(filePath);
+                    System.out.println(userlist.get(connection.getID()) + " requested to download " + gsRequest.game.getName() + ".");
                     connection.sendTCP(new GamesizeMessage(gsRequest.game, gFile.length()));
                 }
             }

@@ -2,13 +2,10 @@ package client;
 
 import entities.Game;
 import helper.PropertiesHelper;
-import net.sf.sevenzipjbinding.*;
-import net.sf.sevenzipjbinding.impl.RandomAccessFileInStream;
 
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Arrays;
 
 public class FileServer extends Thread {
 
@@ -54,7 +51,7 @@ public class FileServer extends Thread {
             while((read = dis.read(buffer, 0, Math.min(buffer.length, remaining))) > 0) {
                 totalRead += read;
                 remaining -= read;
-                System.out.println("read " + totalRead + " bytes.");
+                System.out.println(game.getName() + ": read " + totalRead + " bytes.");
                 fos.write(buffer, 0, read);
             }
             if(i==0) {

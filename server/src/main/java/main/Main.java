@@ -22,12 +22,12 @@ public final class Main {
 
         //Logging
         for(Game game : server.getGamelist()){
+            System.out.println("\n");
             System.out.println("Name: " + game.getName());
             System.out.println("Version: " + game.getVersion());
             System.out.println("Exe-Pfad: " + game.getExeFileRelative());
             System.out.println("Parameter: " + game.getConnectParam());
             System.out.println("Paramter(127.0.0.1): " + game.getConnectParam("127.0.0.1"));
-            System.out.println("\n");
         }
     }
 }

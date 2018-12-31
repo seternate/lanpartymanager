@@ -7,7 +7,6 @@ import entities.Game;
 import entities.User;
 import messages.GamesizeMessage;
 import requests.DownloadRequest;
-import requests.GamelistRequest;
 import requests.GamesizeRequest;
 
 import java.util.ArrayList;
@@ -61,7 +60,6 @@ public abstract class NetworkClassRegistrationHelper {
 
         //registered requests
         kryo.register(DownloadRequest.class);
-        kryo.register(GamelistRequest.class);
         kryo.register(GamesizeRequest.class);
 
         //registered messages

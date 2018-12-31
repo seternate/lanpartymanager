@@ -11,6 +11,7 @@ import messages.GamesizeMessage;
 import requests.DownloadRequest;
 import requests.GamesizeRequest;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
@@ -25,6 +26,9 @@ public class Client {
     private int init = 0;
 
     public Client(){
+        File dFile = new File(PropertiesHelper.getGamepath());
+        if(!dFile.exists()) dFile.mkdirs();
+
         client = new com.esotericsoftware.kryonet.Client();
         user = new User();
         NetworkClassRegistrationHelper.registerClasses(client);
@@ -101,8 +105,12 @@ public class Client {
                 }
                 if(object instanceof GamesizeMessage){
                     GamesizeMessage gsMessage = (GamesizeMessage)object;
+                    File sFile = new File(PropertiesHelper.getGamepath());
+                    //Todo: Hint if download cant be made for GUI???
+                    if(sFile.getFreeSpace() < gsMessage.filesize) return;
                     int openport = getOpenPort();
                     FileServer fServer = new FileServer(openport, gsMessage.game, gsMessage.filesize);
+                    System.out.println("Requested to download " + gsMessage.game.getName() + ".");
                     client.sendTCP(new DownloadRequest(gsMessage.game, openport));
                 }
             }
@@ -125,6 +133,15 @@ public class Client {
         return false;
     }
 
+    public boolean downloadGame(String gameName){
+        for (Game game : gamelist) {
+            if(game.getName().equals(gameName)){
+                return downloadGame(game);
+            }
+        }
+        return false;
+    }
+
     private int getOpenPort(){
         ServerSocket server = null;
         try {
@@ -139,10 +156,5 @@ public class Client {
             e.printStackTrace();
         }
         return freeport;
-    }
-
-    public boolean downloadGame(String gameName){
-
-        return false;
     }
 }

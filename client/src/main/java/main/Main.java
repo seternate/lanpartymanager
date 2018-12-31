@@ -11,5 +11,6 @@ public class Main {
         client.start();
         System.out.println("Request downloading game...");
         System.out.println(client.downloadGame(client.getGamelist().get(0)));
+        System.out.println(client.downloadGame(client.getGamelist().get(1)));
     }
 }

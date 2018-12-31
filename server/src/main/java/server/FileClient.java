@@ -32,7 +32,7 @@ public class FileClient extends Thread{
     public void sendFile(String file) throws IOException {
         DataOutputStream dos = new DataOutputStream(s.getOutputStream());
         FileInputStream fis = new FileInputStream(file);
-        byte[] buffer = new byte[4096];
+        byte[] buffer = new byte[1024000];
 
         int read;
         while ((read=fis.read(buffer)) > 0) {
@@ -40,5 +40,6 @@ public class FileClient extends Thread{
         }
         fis.close();
         dos.close();
+        s.close();
     }
 }
