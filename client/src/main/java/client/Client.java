@@ -19,6 +19,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Client {
+
+    public class DownloadException extends Exception{
+
+    }
+
     private com.esotericsoftware.kryonet.Client client;
     private User user;
     private ArrayList<Game> gamelist;
@@ -106,7 +111,6 @@ public class Client {
                 if(object instanceof GamesizeMessage){
                     GamesizeMessage gsMessage = (GamesizeMessage)object;
                     File sFile = new File(PropertiesHelper.getGamepath());
-                    //Todo: Hint if download cant be made for GUI???
                     if(sFile.getFreeSpace() < gsMessage.filesize) return;
                     int openport = getOpenPort();
                     FileServer fServer = new FileServer(openport, gsMessage.game, gsMessage.filesize);
@@ -125,21 +129,23 @@ public class Client {
         return this.userlist;
     }
 
-    public boolean downloadGame(Game game){
+    public int downloadGame(Game game){
         if(!game.isUpToDate()){
+            File sFile = new File(PropertiesHelper.getGamepath());
+            if(game.getSize() > sFile.getFreeSpace()) return 1;
             client.sendTCP(new GamesizeRequest(game));
-            return true;
+            return 0;
         }
-        return false;
+        return 2;
     }
 
-    public boolean downloadGame(String gameName){
+    public int downloadGame(String gameName){
         for (Game game : gamelist) {
             if(game.getName().equals(gameName)){
                 return downloadGame(game);
             }
         }
-        return false;
+        return 3;
     }
 
     private int getOpenPort(){

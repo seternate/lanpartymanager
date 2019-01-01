@@ -12,6 +12,8 @@ import java.util.Properties;
  * <p>
  * <code>file</code> - name of the game-data on the <code>Server</code>.
  * <p>
+ * <code>file.size</code> - filesize in bytes of the game-data on the <code>Server</code>.
+ * <p>
  * <code>exe.file</code> - the relative <code>.exe</code>-path without the root game-folder.
  * <p>
  * <code>name</code> - the name of the game.
@@ -49,6 +51,7 @@ public final class Game {
                    exeFileRelative;
     private boolean connectDirect;
     private Properties properties;
+    private long gamesize;
 
     /**
      * No function at all. Just for the {@link com.esotericsoftware.kryonet} library.
@@ -74,6 +77,7 @@ public final class Game {
             connectParam = "";
         }
         this.properties = properties;
+        this.gamesize = Integer.valueOf(properties.getProperty("file.size"));
     }
     /**
      * @return Proper name of the game.
@@ -100,6 +104,12 @@ public final class Game {
      */
     public Properties getProperties(){
         return this.properties;
+    }
+    /**
+     * @return the size of the .7z file in bytes on the <code>Server</code>.
+     */
+    public long getSize(){
+        return gamesize;
     }
     /**
      * If <code>true</code> the connection-parameter can be accessed via

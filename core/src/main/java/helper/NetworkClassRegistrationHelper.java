@@ -3,6 +3,7 @@ package helper;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Server;
+import com.esotericsoftware.kryonet.rmi.ObjectSpace;
 import entities.Game;
 import entities.User;
 import messages.GamesizeMessage;
