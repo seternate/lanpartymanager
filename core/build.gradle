@@ -16,4 +16,5 @@ dependencies {
     implementation 'net.java.dev.jna:jna-platform:4.5.0'
     // https://mvnrepository.com/artifact/com.esotericsoftware/kryonet
     compile group: 'com.esotericsoftware', name: 'kryonet', version: '2.22.0-RC1'
+    compile "com.fasterxml.jackson.core:jackson-databind:2.0.1"
 }

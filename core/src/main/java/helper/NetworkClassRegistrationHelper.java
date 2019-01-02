@@ -3,12 +3,9 @@ package helper;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Server;
-import com.esotericsoftware.kryonet.rmi.ObjectSpace;
 import entities.Game;
 import entities.User;
-import messages.GamesizeMessage;
 import requests.DownloadRequest;
-import requests.GamesizeRequest;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -61,10 +58,6 @@ public abstract class NetworkClassRegistrationHelper {
 
         //registered requests
         kryo.register(DownloadRequest.class);
-        kryo.register(GamesizeRequest.class);
-
-        //registered messages
-        kryo.register(GamesizeMessage.class);
 
         //register base
         kryo.register(ArrayList.class);

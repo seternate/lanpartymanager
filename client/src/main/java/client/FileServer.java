@@ -40,8 +40,8 @@ public class FileServer extends Thread {
         DataInputStream dis = new DataInputStream(clientSock.getInputStream());
         String absolutePath = PropertiesHelper.getGamepath() + game.getProperties().getProperty("file");
 
-        int filesize = 1024000000;
-        byte[] buffer = new byte[1024000];
+        int filesize = 1073741824;
+        byte[] buffer = new byte[1048576];
         FileOutputStream fos = new FileOutputStream(absolutePath, false);
 
         for(int i = 0; i <= (this.filesize/filesize); i++){

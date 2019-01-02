@@ -1,5 +1,8 @@
 package entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIgnoreType;
 import helper.GameInfoHelper;
 
 import java.util.Properties;
@@ -45,12 +48,14 @@ import java.util.Properties;
  */
 public final class Game {
 
-    private String name,
-                   version,
-                   connectParam,
-                   exeFileRelative;
+    private String name, version;
+    @JsonIgnore
     private boolean connectDirect;
+    @JsonIgnore
+    private String connectParam, exeFileRelative;
+    @JsonIgnore
     private Properties properties;
+    @JsonIgnore
     private long gamesize;
 
     /**
@@ -77,7 +82,7 @@ public final class Game {
             connectParam = "";
         }
         this.properties = properties;
-        this.gamesize = Integer.valueOf(properties.getProperty("file.size"));
+        this.gamesize = Long.valueOf(properties.getProperty("file.size"));
     }
     /**
      * @return Proper name of the game.
@@ -108,6 +113,7 @@ public final class Game {
     /**
      * @return the size of the .7z file in bytes on the <code>Server</code>.
      */
+    @JsonIgnore
     public long getSize(){
         return gamesize;
     }
@@ -152,6 +158,7 @@ public final class Game {
      *
      * @see #getVersion()
      */
+    @JsonIgnore
     public String getLocalVersion(){
         return GameInfoHelper.getVersion(this);
     }
@@ -164,6 +171,7 @@ public final class Game {
      *
      * @see #getLocalVersion()
      */
+    @JsonIgnore
     public boolean isUpToDate(){
         return this.version.equals(getLocalVersion());
     }

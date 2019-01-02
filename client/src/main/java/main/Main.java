@@ -1,7 +1,10 @@
 package main;
 
 import client.Client;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+@SpringBootApplication
 public class Main {
 
     public static Client client;
@@ -9,8 +12,6 @@ public class Main {
     public static void main(String[] args) {
         client = new Client();
         client.start();
-        System.out.println("Request downloading game...");
-        System.out.println(client.downloadGame(client.getGamelist().get(0)));
-        System.out.println(client.downloadGame(client.getGamelist().get(1)));
+        SpringApplication.run(Main.class, args);
     }
 }

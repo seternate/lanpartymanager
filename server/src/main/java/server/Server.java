@@ -6,9 +6,7 @@ import entities.Game;
 import entities.User;
 import helper.NetworkClassRegistrationHelper;
 import helper.PropertiesHelper;
-import messages.GamesizeMessage;
 import requests.DownloadRequest;
-import requests.GamesizeRequest;
 
 import java.io.File;
 import java.io.IOException;
@@ -159,14 +157,6 @@ public final class Server {
                             dRequest.game.getProperties().getProperty("file");
                     System.out.println("Sending " + dRequest.game.getName() + " to " + userlist.get(connection.getID()));
                     new FileClient(ip, dRequest.port, filePath);
-                }
-                if(object instanceof GamesizeRequest){
-                    GamesizeRequest gsRequest = (GamesizeRequest)object;
-                    String filePath = PropertiesHelper.getProperties("server.properties").getProperty("gamepath")+
-                            gsRequest.game.getProperties().getProperty("file");
-                    File gFile = new File(filePath);
-                    System.out.println(userlist.get(connection.getID()) + " requested to download " + gsRequest.game.getName() + ".");
-                    connection.sendTCP(new GamesizeMessage(gsRequest.game, gFile.length()));
                 }
             }
 

@@ -7,9 +7,7 @@ import entities.User;
 import helper.NetworkClassRegistrationHelper;
 import helper.PropertiesHelper;
 import main.Main;
-import messages.GamesizeMessage;
 import requests.DownloadRequest;
-import requests.GamesizeRequest;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,10 +17,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Client {
-
-    public class DownloadException extends Exception{
-
-    }
 
     private com.esotericsoftware.kryonet.Client client;
     private User user;
@@ -108,15 +102,6 @@ public class Client {
 
                     }
                 }
-                if(object instanceof GamesizeMessage){
-                    GamesizeMessage gsMessage = (GamesizeMessage)object;
-                    File sFile = new File(PropertiesHelper.getGamepath());
-                    if(sFile.getFreeSpace() < gsMessage.filesize) return;
-                    int openport = getOpenPort();
-                    FileServer fServer = new FileServer(openport, gsMessage.game, gsMessage.filesize);
-                    System.out.println("Requested to download " + gsMessage.game.getName() + ".");
-                    client.sendTCP(new DownloadRequest(gsMessage.game, openport));
-                }
             }
         });
     }
@@ -124,6 +109,8 @@ public class Client {
     public ArrayList<Game> getGamelist(){
         return this.gamelist;
     }
+
+
 
     public HashMap<Integer, User> getUserlist(){
         return this.userlist;
@@ -133,7 +120,10 @@ public class Client {
         if(!game.isUpToDate()){
             File sFile = new File(PropertiesHelper.getGamepath());
             if(game.getSize() > sFile.getFreeSpace()) return 1;
-            client.sendTCP(new GamesizeRequest(game));
+            int openport = getOpenPort();
+            FileServer fServer = new FileServer(openport, game, game.getSize());
+            System.out.println("Requested to download " + game.getName() + ".");
+            client.sendTCP(new DownloadRequest(game, openport));
             return 0;
         }
         return 2;

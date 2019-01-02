@@ -13,4 +13,6 @@ repositories {
 dependencies {
 	compile project(':core')
     testCompile group: 'junit', name: 'junit', version: '4.12'
+    compile "com.squareup.retrofit2:retrofit:2.5.0"
+    compile "com.squareup.retrofit2:converter-jackson:2.5.0"
 }
