@@ -16,8 +16,8 @@ public class ClientController {
     Client client = Main.client;
 
     @RequestMapping("/")
-    public String index(){
-        return "";
+    public int index(){
+        return 0;
     }
 
     @RequestMapping("/games")

@@ -8,6 +8,9 @@ import retrofit2.http.Query;
 import java.util.List;
 
 public interface DataService {
+    @GET("/")
+    Call<Boolean> isOnline();
+
     @GET("/games")
     Call<List<Game>> listGames();
 
