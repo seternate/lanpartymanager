@@ -22,41 +22,33 @@ public class Client {
     private User user;
     private ArrayList<Game> gamelist;
     private HashMap<Integer, User> userlist;
-    private int init = 0;
+    private String status;
 
     public Client(){
-        File dFile = new File(PropertiesHelper.getGamepath());
-        if(!dFile.exists()) dFile.mkdirs();
-
         client = new com.esotericsoftware.kryonet.Client();
-        user = new User();
         NetworkClassRegistrationHelper.registerClasses(client);
         this.registerListener();
+        status = "Client initialized.";
     }
 
     public void start(){
         new Thread(client).start();
+        status = "Client started.";
         new Thread(() -> {
             while(true){
                 if(client.isConnected()) {
+                    status = "Client connected with Server: " + client.getRemoteAddressTCP().getAddress().getHostAddress();
                     try {
-                        Thread.sleep(2000);
+                        Thread.sleep(500);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                 }else{
+                    status = "Client searching for servers ...";
                     connect();
                 }
             }
         }).start();
-        synchronized (this){
-            try {
-                wait();
-                init = 0;
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
     }
 
     private void connect(){
@@ -75,11 +67,6 @@ public class Client {
     private void registerListener(){
         client.addListener(new Listener() {
             @Override
-            public void connected(Connection connection) {
-                client.sendTCP(user);
-                System.out.println("Connected to Server.");
-            }
-            @Override
             public void received (Connection connection, Object object) {
                 if(object instanceof ArrayList){
                     ArrayList list = (ArrayList)object;
@@ -93,28 +80,17 @@ public class Client {
                     if(hashmap.containsKey(connection.getID())){
                         System.out.println("Received user-list.");
                         userlist = hashmap;
-                        if(init == 0){
-                            synchronized (Main.client){
-                                Main.client.notifyAll();
-                                init = 1;
-                            }
-                        }
-
                     }
                 }
             }
         });
     }
 
-    public ArrayList<Game> getGamelist(){
-        return this.gamelist;
-    }
 
 
 
-    public HashMap<Integer, User> getUserlist(){
-        return this.userlist;
-    }
+
+
 
     public int downloadGame(Game game){
         if(!game.isUpToDate()){
@@ -152,5 +128,27 @@ public class Client {
             e.printStackTrace();
         }
         return freeport;
+    }
+
+
+
+
+    public ArrayList<Game> getGamelist(){
+        return this.gamelist;
+    }
+
+    public HashMap<Integer, User> getUserlist(){
+        return this.userlist;
+    }
+
+    public String status(){
+        return status;
+    }
+
+    public void update(){
+        this.user = new User();
+        File dFile = new File(PropertiesHelper.getGamepath());
+        if(!dFile.exists()) dFile.mkdirs();
+        client.sendTCP(user);
     }
 }

@@ -1,5 +1,7 @@
 package helper;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
@@ -29,8 +31,23 @@ public abstract class PropertiesHelper {
      *
      * @return <code>settings.properties</code>.
      */
-    private static Properties getProperties(){
+    public static Properties getProperties(){
         return getProperties(PROPERTIES);
+    }
+
+    private static void setProperty(String key, String value){
+        Properties properties = getProperties();
+        properties.setProperty(key, value);
+        FileOutputStream output = null;
+        try {
+            output = new FileOutputStream(Thread.currentThread().getContextClassLoader().getResource("../resources/" + PROPERTIES).getFile());
+            properties.store(output, "");
+            output.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
     /**
      * Fast access to the field <code>gamepath</code> of <code>settings.properties</code>.
@@ -40,6 +57,10 @@ public abstract class PropertiesHelper {
     public static String getGamepath(){
         return getProperties().getProperty("gamepath");
     }
+
+    public static void setGamePath(String gamepath){
+        setProperty("gamepath", gamepath);
+    }
     /**
      * Fast access to the field <code>username</code> of <code>settings.properties</code>.
      *
@@ -47,6 +68,10 @@ public abstract class PropertiesHelper {
      */
     public static String getUsername() {
         return getProperties().getProperty("username");
+    }
+
+    public static void setUserName(String username){
+        setProperty("username", username);
     }
     /**
      * Fast access to the field <code>serverudp</code> of <code>settings.properties</code>.

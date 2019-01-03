@@ -148,7 +148,7 @@ public final class Server {
                     User user = (User)object;
                     userlist.put(connection.getID(), user);
                     server.sendToAllTCP(userlist);
-                    System.out.println("User: " + userlist.get(connection.getID()).toString() + " has connected.");
+                    System.out.println("User: " + userlist.get(connection.getID()).getName() + " has connected.");
                 }
                 if(object instanceof DownloadRequest){
                     DownloadRequest dRequest = (DownloadRequest)object;

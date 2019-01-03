@@ -1,8 +1,6 @@
 package entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonIgnoreType;
 import helper.GameInfoHelper;
 
 import java.util.Properties;
@@ -57,6 +55,7 @@ public final class Game {
     private Properties properties;
     @JsonIgnore
     private long gamesize;
+    private String posterUrl;
 
     /**
      * No function at all. Just for the {@link com.esotericsoftware.kryonet} library.
@@ -83,6 +82,7 @@ public final class Game {
         }
         this.properties = properties;
         this.gamesize = Long.valueOf(properties.getProperty("file.size"));
+        this.posterUrl = properties.getProperty("poster.url");
     }
     /**
      * @return Proper name of the game.
@@ -148,6 +148,10 @@ public final class Game {
         if(!isConnectDirect()) return getConnectParam();
         String cParam = getConnectParam();
         return cParam.replace("?", ip);
+    }
+
+    public String getPosterUrl(){
+        return this.posterUrl;
     }
     /**
      * Local version of the game on the <code>Client</code> side. Could be used to compare server and client version of

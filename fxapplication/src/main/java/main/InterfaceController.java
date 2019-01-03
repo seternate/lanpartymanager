@@ -1,15 +1,18 @@
 package main;
 
 import entities.Game;
-import javafx.application.Application;
+import entities.User;
 import javafx.application.Platform;
-import javafx.application.Preloader;
+import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Label;
-import javafx.stage.Stage;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -21,12 +24,19 @@ import java.util.List;
 
 import static java.lang.Thread.sleep;
 
-public class InterfaceController extends Application {
+public class InterfaceController{
 
-    Retrofit retrofit;
-    DataService service;
+    private Retrofit retrofit;
+    private DataService service;
 
-    List<Game> gamelist;
+    private ObservableList<Game> gamelist = FXCollections.observableArrayList();
+    private ObservableList<User> userlist = FXCollections.observableArrayList();
+
+
+    @FXML
+    private Label lblStatus, lblVersion, lblGamename, lblAvailable;
+    @FXML
+    private ListView<Game> lvGames;
 
 
     public InterfaceController() {
@@ -35,42 +45,147 @@ public class InterfaceController extends Application {
                 .addConverterFactory(JacksonConverterFactory.create())
                 .build();
         service = retrofit.create(DataService.class);
+        updateGamelist();
+        //updateUserlist();
+        updateStatus();
+        initListview();
+
     }
 
-    @Override
-    public void init() throws Exception {
-        Call<List<Game>> call = service.listGames();
-        Boolean response = false;
-        while(!response){
-            try{
-                response = service.isOnline().execute().body();
-            }catch(IOException e){
-
-            }
-        }
-        notifyPreloader(new Preloader.ProgressNotification(0.2));
-        call.enqueue(new Callback<List<Game>>(){
+    private void updateGamelist(){
+        Call<List<Game>> callGame = service.getGamelist();
+        callGame.enqueue(new Callback<List<Game>>() {
             @Override
             public void onResponse(Call<List<Game>> call, Response<List<Game>> response) {
-                gamelist = response.body();
-                notifyPreloader(new Preloader.ProgressNotification(0.5));
-                System.out.println("hallo");
+                if(!equalList(gamelist, response.body())){
+                    Platform.runLater(() -> gamelist.setAll(response.body()));
+                }
+                try {
+                    sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                updateGamelist();
             }
             @Override
             public void onFailure(Call<List<Game>> call, Throwable t) {
-
+                System.err.println("Error on gamelist request.");
+                if(!lblStatus.getText().contains("Waiting"))
+                    Platform.runLater(() -> lblStatus.setText("Error: Requesting gamelist."));
+                updateGamelist();
             }
         });
     }
 
-    @Override
-    public void start(Stage primaryStage) throws Exception {
-        FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("Interface.fxml"));
-        loader.setController(this);
-        Parent root = loader.load();
-        Scene scene = new Scene(root);
-        scene.getStylesheets().add(getClass().getClassLoader().getResource("Interface.css").toExternalForm());
-        primaryStage.setScene(scene);
-        primaryStage.show();
+    private boolean equalList(ObservableList<Game> local, List<Game> remote){
+        if(local.size() != remote.size()) return false;
+        for(Game gameLocal : local){
+            boolean same = false;
+            for(Game gameRemote : remote){
+                if(gameLocal.getName().equals(gameRemote.getName())){
+                    same = true;
+                    break;
+                }
+            }
+            if(!same) return false;
+        }
+        return true;
+    }
+
+    private void updateUserlist(){
+        Call<List<User>> callUser = service.getUserlist();
+        callUser.enqueue(new Callback<List<User>>() {
+            @Override
+            public void onResponse(Call<List<User>> call, Response<List<User>> response) {
+                List<User> users = response.body();
+                if(!userlist.containsAll(users))
+                    Platform.runLater(() -> userlist.setAll(users));
+                try {
+                    sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                updateUserlist();
+            }
+            @Override
+            public void onFailure(Call<List<User>> call, Throwable t) {
+                System.err.println("Error on userlist request.");
+                if(!lblStatus.getText().contains("Waiting"))
+                    Platform.runLater(() -> lblStatus.setText("Error: Requesting userlist."));
+                updateUserlist();
+            }
+        });
+    }
+
+    private void updateStatus(){
+        Call<ResponseBody> callStatus = service.getStatus();
+        callStatus.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                try{
+                    String responseText = response.body().string();
+                    Platform.runLater(() -> lblStatus.setText(responseText));
+                }catch(IOException e){ }
+                try {
+                    sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                updateStatus();
+            }
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                System.err.println("Client won't response to FXApp.");
+                Platform.runLater(() -> lblStatus.setText("Waiting for Client ..."));
+                updateStatus();
+            }
+        });
+    }
+
+    private void initListview(){
+        Platform.runLater(() -> {
+            gamelist.addListener((ListChangeListener<Game>)c -> {
+                lvGames.setItems(gamelist);
+                lvGames.getSelectionModel().selectFirst();
+            });
+            lvGames.getSelectionModel().getSelectedItems().addListener(new ListChangeListener<Game>() {
+                @Override
+                public void onChanged(Change<? extends Game> c) {
+                    Game game = lvGames.getSelectionModel().getSelectedItem();
+                    lblGamename.setText(game.getName());
+                    lblVersion.setText(game.getVersion());
+                    Call<Boolean> call = service.isUptodate(game.getName());
+                    call.enqueue(new Callback<Boolean>() {
+                        @Override
+                        public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+                            if(response.body()){
+                                Platform.runLater(() -> lblAvailable.setText("Game is ready to play."));
+                                return;
+                            }
+                            Platform.runLater(() -> lblAvailable.setText("Game has to be Downloaded."));
+                        }
+                        @Override
+                        public void onFailure(Call<Boolean> call, Throwable t) { }
+                    });
+                }
+            });
+            lvGames.setCellFactory(c -> new ListCell<Game>(){
+                @Override
+                protected void updateItem(Game item, boolean empty) {
+                    super.updateItem(item, empty);
+                    setGraphic(null);
+                    setText(null);
+                    if(item != null){
+                        if(item.getPosterUrl() != null){
+                            ImageView imageView = new ImageView(new Image(item.getPosterUrl(), true));
+                            imageView.setFitHeight(138);
+                            imageView.setFitWidth(92);
+                            setGraphic(imageView);
+                        }
+                        setText(item.getName());
+                    }
+                }
+            });
+        });
     }
 }
