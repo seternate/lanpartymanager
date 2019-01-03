@@ -16,6 +16,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
+import java.io.IOException;
 import java.util.List;
 
 import static java.lang.Thread.sleep;
@@ -39,18 +40,27 @@ public class InterfaceController extends Application {
     @Override
     public void init() throws Exception {
         Call<List<Game>> call = service.listGames();
-        while(!service.isOnline().execute().body()){
-            call.enqueue(new Callback<List<Game>>(){
-                @Override
-                public void onResponse(Call<List<Game>> call, Response<List<Game>> response) {
-                    gamelist = response.body();
-                }
-                @Override
-                public void onFailure(Call<List<Game>> call, Throwable t) {
+        Boolean response = false;
+        while(!response){
+            try{
+                response = service.isOnline().execute().body();
+            }catch(IOException e){
 
-                }
-            });
+            }
         }
+        notifyPreloader(new Preloader.ProgressNotification(0.2));
+        call.enqueue(new Callback<List<Game>>(){
+            @Override
+            public void onResponse(Call<List<Game>> call, Response<List<Game>> response) {
+                gamelist = response.body();
+                notifyPreloader(new Preloader.ProgressNotification(0.5));
+                System.out.println("hallo");
+            }
+            @Override
+            public void onFailure(Call<List<Game>> call, Throwable t) {
+
+            }
+        });
     }
 
     @Override
