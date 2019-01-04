@@ -6,65 +6,49 @@ import entities.Game;
 import entities.User;
 import helper.NetworkClassRegistrationHelper;
 import helper.PropertiesHelper;
-import requests.DownloadRequest;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
-import java.net.ServerSocket;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class Client {
+public class MyClient extends com.esotericsoftware.kryonet.Client {
 
-    private com.esotericsoftware.kryonet.Client client;
+
+
+
     private User user;
     private ArrayList<Game> gamelist;
     private HashMap<Integer, User> userlist;
     private String status;
 
-    public Client(){
-        client = new com.esotericsoftware.kryonet.Client();
-        NetworkClassRegistrationHelper.registerClasses(client);
-        this.registerListener();
-        status = "Client initialized.";
+    public MyClient(){
+        super();
+        NetworkClassRegistrationHelper.registerClasses(this);
+        registerListener();
+        start();
     }
 
+    @Override
     public void start(){
-        new Thread(client).start();
-        status = "Client started.";
+        super.start();
         new Thread(() -> {
             while(true){
-                if(client.isConnected()) {
-                    status = "Client connected with Server: " + client.getRemoteAddressTCP().getAddress().getHostAddress();
+                if(isConnected()) {
                     try {
                         Thread.sleep(500);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                 }else{
-                    status = "Client searching for servers ...";
                     connect();
                 }
             }
         }).start();
     }
 
-    private void connect(){
-        int tcp = Integer.valueOf(PropertiesHelper.getServerTcp());
-        int udp = Integer.valueOf(PropertiesHelper.getServerUdp());
-        InetAddress address = client.discoverHost(udp, 5000);
-        if(address != null) {
-            try {
-                client.connect(5000, address, tcp, udp);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
     private void registerListener(){
-        client.addListener(new Listener() {
+        addListener(new Listener() {
             @Override
             public void received (Connection connection, Object object) {
                 if(object instanceof ArrayList){
@@ -84,6 +68,21 @@ public class Client {
             }
         });
     }
+
+    private void connect(){
+        int tcp = PropertiesHelper.getServerTcp();
+        int udp = PropertiesHelper.getServerUdp();
+        InetAddress address = discoverHost(udp, 5000);
+        if(address != null) {
+            try {
+                connect(500, address, tcp, udp);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /*
 
     private int downloadGame(Game game){
         if(!game.isUpToDate()){
@@ -141,4 +140,5 @@ public class Client {
         if(!dFile.exists()) dFile.mkdirs();
         client.sendTCP(user);
     }
+    */
 }
