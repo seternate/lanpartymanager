@@ -1,19 +1,34 @@
 package main;
 
-import client.Client;
-import entities.Game;
+import client.MyClient;
 import entities.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
 @RestController
-public class ClientController {
+@RequestMapping("/fx")
+public class FXClientController {
+    private MyClient client = Main.client;
 
+    @RequestMapping(value = "/status", method = RequestMethod.GET)
+    public ResponseEntity<?> status(){
+        return new ResponseEntity<>(client.getStatus(), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/login", method = RequestMethod.GET)
+    public User getLogin(){
+        return client.getUser();
+    }
+
+    @RequestMapping(value = "/login", method = RequestMethod.POST)
+    public HttpStatus login(@RequestBody User user){
+        if(client.updateUser(user)) return HttpStatus.OK;
+        return HttpStatus.NOT_MODIFIED;
+    }
+
+
+/*
     Client client = Main.client;
 
     @RequestMapping(value="/status", method= RequestMethod.GET)
@@ -57,4 +72,5 @@ public class ClientController {
     public int download(@RequestParam(name="game") String gameName){
         return client.downloadGame(gameName);
     }
+    */
 }

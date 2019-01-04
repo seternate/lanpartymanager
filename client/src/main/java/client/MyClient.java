@@ -3,27 +3,31 @@ package client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import entities.Game;
+import entities.Status;
 import entities.User;
 import helper.NetworkClassRegistrationHelper;
 import helper.PropertiesHelper;
+import message.GamelistMessage;
+import message.LoginMessage;
+import message.UserlistMessage;
+import message.UserupdateMessage;
 
 import java.io.IOException;
 import java.net.InetAddress;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class MyClient extends com.esotericsoftware.kryonet.Client {
-
-
-
-
+    private List<Game> games;
+    private Map<Integer, User> users;
     private User user;
-    private ArrayList<Game> gamelist;
-    private HashMap<Integer, User> userlist;
-    private String status;
+    private Status status;
+
 
     public MyClient(){
         super();
+        user = new User();
+        status = new Status();
         NetworkClassRegistrationHelper.registerClasses(this);
         registerListener();
         start();
@@ -35,35 +39,81 @@ public class MyClient extends com.esotericsoftware.kryonet.Client {
         new Thread(() -> {
             while(true){
                 if(isConnected()) {
+                    status.serverConnection = true;
+                    status.serverIP = getRemoteAddressTCP().getHostString();
                     try {
                         Thread.sleep(500);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                 }else{
+                    status.serverConnection = false;
                     connect();
                 }
             }
         }).start();
     }
 
+    public boolean updateUser(User user){
+        boolean changed = false;
+        changed = changeUsername(user.getName()) || changeGamepath(user.getGamepath());
+        return changed;
+    }
+
+    public Status getStatus(){
+        return status;
+    }
+
+    public User getUser(){
+        return user;
+    }
+
+
+
+    private boolean changeUsername(String username){
+        if(user.getName().equals(username)) {
+            System.err.println("Username is allready " + username);
+            return false;
+        }else if(!isConnected()){
+            System.err.println("No connection to the server.");
+        }
+        System.out.println("Changed name from " + user.getName() + " to " + username);
+        user.setName(username);
+        sendTCP(new UserupdateMessage(user));
+        return true;
+    }
+
+    private boolean changeGamepath(String gamepath){
+        if(user.getGamepath().equals(gamepath)) {
+            System.err.println("Gamepath is allready " + gamepath);
+            return false;
+        }else if(!isConnected()){
+            System.err.println("No connection to the server.");
+        }
+        System.out.println("Changed path from " + user.getGamepath() + " to " + gamepath);
+        user.setGamepath(gamepath);
+        sendTCP(new UserupdateMessage(user));
+        return true;
+    }
+
     private void registerListener(){
         addListener(new Listener() {
             @Override
+            public void connected(Connection connection) {
+                sendTCP(new LoginMessage(user));
+                System.out.println("Logged in.");
+            }
+            @Override
             public void received (Connection connection, Object object) {
-                if(object instanceof ArrayList){
-                    ArrayList list = (ArrayList)object;
-                    if(list.get(0) instanceof Game){
-                        gamelist = list;
-                        System.out.println("Received game-list.");
-                    }
+                if(object instanceof GamelistMessage){
+                    GamelistMessage message = (GamelistMessage)object;
+                    games = message.games;
+                    System.out.println("Received games.");
                 }
-                if(object instanceof HashMap){
-                    HashMap hashmap = (HashMap)object;
-                    if(hashmap.containsKey(connection.getID())){
-                        System.out.println("Received user-list.");
-                        userlist = hashmap;
-                    }
+                if(object instanceof UserlistMessage){
+                    UserlistMessage message = (UserlistMessage)object;
+                    users = message.users;
+                    System.out.println("Received users.");
                 }
             }
         });

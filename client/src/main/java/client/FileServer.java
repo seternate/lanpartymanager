@@ -8,7 +8,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 public class FileServer extends Thread {
-
+/*
     private ServerSocket ss;
     private Game game;
     private long filesize;
@@ -71,4 +71,5 @@ public class FileServer extends Thread {
         File file = new File(absolutePath);
         file.delete();
     }
+    */
 }

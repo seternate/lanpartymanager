@@ -1,17 +1,25 @@
 package main;
 
-import client.Client;
+import client.MyClient;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import static java.lang.Thread.sleep;
+
 @SpringBootApplication
 public class Main {
+    public static MyClient client;
 
-    public static Client client;
 
     public static void main(String[] args) {
-        client = new Client();
+        client = new MyClient();
+        while(!client.isConnected()){
+            try {
+                sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
         SpringApplication.run(Main.class, args);
-        client.start();
     }
 }

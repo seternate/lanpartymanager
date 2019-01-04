@@ -20,7 +20,6 @@ public final class Main {
         }else{
             System.out.println("Directory does not exist: " + pathCompressed);
         }
-        System.out.println("Input: [rebuildgames] [restart] [exit]");
         userInput();
     }
 
@@ -29,10 +28,15 @@ public final class Main {
             Scanner scanner = new Scanner(System.in);
             boolean exit = false;
             while(!exit){
+                System.out.println("Input: [rebuildgames] [games] [users] [restart] [exit]");
                 String[] inputs = scanner.nextLine().split(" ");
                 for(String input : inputs){
                     if(input.equals("rebuildgames"))
                         server.updateGames();
+                    if(input.equals("games"))
+                        server.printGames();
+                    if(input.equals("users"))
+                        server.printUsers();
                     if(input.equals("restart")){
                         server.close();
                         server.stop();

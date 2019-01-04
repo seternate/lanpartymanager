@@ -3,8 +3,11 @@ package entities;
 import java.util.Properties;
 
 public final class Game {
-    public class Version{
+    public static class Version{
         public String format, file, query;
+
+
+        public Version(){ }
 
         public Version(String format, String file, String query){
             this.format = format;

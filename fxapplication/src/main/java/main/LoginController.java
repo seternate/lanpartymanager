@@ -1,6 +1,7 @@
 package main;
 
-import helper.PropertiesHelper;
+import entities.Status;
+import entities.User;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -13,7 +14,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -21,13 +21,15 @@ import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
 import java.io.IOException;
+import java.net.ConnectException;
+
+import static java.lang.Thread.sleep;
 
 public class LoginController extends Application {
+    private Retrofit retrofit;
+    private FXDataService client;
+    private Stage stage;
 
-    Retrofit retrofit;
-    DataService service;
-    Stage stage;
-    boolean clientConnected, running;
 
     @FXML
     private TextField txtfieldUsername, txtfieldGamepath;
@@ -36,18 +38,24 @@ public class LoginController extends Application {
     @FXML
     private Button btnFinish;
 
+
     public LoginController() {
         retrofit = new Retrofit.Builder()
-                .baseUrl("http://localhost:8080")
+                .baseUrl("http://localhost:8080/fx/")
                 .addConverterFactory(JacksonConverterFactory.create())
                 .build();
-        service = retrofit.create(DataService.class);
-        clientConnected = false;
-        running = true;
+        client = retrofit.create(FXDataService.class);
+    }
+
+    @Override
+    public void init(){
+        lookForClient();
+        updateStatus();
     }
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+        User login = getLogin();
         this.stage = primaryStage;
         FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("Preloader.fxml"));
         loader.setController(this);
@@ -58,12 +66,75 @@ public class LoginController extends Application {
         primaryStage.setResizable(false);
         primaryStage.setTitle("Lanpartymanager - Start");
         primaryStage.getIcons().add(new Image(getClass().getClassLoader().getResource("icon.png").toExternalForm()));
-        txtfieldUsername.setText(PropertiesHelper.getUsername());
-        txtfieldGamepath.setText(PropertiesHelper.getGamepath());
+        txtfieldUsername.setText(login.getName());
+        txtfieldGamepath.setText(login.getGamepath());
         primaryStage.show();
-        clientStatus();
     }
 
+    @Override
+    public void stop(){
+        System.exit(0);
+    }
+
+    private void lookForClient(){
+        try {
+            client.getStatus().execute();
+        } catch (ConnectException e) {
+            System.err.println("No client running.");
+            System.exit(-15);
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+            System.exit(-16);
+        }
+    }
+
+    private void updateStatus(){
+        Call<Status> callStatus = client.getStatus();
+        callStatus.enqueue(new Callback<Status>() {
+            @Override
+            public void onResponse(Call<Status> call, Response<Status> response) {
+                Status status = response.body();
+                if(status.serverConnection)
+                    Platform.runLater(() -> lblStatus.setText("Connected to server: " + status.serverIP));
+                else
+                    Platform.runLater(() -> lblStatus.setText("No server found."));
+                try {
+                    sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                updateStatus();
+            }
+            @Override
+            public void onFailure(Call<Status> call, Throwable t) {
+                System.err.println("No client running.");
+                System.exit(-19);
+            }
+        });
+    }
+
+    private User getLogin(){
+        User login = null;
+        try {
+            login = client.getLogin().execute().body();
+        } catch (ConnectException e) {
+            e.printStackTrace();
+            System.err.println("No client running.");
+            System.exit(-18);
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.err.println("No logindata received.");
+            System.exit(-17);
+        }
+        return login;
+    }
+
+    @FXML
+    public void openInterface(ActionEvent event){
+
+    }
+    /*
     @Override
     public void stop() throws Exception {
         super.stop();
@@ -145,4 +216,5 @@ public class LoginController extends Application {
             public void onFailure(Call<Void> call, Throwable t) { }
         });
     }
+    */
 }

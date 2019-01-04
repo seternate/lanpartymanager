@@ -27,9 +27,9 @@ import java.util.List;
 import static java.lang.Thread.sleep;
 
 public class InterfaceController{
-
+/*
     private Retrofit retrofit;
-    private DataService service;
+    private FXDataService service;
 
     private ObservableList<Game> gamelist = FXCollections.observableArrayList();
     private ObservableList<User> userlist = FXCollections.observableArrayList();
@@ -46,7 +46,7 @@ public class InterfaceController{
                 .baseUrl("http://localhost:8080")
                 .addConverterFactory(JacksonConverterFactory.create())
                 .build();
-        service = retrofit.create(DataService.class);
+        service = retrofit.create(FXDataService.class);
         updateGamelist();
         //updateUserlist();
         updateStatus();
@@ -118,7 +118,7 @@ public class InterfaceController{
             }
         });
     }
-    */
+
 
     private void updateStatus(){
         Call<ResponseBody> callStatus = service.getStatus();
@@ -221,4 +221,5 @@ public class InterfaceController{
     private void connectServer(){
 
     }
+    */
 }

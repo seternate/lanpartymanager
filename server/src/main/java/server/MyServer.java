@@ -19,6 +19,7 @@ public final class MyServer extends com.esotericsoftware.kryonet.Server {
     private Map<Integer, User> users;
     private String gamepath;
 
+
     public MyServer(String gamepath){
         super();
         this.gamepath = gamepath;
@@ -33,6 +34,7 @@ public final class MyServer extends com.esotericsoftware.kryonet.Server {
         }
 
         games = loadGames();
+        printGames();
         users = new HashMap<>();
 
         registerListener();
@@ -40,23 +42,40 @@ public final class MyServer extends com.esotericsoftware.kryonet.Server {
 
     public void updateGames(){
         games = loadGames();
+        printGames();
         sendToAllTCP(new GamelistMessage(games));
+    }
+
+    public void printGames(){
+        games.forEach(Game::print);
+    }
+
+    public void printUsers(){
+        if(users.isEmpty()) {
+            System.out.println("No users logged in.");
+            return;
+        }
+        users.values().forEach(User::print);
     }
 
     public String getGamepath(){
         return gamepath;
     }
 
+
     private List<Game> loadGames(){
         List<Game> games = new ArrayList<>();
         List<Properties> gameProperties = getGameproperties();
         gameProperties.forEach(property -> games.add(new Game(property)));
-        printGames(games);
         return games;
     }
 
     private List<Properties> getGameproperties(){
         URL url = getClass().getClassLoader().getResource("dummy.properties");
+        if(url == null){
+            System.err.println("dummy.properties not found in resources.");
+            return null;
+        }
         File rFile = new File(url.getPath()).getParentFile();
         List<String> properiesNames = new ArrayList<>(Arrays.asList(rFile.list()));
         List<Properties> properties = new ArrayList<>();
@@ -67,18 +86,16 @@ public final class MyServer extends com.esotericsoftware.kryonet.Server {
         return properties;
     }
 
-    private void printGames(List<Game> games){
-        games.forEach(Game::print);
-    }
-
     private void registerListener(){
         addListener(new Listener() {
             @Override
             public void disconnected(Connection connection) {
-                if(users.remove(connection.getID()) == null){
+                User user = users.remove(connection.getID());
+                if(user == null){
                     System.err.println("Can't remove player with ID: " + connection.getID());
                     return;
                 }
+                System.out.println(user.getName() + " disconnected.");
                 sendToAllTCP(users);
             }
             @Override
@@ -92,8 +109,7 @@ public final class MyServer extends com.esotericsoftware.kryonet.Server {
                         return;
                     }
                     users.put(connection.getID(), message.user);
-                    System.out.println(message.user.getName() + " logged in.\n" +
-                                        "Sending games and users.");
+                    System.out.println(message.user.getName() + " logged in and sending games and users.");
                     connection.sendTCP(new GamelistMessage(games));
                     sendToAllTCP(new UserlistMessage(users));
                 }
