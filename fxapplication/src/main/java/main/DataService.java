@@ -26,8 +26,6 @@ public interface DataService {
     @GET("/games/{name}/isuptodate")
     Call<Boolean> isUptodate(@Path("name") String gamename);
 
-
-
     @GET("/download")
     Call<Integer> download(@Query("game") String gameName);
 }

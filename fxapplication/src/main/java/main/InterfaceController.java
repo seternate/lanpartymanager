@@ -6,7 +6,9 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
@@ -49,7 +51,6 @@ public class InterfaceController{
         //updateUserlist();
         updateStatus();
         initListview();
-
     }
 
     private void updateGamelist(){
@@ -92,6 +93,7 @@ public class InterfaceController{
         return true;
     }
 
+    /*
     private void updateUserlist(){
         Call<List<User>> callUser = service.getUserlist();
         callUser.enqueue(new Callback<List<User>>() {
@@ -116,6 +118,7 @@ public class InterfaceController{
             }
         });
     }
+    */
 
     private void updateStatus(){
         Call<ResponseBody> callStatus = service.getStatus();
@@ -148,26 +151,23 @@ public class InterfaceController{
                 lvGames.setItems(gamelist);
                 lvGames.getSelectionModel().selectFirst();
             });
-            lvGames.getSelectionModel().getSelectedItems().addListener(new ListChangeListener<Game>() {
-                @Override
-                public void onChanged(Change<? extends Game> c) {
-                    Game game = lvGames.getSelectionModel().getSelectedItem();
-                    lblGamename.setText(game.getName());
-                    lblVersion.setText(game.getVersion());
-                    Call<Boolean> call = service.isUptodate(game.getName());
-                    call.enqueue(new Callback<Boolean>() {
-                        @Override
-                        public void onResponse(Call<Boolean> call, Response<Boolean> response) {
-                            if(response.body()){
-                                Platform.runLater(() -> lblAvailable.setText("Game is ready to play."));
-                                return;
-                            }
-                            Platform.runLater(() -> lblAvailable.setText("Game has to be Downloaded."));
+            lvGames.getSelectionModel().getSelectedItems().addListener((ListChangeListener<Game>) c -> {
+                Game game = lvGames.getSelectionModel().getSelectedItem();
+                lblGamename.setText(game.getName());
+                lblVersion.setText(game.getVersion());
+                Call<Boolean> call = service.isUptodate(game.getName());
+                call.enqueue(new Callback<Boolean>() {
+                    @Override
+                    public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+                        if(response.body()){
+                            Platform.runLater(() -> lblAvailable.setText("Game is ready to play."));
+                            return;
                         }
-                        @Override
-                        public void onFailure(Call<Boolean> call, Throwable t) { }
-                    });
-                }
+                        Platform.runLater(() -> lblAvailable.setText("Game has to be Downloaded."));
+                    }
+                    @Override
+                    public void onFailure(Call<Boolean> call, Throwable t) { }
+                });
             });
             lvGames.setCellFactory(c -> new ListCell<Game>(){
                 @Override
@@ -187,5 +187,38 @@ public class InterfaceController{
                 }
             });
         });
+    }
+
+    @FXML
+    private void download(ActionEvent event){
+        Call<Integer> call = service.download(lvGames.getSelectionModel().getSelectedItem().getName());
+        call.enqueue(new Callback<Integer>() {
+            @Override
+            public void onResponse(Call<Integer> call, Response<Integer> response) {
+
+            }
+            @Override
+            public void onFailure(Call<Integer> call, Throwable t) { }
+        });
+    }
+
+    @FXML
+    private void startGame(){
+
+    }
+
+    @FXML
+    private void openExplorer(){
+
+    }
+
+    @FXML
+    private void startServer(){
+
+    }
+
+    @FXML
+    private void connectServer(){
+
     }
 }

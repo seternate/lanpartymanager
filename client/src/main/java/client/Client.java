@@ -6,7 +6,6 @@ import entities.Game;
 import entities.User;
 import helper.NetworkClassRegistrationHelper;
 import helper.PropertiesHelper;
-import main.Main;
 import requests.DownloadRequest;
 
 import java.io.File;
@@ -86,13 +85,7 @@ public class Client {
         });
     }
 
-
-
-
-
-
-
-    public int downloadGame(Game game){
+    private int downloadGame(Game game){
         if(!game.isUpToDate()){
             File sFile = new File(PropertiesHelper.getGamepath());
             if(game.getSize() > sFile.getFreeSpace()) return 1;
@@ -129,9 +122,6 @@ public class Client {
         }
         return freeport;
     }
-
-
-
 
     public ArrayList<Game> getGamelist(){
         return this.gamelist;

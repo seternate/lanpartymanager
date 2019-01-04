@@ -6,96 +6,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-/**
- * Providing easy and fast access to <code>settings.properties</code> and can serve access to all other {@link Properties}
- * files in any <code>resource</code> folder.
- * <p>
- * The {@link Properties} file <code>settings.properties</code> has the following fields:
- * <p>
- * <code>gamepath</code> - absolute path to the root game-folder holding all {@link entities.Game}.
- * <p>
- * <code>username</code> - username of the client.
- * <p>
- * <code>servertcp</code> - the port used for tcp-communication by the <code>Server</code>.
- * <p>
- * <code>serverudp</code> - the port used for udp-communication by the <code>Server</code>.
- * <p>
- * No object can be created from this class, because it only functions as a <code>helper class</code>.
- */
 public abstract class PropertiesHelper {
+    private final static String SETTINGS_PROPERTIES = "settings.properties";
 
-    private final static String PROPERTIES = "settings.properties";
-
-    /**
-     * Fast access to <code>settings.properties</code>.
-     *
-     * @return <code>settings.properties</code>.
-     */
-    public static Properties getProperties(){
-        return getProperties(PROPERTIES);
-    }
-
-    private static void setProperty(String key, String value){
-        Properties properties = getProperties();
-        properties.setProperty(key, value);
-        FileOutputStream output = null;
-        try {
-            output = new FileOutputStream(Thread.currentThread().getContextClassLoader().getResource("../resources/" + PROPERTIES).getFile());
-            properties.store(output, "");
-            output.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-    /**
-     * Fast access to the field <code>gamepath</code> of <code>settings.properties</code>.
-     *
-     * @return absolute path to the root game-folder holding all {@link entities.Game}.
-     */
-    public static String getGamepath(){
-        return getProperties().getProperty("gamepath");
-    }
-
-    public static void setGamePath(String gamepath){
-        setProperty("gamepath", gamepath);
-    }
-    /**
-     * Fast access to the field <code>username</code> of <code>settings.properties</code>.
-     *
-     * @return username of the client.
-     */
-    public static String getUsername() {
-        return getProperties().getProperty("username");
-    }
-
-    public static void setUserName(String username){
-        setProperty("username", username);
-    }
-    /**
-     * Fast access to the field <code>serverudp</code> of <code>settings.properties</code>.
-     *
-     * @return the port used for udp-communication by the <code>Server</code>.
-     */
-    public static String getServerUdp(){
-        return getProperties().getProperty("serverudp");
-    }
-    /**
-     * Fast access to the field <code>servertcp</code> of <code>settings.properties</code>.
-     *
-     * @return the port used for tcp-communication by the <code>Server</code>.
-     */
-    public static String getServerTcp(){
-        return getProperties().getProperty("servertcp");
-    }
-    /**
-     * Provides fast access to any {@link Properties} files within a resource directory.
-     *
-     * @param path relative path of the {@link Properties} files within a resource directory.
-     *
-     * @return {@link Properties} file specified by <code>path</code> or a new empty {@link Properties} file.
-     */
     public static Properties getProperties(String path){
         Properties properties = new Properties();
         InputStream pFile = null;
@@ -107,4 +20,59 @@ public abstract class PropertiesHelper {
         }
         return properties;
     }
+
+    public static int getServerUdp(){
+        return Integer.valueOf(getSettings().getProperty("serverudp"));
+    }
+
+    public static int getServerTcp(){
+        return Integer.valueOf(getSettings().getProperty("servertcp"));
+    }
+
+    private static Properties getSettings(){
+        return getProperties(SETTINGS_PROPERTIES);
+    }
+
+
+
+
+
+
+
+    private static void setProperty(String key, String value){
+        Properties properties = getSettings();
+        properties.setProperty(key, value);
+        FileOutputStream output = null;
+        try {
+            output = new FileOutputStream(Thread.currentThread().getContextClassLoader().getResource("../resources/" + SETTINGS_PROPERTIES).getFile());
+            properties.store(output, "");
+            output.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static String getGamepath(){
+        return getSettings().getProperty("gamepath");
+    }
+
+    public static void setGamePath(String gamepath){
+        setProperty("gamepath", gamepath);
+    }
+
+    public static String getUsername() {
+        return getSettings().getProperty("username");
+    }
+
+    public static void setUserName(String username){
+        setProperty("username", username);
+    }
+
+
+
+
+
+
 }

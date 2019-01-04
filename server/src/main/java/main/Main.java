@@ -1,33 +1,50 @@
 package main;
 
-import entities.Game;
-import server.Server;
+import server.MyServer;
 
-/**
- * Entrypoint for the lan-server.
- */
+import java.io.File;
+import java.util.Scanner;
+
 public final class Main {
-    /**
-     * {@link Server} object used for the lan-server.
-     */
-    private static Server server;
+    private static MyServer server;
 
-    /**
-     * <code>Main</code> method.
-     * @param args Console Arguments used for this program. (None in use)
-     */
+
     public static void main(String[] args) {
-        server = Server.build();
-        server.start();
-
-        //Logging
-        for(Game game : server.getGamelist()){
-            System.out.println("\n");
-            System.out.println("Name: " + game.getName());
-            System.out.println("Version: " + game.getVersion());
-            System.out.println("Exe-Pfad: " + game.getExeFileRelative());
-            System.out.println("Parameter: " + game.getConnectParam());
-            System.out.println("Paramter(127.0.0.1): " + game.getConnectParam("127.0.0.1"));
+        if(args.length != 1)
+            System.out.println("USAGE");
+        String pathCompressed = args[0];
+        File cFile = new File(pathCompressed);
+        if(cFile.exists() && cFile.isDirectory()){
+            server = new MyServer(cFile.getAbsolutePath());
+            server.start();
+        }else{
+            System.out.println("Directory does not exist: " + pathCompressed);
         }
+        System.out.println("Input: [rebuildgames] [restart] [exit]");
+        userInput();
+    }
+
+    private static void userInput(){
+        new Thread(() -> {
+            Scanner scanner = new Scanner(System.in);
+            boolean exit = false;
+            while(!exit){
+                String[] inputs = scanner.nextLine().split(" ");
+                for(String input : inputs){
+                    if(input.equals("rebuildgames"))
+                        server.updateGames();
+                    if(input.equals("restart")){
+                        server.close();
+                        server.stop();
+                        server = new MyServer(server.getGamepath());
+                        server.start();
+                    }
+                    if(input.equals("exit"))
+                        exit = true;
+                }
+            }
+            server.close();
+            server.stop();
+        }).start();
     }
 }

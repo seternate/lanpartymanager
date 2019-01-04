@@ -3,7 +3,6 @@ package main;
 import client.Client;
 import entities.Game;
 import entities.User;
-import helper.PropertiesHelper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Properties;
 
 @RestController
 public class ClientController {
@@ -54,10 +52,6 @@ public class ClientController {
         }
         return game.isUpToDate();
     }
-
-
-
-
 
     @RequestMapping("/download")
     public int download(@RequestParam(name="game") String gameName){

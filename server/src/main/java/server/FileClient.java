@@ -8,10 +8,12 @@ import java.net.Socket;
 public class FileClient extends Thread{
 
     private Socket s;
-    private String file;
+    private String file, gamename, username;
 
-    public FileClient(String host, int port, String file) {
+    public FileClient(String host, int port, String file, String gamename, String username) {
         this.file = file;
+        this.gamename = gamename;
+        this.username = username;
         try {
             s = new Socket(host, port);
         } catch (IOException e) {
@@ -29,10 +31,12 @@ public class FileClient extends Thread{
         }
     }
 
-    public void sendFile(String file) throws IOException {
+    private void sendFile(String file) throws IOException {
         DataOutputStream dos = new DataOutputStream(s.getOutputStream());
         FileInputStream fis = new FileInputStream(file);
         byte[] buffer = new byte[1048576];
+
+        System.out.println("Sending " + gamename + " to " + username);
 
         int read;
         while ((read=fis.read(buffer)) > 0) {
@@ -41,5 +45,7 @@ public class FileClient extends Thread{
         fis.close();
         dos.close();
         s.close();
+
+        System.out.println("Finished sending " + gamename + " to " + username);
     }
 }

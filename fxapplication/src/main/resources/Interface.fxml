@@ -48,31 +48,31 @@
                         </Label>
                         <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="1" GridPane.valignment="CENTER">
                            <children>
-                              <Button mnemonicParsing="false" text="Download">
+                              <Button mnemonicParsing="false" onAction="#download" text="Download">
                                  <HBox.margin>
                                     <Insets left="15.0" />
                                  </HBox.margin>
                               </Button>
-                              <Button mnemonicParsing="false" text="Start Game">
+                              <Button mnemonicParsing="false" onAction="#startGame" text="Start Game">
                                  <HBox.margin>
                                     <Insets left="15.0" />
                                  </HBox.margin>
                               </Button>
                            </children>
                         </HBox>
-                        <Button mnemonicParsing="false" text="Open in Explorer" GridPane.halignment="LEFT" GridPane.rowIndex="2" GridPane.valignment="CENTER">
+                        <Button mnemonicParsing="false" onAction="#openExplorer" text="Open in Explorer" GridPane.halignment="LEFT" GridPane.rowIndex="2" GridPane.valignment="CENTER">
                            <GridPane.margin>
                               <Insets left="15.0" />
                            </GridPane.margin>
                         </Button>
                         <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
                            <children>
-                              <Button mnemonicParsing="false" text="Start Server">
+                              <Button mnemonicParsing="false" onAction="#startServer" text="Start Server">
                                  <HBox.margin>
                                     <Insets left="15.0" />
                                  </HBox.margin>
                               </Button>
-                              <Button mnemonicParsing="false" text="Connect to server">
+                              <Button mnemonicParsing="false" onAction="#connectServer" text="Connect to server">
                                  <HBox.margin>
                                     <Insets left="15.0" />
                                  </HBox.margin>
