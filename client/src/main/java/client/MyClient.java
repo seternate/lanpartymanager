@@ -99,8 +99,23 @@ public class MyClient extends com.esotericsoftware.kryonet.Client {
         return user;
     }
 
-    public List<Game> getGames(){
-        return games;
+    public List<Game> getNewGames(List<Game> games){
+        if(this.games.size() != games.size())
+            return this.games;
+        for(Game game : games){
+            boolean same = false;
+            for(Game thisGame : this.games){
+                System.out.println(game.getName());
+                System.out.println(thisGame.getName());
+                if(game.equals(thisGame)){
+                    same = true;
+                    break;
+                }
+            }
+            if(!same) return games;
+        }
+        System.out.println("end");
+        return null;
     }
 
     public List<User> getUsers(){

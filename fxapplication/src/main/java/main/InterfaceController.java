@@ -10,14 +10,20 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import static java.lang.Thread.sleep;
 
 class InterfaceController{
     Status status;
@@ -37,40 +43,50 @@ class InterfaceController{
 
 
     InterfaceController(){
-        games = FXCollections.observableArrayList();
-        users = FXCollections.observableArrayList();
+
     }
 
     void load(){
         retrofit = new Retrofit.Builder()
-                .baseUrl("http://localhost:8080")
+                .baseUrl("http://localhost:8080/fx/")
                 .addConverterFactory(JacksonConverterFactory.create())
                 .build();
         client = retrofit.create(FXDataService.class);
+        games = FXCollections.observableArrayList();
+        users = FXCollections.observableArrayList();
         initializeUI();
         updateGames();
         updateUsers();
     }
 
     private void updateGames(){
-        Call<List<Game>> callGames = client.getGames();
+        Call<List<Game>> callGames = client.getGames(new ArrayList<>(games));
         callGames.enqueue(new Callback<List<Game>>() {
             @Override
             public void onResponse(Call<List<Game>> call, Response<List<Game>> response) {
-                games.setAll(response.body());
-                System.out.println("Updated gamelist.");
+                if(response.body() != null) {
+                    Platform.runLater(() -> games.setAll(response.body()));
+                    System.out.println("Updated gamelist.");
+                }
+                try {
+                    sleep(500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                updateGames();
             }
             @Override
             public void onFailure(Call<List<Game>> call, Throwable t) { }
         });
     }
 
+    //Todo: Just get new list if something changed, see updateGames()
     private void updateUsers(){
         Call<List<User>> callUsers = client.getUsers();
         callUsers.enqueue(new Callback<List<User>>() {
             @Override
             public void onResponse(Call<List<User>> call, Response<List<User>> response) {
-                users.setAll(response.body());
+                Platform.runLater(() -> users.setAll(response.body()));
                 System.out.println("Updated userlist.");
             }
             @Override
@@ -81,31 +97,18 @@ class InterfaceController{
     private void initializeUI(){
         Platform.runLater(() -> {
             games.addListener((ListChangeListener<Game>) c -> {
+                System.out.println("changed");
                 lvGames.setItems(games);
                 lvGames.getSelectionModel().selectFirst();
             });
 
             lvGames.getSelectionModel().getSelectedItems().addListener((ListChangeListener<Game>) c -> {
                 Game item = lvGames.getSelectionModel().getSelectedItem();
-
+                if(item == null)
+                    return;
                 lblGamename.setText(item.getName());
                 lblVersion.setText(item.getVersionServer());
-
-                //Todo
-
-                Call<Boolean> call = service.isUptodate(game.getName());
-                call.enqueue(new Callback<Boolean>() {
-                    @Override
-                    public void onResponse(Call<Boolean> call, Response<Boolean> response) {
-                        if(response.body()){
-                            Platform.runLater(() -> lblAvailable.setText("Game is ready to play."));
-                            return;
-                        }
-                        Platform.runLater(() -> lblAvailable.setText("Game has to be Downloaded."));
-                    }
-                    @Override
-                    public void onFailure(Call<Boolean> call, Throwable t) { }
-                });
+                isUptodate(item);
             });
 
             lvGames.setCellFactory(c -> new ListCell<Game>(){
@@ -115,8 +118,8 @@ class InterfaceController{
                     setGraphic(null);
                     setText(null);
                     if(item != null){
-                        if(item.getPosterUrl() != null){
-                            ImageView imageView = new ImageView(new Image(item.getPosterUrl(), true));
+                        if(item.getCoverUrl() != null){
+                            ImageView imageView = new ImageView(new Image(item.getCoverUrl(), true));
                             imageView.setFitHeight(138);
                             imageView.setFitWidth(92);
                             setGraphic(imageView);
@@ -128,9 +131,30 @@ class InterfaceController{
         });
     }
 
+    private void isUptodate(Game game){
+        Call<Integer> callUptodate = client.isGameUptodate(game);
+        callUptodate.enqueue(new Callback<Integer>() {
+            @Override
+            public void onResponse(Call<Integer> call, Response<Integer> response) {
+                Integer status = response.body();
+                if(status == 0)
+                    Platform.runLater(() -> lblAvailable.setText("Game is playable."));
+                else if(status == -1)
+                    Platform.runLater(() -> lblAvailable.setText("Download game."));
+                else if(status == -2)
+                    Platform.runLater(() -> lblAvailable.setText("Game is playable. No version information."));
+                else if(status == -3)
+                    Platform.runLater(() -> lblAvailable.setText("Update game."));
+            }
+            @Override
+            public void onFailure(Call<Integer> call, Throwable t) { }
+        });
+    }
+
+
     @FXML
     private void download(ActionEvent event){
-
+        updateGames();
     }
 
     @FXML

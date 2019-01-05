@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/fx")
 public class FXClientController {
@@ -27,13 +29,14 @@ public class FXClientController {
         return client.updateUser(user);
     }
 
-    @RequestMapping(value = "/games", method = RequestMethod.GET)
-    public ResponseEntity<?> getGames(){
-        return new ResponseEntity<>(client.getGames(), HttpStatus.OK);
+    @RequestMapping(value = "/games", method = RequestMethod.POST)
+    public ResponseEntity<?> getGames(@RequestBody List<Game> games){
+        System.out.println(games);
+        return new ResponseEntity<>(client.getNewGames(games), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/games/uptodate", method = RequestMethod.POST)
-    public Boolean isUptodate(@RequestBody Game game){
+    public Integer isUptodate(@RequestBody Game game){
         return game.isUptodate();
     }
 

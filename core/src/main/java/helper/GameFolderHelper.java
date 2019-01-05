@@ -7,7 +7,7 @@ import java.io.File;
  * <p>
  * No object can be created from this class, because it only functions as a <code>helper class</code>.
  */
-abstract class GameFolderHelper {
+public abstract class GameFolderHelper {
 
     /**
      * Searching for a file or directory in all <code>root game-folders</code> and returning the absolute path if it was
@@ -16,18 +16,17 @@ abstract class GameFolderHelper {
      * @param path relative path to a file or directory of a {@link entities.Game} to find. For relative path example see
      *             {@link entities.Game}.
      *
-     * @return the absolute path to find from <code>path</code> or an empty String if no existing path was found.
+     * @return the absolute path to find from <code>path</code> or null if no existing path was found.
      *
      * @see entities.Game
      */
-    static String getAbsolutePath(String path){
+    public static String getAbsolutePath(String path){
         File root = new File(PropertiesHelper.getGamepath());
-        if(!root.exists()) root.mkdirs();
         String[] dirs = root.list();
         for(String dir : dirs){
             File child = new File(root.getAbsolutePath()+"\\"+dir+path);
             if(child.exists()) return child.getAbsolutePath();
         }
-        return "";
+        return null;
     }
 }

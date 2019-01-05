@@ -9,25 +9,22 @@ import entities.Game;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.text.SimpleDateFormat;
-import java.util.Properties;
 import java.util.Scanner;
 
-
 public abstract class GameInfoHelper {
-    /*
+
     public static String getVersion(Game game){
-        Properties properties = game.getProperties();
-        switch (properties.getProperty("version.format")){
-            case "file": return fileVersion(properties.getProperty("version.file"), properties.getProperty("version.query"));
-            case "date": return dateVersion(properties.getProperty("exe.file"));
-            default: return getVersion(properties.getProperty("exe.file"));
+        switch(game.getVersion().format){
+            case "file": return getVersionFile(game.getVersion().file, game.getVersion().query);
+            case "exe": return getVersionExe(game.getExeFileRelative());
+            default: return "";
         }
     }
 
-    private static String fileVersion(String file, String query){
+    private static String getVersionFile(String file, String query){
         String absolutePath = GameFolderHelper.getAbsolutePath(file);
-        if(absolutePath.equals("")) return "";
+        if(absolutePath== null)
+            return null;
         File versionFile = new File(absolutePath);
         Scanner scr = null;
         try {
@@ -41,21 +38,12 @@ public abstract class GameInfoHelper {
                 return line.substring(query.length());
             }
         }
-        return "";
+        return null;
     }
 
-    private static String dateVersion(String filePath){
-        String absolutePath = GameFolderHelper.getAbsolutePath(filePath);
-        if(absolutePath.equals("")) return "";
-        File file = new File(absolutePath);
-        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
-        return sdf.format(file.lastModified());
-    }
-
-
-    private static String getVersion(String filePath){
-        String absolutePath = GameFolderHelper.getAbsolutePath(filePath);
-        if(absolutePath.equals("")) return "";
+    private static String getVersionExe(String exePath){
+        String absolutePath = GameFolderHelper.getAbsolutePath(exePath);
+        if(absolutePath == null) return null;
         IntByReference dwDummy = new IntByReference();
         dwDummy.setValue(0);
 
@@ -68,7 +56,6 @@ public abstract class GameInfoHelper {
 
         boolean fileInfoResult = com.sun.jna.platform.win32.Version.INSTANCE.GetFileVersionInfo(absolutePath, 0, versionlength, lpData);
         boolean verQueryVal = com.sun.jna.platform.win32.Version.INSTANCE.VerQueryValue(lpData, "\\", lplpBuffer, puLen);
-        //boolean verQueryVal = com.sun.jna.platform.win32.Version.INSTANCE.VerQueryValue(lpData, "\\StringFileInfo\\040904e4\\" + info, lplpBuffer, puLen);
 
         VS_FIXEDFILEINFO lplpBufStructure = new VS_FIXEDFILEINFO(lplpBuffer.getValue());
         lplpBufStructure.read();
@@ -79,5 +66,4 @@ public abstract class GameInfoHelper {
         int v4 = (lplpBufStructure.dwFileVersionLS).intValue() & 0xffff;
         return v1 + "." + v2 + "." + v3 + "." + v4;
     }
-    */
 }

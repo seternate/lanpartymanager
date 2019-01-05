@@ -133,7 +133,7 @@ public final class MyServer extends com.esotericsoftware.kryonet.Server {
                         return;
                     }
                     String ipAddress = connection.getRemoteAddressTCP().getAddress().getHostAddress();
-                    String filePath = gamepath + request.game.getFileserver();
+                    String filePath = gamepath + request.game.getFileServer();
                     new FileClient(ipAddress, request.port, filePath, request.game.getName(),
                             users.get(connection.getID()).getName());
                 }

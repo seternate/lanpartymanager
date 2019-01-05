@@ -21,11 +21,11 @@ public interface FXDataService {
     @POST("login")
     Call<Boolean> login(@Body User user);
 
-    @GET("games")
-    Call<List<Game>> getGames();
+    @POST("games")
+    Call<List<Game>> getGames(@Body List<Game> games);
 
     @POST("games/uptodate")
-    Call<Boolean> isGameUptodate(@Body Game game);
+    Call<Integer> isGameUptodate(@Body Game game);
 
     @GET("users")
     Call<List<User>> getUsers();

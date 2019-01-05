@@ -1,5 +1,6 @@
 package entities;
 
+import helper.GameFolderHelper;
 import helper.GameInfoHelper;
 
 import java.util.Properties;
@@ -15,6 +16,10 @@ public final class Game {
             this.format = format;
             this.file = file;
             this.query = query;
+        }
+
+        public boolean equals(Version version){
+            return format.equals(version.format) && file.equals(version.file) && query.equals(version.query);
         }
     }
 
@@ -48,6 +53,19 @@ public final class Game {
         sizeServer = Long.valueOf(properties.getProperty("file.server.size"));
     }
 
+    public Game(String name, String versionServer, String connectParam, String exeFileRelative, String coverUrl,
+                String fileServer, boolean connectDirect, Version version, long sizeServer){
+        this.name = name;
+        this.versionServer = versionServer;
+        this.connectParam = connectParam;
+        this.exeFileRelative = exeFileRelative;
+        this.coverUrl = coverUrl;
+        this.fileServer = fileServer;
+        this.connectDirect = connectDirect;
+        this.version = version;
+        this.sizeServer = sizeServer;
+    }
+
     public void print(){
         System.out.println("Name: " + name);
         System.out.println("Version: " + versionServer);
@@ -59,7 +77,7 @@ public final class Game {
         return name;
     }
 
-    public String getFileserver(){
+    public String getFileServer(){
         return fileServer;
     }
 
@@ -67,18 +85,11 @@ public final class Game {
         return versionServer;
     }
 
-    public boolean isUptodate(){
-        return versionServer.equals(GameInfoHelper.getVersion());
+    public String getCoverUrl(){
+        return this.coverUrl;
     }
 
-
-/*
-
-    public String getName() {
-        return name;
-    }
-
-    public String getVersion() {
+    public Version getVersion(){
         return version;
     }
 
@@ -86,9 +97,50 @@ public final class Game {
         return exeFileRelative;
     }
 
-    public Properties getProperties(){
-        return this.properties;
+    public String getConnectParam(){
+        return connectParam;
     }
+
+    public boolean isConnectDirect(){
+        return connectDirect;
+    }
+
+    public long getSizeServer(){
+        return sizeServer;
+    }
+
+    public int isUptodate(){
+        if(GameFolderHelper.getAbsolutePath(exeFileRelative) == null)
+            return -1;
+        else if(versionServer.equals(""))
+            return -2;
+        else if(!versionServer.equals(getLocalVersion()))
+            return -3;
+        else
+            return 0;
+    }
+
+    public boolean equals(Game game){
+        return name.equals(game.getName()) && versionServer.equals(game.getVersionServer()) && connectParam.equals(game.getConnectParam())
+            && exeFileRelative.equals(game.getExeFileRelative()) && coverUrl.equals(game.getCoverUrl())
+            && fileServer.equals(game.fileServer) && connectDirect == game.isConnectDirect()
+                && version.equals(game.getVersion()) && sizeServer == game.getSizeServer();
+    }
+
+    private String getLocalVersion(){
+        return GameInfoHelper.getVersion(this);
+    }
+
+
+/*
+
+
+
+
+
+
+
+
 
     public long getSize(){
         return gamesize;
@@ -108,9 +160,7 @@ public final class Game {
         return cParam.replace("?", ip);
     }
 
-    public String getPosterUrl(){
-        return this.posterUrl;
-    }
+
 
     public String getLocalVersion(){
         return GameInfoHelper.getVersion(this);
