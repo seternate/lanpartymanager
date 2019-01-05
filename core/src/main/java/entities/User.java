@@ -12,6 +12,11 @@ public class User {
         this.gamepath = PropertiesHelper.getGamepath();
     }
 
+    public User(String name, String gamepath){
+        this.name = name;
+        this.gamepath = gamepath;
+    }
+
     public void print(){
         System.out.println(name);
     }

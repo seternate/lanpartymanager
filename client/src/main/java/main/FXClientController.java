@@ -1,6 +1,7 @@
 package main;
 
 import client.MyClient;
+import entities.Game;
 import entities.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,11 +23,24 @@ public class FXClientController {
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public HttpStatus login(@RequestBody User user){
-        if(client.updateUser(user)) return HttpStatus.OK;
-        return HttpStatus.NOT_MODIFIED;
+    public Boolean login(@RequestBody User user){
+        return client.updateUser(user);
     }
 
+    @RequestMapping(value = "/games", method = RequestMethod.GET)
+    public ResponseEntity<?> getGames(){
+        return new ResponseEntity<>(client.getGames(), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/games/uptodate", method = RequestMethod.POST)
+    public Boolean isUptodate(@RequestBody Game game){
+        return game.isUptodate();
+    }
+
+    @RequestMapping(value = "/users", method = RequestMethod.GET)
+    public ResponseEntity<?> getUsers(){
+        return new ResponseEntity<>(client.getUsers(), HttpStatus.OK);
+    }
 
 /*
     Client client = Main.client;

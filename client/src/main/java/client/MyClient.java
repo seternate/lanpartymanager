@@ -14,6 +14,7 @@ import message.UserupdateMessage;
 
 import java.io.IOException;
 import java.net.InetAddress;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -60,16 +61,6 @@ public class MyClient extends com.esotericsoftware.kryonet.Client {
         return changed;
     }
 
-    public Status getStatus(){
-        return status;
-    }
-
-    public User getUser(){
-        return user;
-    }
-
-
-
     private boolean changeUsername(String username){
         if(user.getName().equals(username)) {
             System.err.println("Username is allready " + username);
@@ -78,6 +69,8 @@ public class MyClient extends com.esotericsoftware.kryonet.Client {
             System.err.println("No connection to the server.");
         }
         System.out.println("Changed name from " + user.getName() + " to " + username);
+        if(!PropertiesHelper.setUserName(username))
+            return false;
         user.setName(username);
         sendTCP(new UserupdateMessage(user));
         return true;
@@ -91,10 +84,30 @@ public class MyClient extends com.esotericsoftware.kryonet.Client {
             System.err.println("No connection to the server.");
         }
         System.out.println("Changed path from " + user.getGamepath() + " to " + gamepath);
+        if(!PropertiesHelper.setGamePath(gamepath))
+            return false;
         user.setGamepath(gamepath);
         sendTCP(new UserupdateMessage(user));
         return true;
     }
+
+    public Status getStatus(){
+        return status;
+    }
+
+    public User getUser(){
+        return user;
+    }
+
+    public List<Game> getGames(){
+        return games;
+    }
+
+    public List<User> getUsers(){
+        return new ArrayList<User>(users.values());
+    }
+
+
 
     private void registerListener(){
         addListener(new Listener() {

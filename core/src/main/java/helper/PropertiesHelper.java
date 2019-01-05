@@ -1,19 +1,21 @@
 package helper;
 
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.Properties;
 
 public abstract class PropertiesHelper {
     private final static String SETTINGS_PROPERTIES = "settings.properties";
 
+
     public static Properties getProperties(String path){
         Properties properties = new Properties();
-        InputStream pFile = null;
+        InputStream pFile = Thread.currentThread().getContextClassLoader().getResourceAsStream("../resources/" + path);
+        if(pFile == null)
+            return null;
         try {
-            pFile = Thread.currentThread().getContextClassLoader().getResourceAsStream("../resources/" + path);
             properties.load(pFile);
         } catch (IOException e) {
             e.printStackTrace();
@@ -33,46 +35,39 @@ public abstract class PropertiesHelper {
         return getProperties(SETTINGS_PROPERTIES);
     }
 
-
-
-
-
-
-
-    private static void setProperty(String key, String value){
+    private static boolean setSettingsProperty(String key, String value){
         Properties properties = getSettings();
+        if(properties == null)
+            return false;
         properties.setProperty(key, value);
-        FileOutputStream output = null;
+        URL url = Thread.currentThread().getContextClassLoader().getResource("../resources/" + SETTINGS_PROPERTIES);
+        if(url == null)
+            return false;
+        FileOutputStream output;
         try {
-            output = new FileOutputStream(Thread.currentThread().getContextClassLoader().getResource("../resources/" + SETTINGS_PROPERTIES).getFile());
+            output = new FileOutputStream(url.getFile());
             properties.store(output, "");
             output.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
+            return false;
         }
+        return true;
+    }
+
+    public static boolean setGamePath(String gamepath){
+        return setSettingsProperty("gamepath", gamepath);
+    }
+
+    public static boolean setUserName(String username){
+        return setSettingsProperty("username", username);
     }
 
     public static String getGamepath(){
         return getSettings().getProperty("gamepath");
     }
 
-    public static void setGamePath(String gamepath){
-        setProperty("gamepath", gamepath);
-    }
-
     public static String getUsername() {
         return getSettings().getProperty("username");
     }
-
-    public static void setUserName(String username){
-        setProperty("username", username);
-    }
-
-
-
-
-
-
 }

@@ -1,6 +1,7 @@
 package main;
 
 import entities.Game;
+import entities.Status;
 import entities.User;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -8,25 +9,150 @@ import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
-import java.io.IOException;
 import java.util.List;
 
-import static java.lang.Thread.sleep;
+class InterfaceController{
+    Status status;
+    private Retrofit retrofit;
+    private FXDataService client;
 
-public class InterfaceController{
+
+    private ObservableList<Game> games;
+    private ObservableList<User> users;
+
+    @FXML
+    Label lblStatus;
+    @FXML
+    private ListView<Game> lvGames;
+    @FXML
+    private Label lblVersion, lblGamename, lblAvailable;
+
+
+    InterfaceController(){
+        games = FXCollections.observableArrayList();
+        users = FXCollections.observableArrayList();
+    }
+
+    void load(){
+        retrofit = new Retrofit.Builder()
+                .baseUrl("http://localhost:8080")
+                .addConverterFactory(JacksonConverterFactory.create())
+                .build();
+        client = retrofit.create(FXDataService.class);
+        initializeUI();
+        updateGames();
+        updateUsers();
+    }
+
+    private void updateGames(){
+        Call<List<Game>> callGames = client.getGames();
+        callGames.enqueue(new Callback<List<Game>>() {
+            @Override
+            public void onResponse(Call<List<Game>> call, Response<List<Game>> response) {
+                games.setAll(response.body());
+                System.out.println("Updated gamelist.");
+            }
+            @Override
+            public void onFailure(Call<List<Game>> call, Throwable t) { }
+        });
+    }
+
+    private void updateUsers(){
+        Call<List<User>> callUsers = client.getUsers();
+        callUsers.enqueue(new Callback<List<User>>() {
+            @Override
+            public void onResponse(Call<List<User>> call, Response<List<User>> response) {
+                users.setAll(response.body());
+                System.out.println("Updated userlist.");
+            }
+            @Override
+            public void onFailure(Call<List<User>> call, Throwable t) { }
+        });
+    }
+
+    private void initializeUI(){
+        Platform.runLater(() -> {
+            games.addListener((ListChangeListener<Game>) c -> {
+                lvGames.setItems(games);
+                lvGames.getSelectionModel().selectFirst();
+            });
+
+            lvGames.getSelectionModel().getSelectedItems().addListener((ListChangeListener<Game>) c -> {
+                Game item = lvGames.getSelectionModel().getSelectedItem();
+
+                lblGamename.setText(item.getName());
+                lblVersion.setText(item.getVersionServer());
+
+                //Todo
+
+                Call<Boolean> call = service.isUptodate(game.getName());
+                call.enqueue(new Callback<Boolean>() {
+                    @Override
+                    public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+                        if(response.body()){
+                            Platform.runLater(() -> lblAvailable.setText("Game is ready to play."));
+                            return;
+                        }
+                        Platform.runLater(() -> lblAvailable.setText("Game has to be Downloaded."));
+                    }
+                    @Override
+                    public void onFailure(Call<Boolean> call, Throwable t) { }
+                });
+            });
+
+            lvGames.setCellFactory(c -> new ListCell<Game>(){
+                @Override
+                protected void updateItem(Game item, boolean empty) {
+                    super.updateItem(item, empty);
+                    setGraphic(null);
+                    setText(null);
+                    if(item != null){
+                        if(item.getPosterUrl() != null){
+                            ImageView imageView = new ImageView(new Image(item.getPosterUrl(), true));
+                            imageView.setFitHeight(138);
+                            imageView.setFitWidth(92);
+                            setGraphic(imageView);
+                        }
+                        setText(item.getName());
+                    }
+                }
+            });
+        });
+    }
+
+    @FXML
+    private void download(ActionEvent event){
+
+    }
+
+    @FXML
+    private void startGame(){
+
+    }
+
+    @FXML
+    private void openExplorer(){
+
+    }
+
+    @FXML
+    private void startServer(){
+
+    }
+
+    @FXML
+    private void connectServer(){
+
+    }
+
 /*
     private Retrofit retrofit;
     private FXDataService service;

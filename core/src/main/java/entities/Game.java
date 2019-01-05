@@ -1,5 +1,7 @@
 package entities;
 
+import helper.GameInfoHelper;
+
 import java.util.Properties;
 
 public final class Game {
@@ -61,6 +63,13 @@ public final class Game {
         return fileServer;
     }
 
+    public String getVersionServer(){
+        return versionServer;
+    }
+
+    public boolean isUptodate(){
+        return versionServer.equals(GameInfoHelper.getVersion());
+    }
 
 
 /*

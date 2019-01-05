@@ -29,6 +29,8 @@ public class LoginController extends Application {
     private Retrofit retrofit;
     private FXDataService client;
     private Stage stage;
+    private Status status;
+    private InterfaceController interfaceController;
 
 
     @FXML
@@ -45,6 +47,7 @@ public class LoginController extends Application {
                 .addConverterFactory(JacksonConverterFactory.create())
                 .build();
         client = retrofit.create(FXDataService.class);
+        interfaceController = new InterfaceController();
     }
 
     @Override
@@ -76,6 +79,35 @@ public class LoginController extends Application {
         System.exit(0);
     }
 
+    @FXML
+    public void openInterface(ActionEvent event) throws IOException {
+        if(!status.serverConnection) {
+            System.err.println("No connection to a server.");
+            return;
+        }
+        if(txtfieldUsername.getText().trim().equals("") || txtfieldGamepath.getText().trim().equals("")) return;
+        User user = new User(txtfieldUsername.getText().trim(), txtfieldGamepath.getText().trim());
+        Call<Boolean> postLogin = client.login(user);
+        postLogin.execute();
+        loadInterface();
+    }
+
+    private void loadInterface() throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("Interface.fxml"));
+        loader.setController(interfaceController);
+        Parent root = loader.load();
+        Scene scene = new Scene(root);
+        scene.getStylesheets().add(getClass().getClassLoader().getResource("Interface.css").toExternalForm());
+        Stage stage = new Stage();
+        stage.setScene(scene);
+        stage.setTitle("Lanpartymanager");
+        stage.getIcons().add(new Image(getClass().getClassLoader().getResource("icon.png").toExternalForm()));
+        stage.setResizable(false);
+        interfaceController.load();
+        this.stage.hide();
+        stage.show();
+    }
+
     private void lookForClient(){
         try {
             client.getStatus().execute();
@@ -94,11 +126,22 @@ public class LoginController extends Application {
         callStatus.enqueue(new Callback<Status>() {
             @Override
             public void onResponse(Call<Status> call, Response<Status> response) {
-                Status status = response.body();
+                status = response.body();
+                interfaceController.status = status;
                 if(status.serverConnection)
-                    Platform.runLater(() -> lblStatus.setText("Connected to server: " + status.serverIP));
+                    Platform.runLater(() -> {
+                        if(stage.isShowing())
+                            lblStatus.setText("Connected to server: " + status.serverIP);
+                        else
+                            interfaceController.lblStatus.setText("Connected to server: " + status.serverIP);
+                    });
                 else
-                    Platform.runLater(() -> lblStatus.setText("No server found."));
+                    Platform.runLater(() -> {
+                        if(stage.isShowing())
+                            lblStatus.setText("No server found.");
+                        else
+                            interfaceController.lblStatus.setText("No server found.");
+                    });
                 try {
                     sleep(100);
                 } catch (InterruptedException e) {
@@ -129,92 +172,4 @@ public class LoginController extends Application {
         }
         return login;
     }
-
-    @FXML
-    public void openInterface(ActionEvent event){
-
-    }
-    /*
-    @Override
-    public void stop() throws Exception {
-        super.stop();
-        running = false;
-    }
-
-    private void clientStatus(){
-        Call<ResponseBody> call = service.getStatus();
-        call.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                try {
-                    String responseText = response.body().string();
-                    if(responseText.contains("Client connected with Server")){
-                        clientConnected = true;
-                    }else{
-                        clientConnected = false;
-                    }
-                    Platform.runLater(() -> lblStatus.setText(responseText));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    Thread.sleep(2000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                if(running) clientStatus();
-            }
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                clientConnected = false;
-                System.err.println("Client won't response to FXApp.");
-                Platform.runLater(() -> lblStatus.setText("Waiting for Client ..."));
-                if(running) clientStatus();
-            }
-        });
-    }
-
-    @FXML
-    public void openInterface(ActionEvent event){
-        if(clientConnected){
-            running = false;
-            updateProperties();
-            loadInterface();
-        }else{
-            lblStatus.setText("Client not connected to any Server.");
-        }
-    }
-
-    private void loadInterface(){
-        FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("Interface.fxml"));
-        loader.setController(new InterfaceController());
-        Parent root = null;
-        try {
-            root = loader.load();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        Scene scene = new Scene(root);
-        scene.getStylesheets().add(getClass().getClassLoader().getResource("Interface.css").toExternalForm());
-        Stage stage = new Stage();
-        stage.setScene(scene);
-        stage.setTitle("Lanpartymanager");
-        stage.getIcons().add(new Image(getClass().getClassLoader().getResource("icon.png").toExternalForm()));
-        stage.setResizable(false);
-        this.stage.hide();
-        stage.show();
-    }
-
-    private void updateProperties(){
-        PropertiesHelper.setUserName(txtfieldUsername.getText());
-        PropertiesHelper.setGamePath(txtfieldGamepath.getText());
-        Call<Void> call = service.login();
-        call.enqueue(new Callback<Void>() {
-            @Override
-            public void onResponse(Call<Void> call, Response<Void> response) { }
-            @Override
-            public void onFailure(Call<Void> call, Throwable t) { }
-        });
-    }
-    */
 }
