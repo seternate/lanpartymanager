@@ -31,7 +31,6 @@ public class FXClientController {
 
     @RequestMapping(value = "/games", method = RequestMethod.POST)
     public ResponseEntity<?> getGames(@RequestBody List<Game> games){
-        System.out.println(games);
         return new ResponseEntity<>(client.getNewGames(games), HttpStatus.OK);
     }
 

@@ -19,6 +19,20 @@ public final class Game {
         }
 
         public boolean equals(Version version){
+            if(format == null && file == null && query == null)
+                return version.format == null && version.file == null && version.query == null;
+            if(format == null && file == null)
+                return version.format == null && version.file == null && query.equals(version.query);
+            if(format == null && query == null)
+                return version.format == null && version.query == null && file.equals(version.file);
+            if(file == null && query == null)
+                return version.file == null && version.query == null && format.equals(version.format);
+            if(format == null)
+                return version.format == null && file.equals(version.file) && query.equals(version.query);
+            if(file == null)
+                return version.file == null && format.equals(version.format) && query.equals(version.query);
+            if(query == null)
+                return version.query == null && file.equals(version.file) && format.equals(version.format);
             return format.equals(version.format) && file.equals(version.file) && query.equals(version.query);
         }
     }

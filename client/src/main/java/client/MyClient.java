@@ -105,8 +105,6 @@ public class MyClient extends com.esotericsoftware.kryonet.Client {
         for(Game game : games){
             boolean same = false;
             for(Game thisGame : this.games){
-                System.out.println(game.getName());
-                System.out.println(thisGame.getName());
                 if(game.equals(thisGame)){
                     same = true;
                     break;
