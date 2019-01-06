@@ -43,10 +43,6 @@ class InterfaceController{
 
 
     InterfaceController(){
-
-    }
-
-    void load(){
         retrofit = new Retrofit.Builder()
                 .baseUrl("http://localhost:8080/fx/")
                 .addConverterFactory(JacksonConverterFactory.create())
@@ -54,9 +50,14 @@ class InterfaceController{
         client = retrofit.create(FXDataService.class);
         games = FXCollections.observableArrayList();
         users = FXCollections.observableArrayList();
-        initializeUI();
         updateGames();
         updateUsers();
+    }
+
+    void load(){
+        initializeUI();
+        lvGames.setItems(games);
+        lvGames.getSelectionModel().selectFirst();
     }
 
     private void updateGames(){
@@ -69,14 +70,21 @@ class InterfaceController{
                     System.out.println("Updated gamelist.");
                 }
                 try {
-                    sleep(500);
+                    sleep(1000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
                 updateGames();
             }
             @Override
-            public void onFailure(Call<List<Game>> call, Throwable t) { }
+            public void onFailure(Call<List<Game>> call, Throwable t) {
+                try {
+                    sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                updateGames();
+            }
         });
     }
 
@@ -95,39 +103,36 @@ class InterfaceController{
     }
 
     private void initializeUI(){
-        Platform.runLater(() -> {
-            games.addListener((ListChangeListener<Game>) c -> {
-                System.out.println("changed");
-                lvGames.setItems(games);
-                lvGames.getSelectionModel().selectFirst();
-            });
+        games.addListener((ListChangeListener<Game>) c -> {
+            lvGames.setItems(games);
+            lvGames.getSelectionModel().selectFirst();
+        });
 
-            lvGames.getSelectionModel().getSelectedItems().addListener((ListChangeListener<Game>) c -> {
-                Game item = lvGames.getSelectionModel().getSelectedItem();
-                if(item == null)
-                    return;
-                lblGamename.setText(item.getName());
-                lblVersion.setText(item.getVersionServer());
-                isUptodate(item);
-            });
+        lvGames.getSelectionModel().getSelectedItems().addListener((ListChangeListener<Game>) c -> {
+            Game item = lvGames.getSelectionModel().getSelectedItem();
+            if(item == null)
+                return;
+            lblGamename.setText(item.getName());
+            lblVersion.setText(item.getVersionServer());
+            isUptodate(item);
+        });
 
-            lvGames.setCellFactory(c -> new ListCell<Game>(){
-                @Override
-                protected void updateItem(Game item, boolean empty) {
-                    super.updateItem(item, empty);
-                    setGraphic(null);
-                    setText(null);
-                    if(item != null){
-                        if(item.getCoverUrl() != null){
-                            ImageView imageView = new ImageView(new Image(item.getCoverUrl(), true));
-                            imageView.setFitHeight(138);
-                            imageView.setFitWidth(92);
-                            setGraphic(imageView);
-                        }
-                        setText(item.getName());
+        lvGames.setCellFactory(c -> new ListCell<Game>(){
+            @Override
+            protected void updateItem(Game item, boolean empty) {
+                super.updateItem(item, empty);
+                setGraphic(null);
+                setText(null);
+                if(item != null){
+                    if(item.getCoverUrl() != null){
+                        ImageView imageView = new ImageView(new Image(item.getCoverUrl(), true));
+                        imageView.setFitHeight(138);
+                        imageView.setFitWidth(92);
+                        setGraphic(imageView);
                     }
+                    setText(item.getName());
                 }
-            });
+            }
         });
     }
 
@@ -154,7 +159,20 @@ class InterfaceController{
 
     @FXML
     private void download(ActionEvent event){
-        updateGames();
+        Call<Integer> callDownload = client.download(lvGames.getSelectionModel().getSelectedItem());
+        callDownload.enqueue(new Callback<Integer>() {
+            @Override
+            public void onResponse(Call<Integer> call, Response<Integer> response) {
+                if(response.body() == -2)
+                    Platform.runLater(() -> lblAvailable.setText("Not enough space available."));
+                else if(response.body() == 0) {
+                    Platform.runLater(() -> lblAvailable.setText("Downloading ..."));
+                    //Todo: Progress from downloading
+                }
+            }
+            @Override
+            public void onFailure(Call<Integer> call, Throwable t) { }
+        });
     }
 
     @FXML

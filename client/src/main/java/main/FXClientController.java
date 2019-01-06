@@ -44,6 +44,11 @@ public class FXClientController {
         return new ResponseEntity<>(client.getUsers(), HttpStatus.OK);
     }
 
+    @RequestMapping(value = "/games/download", method = RequestMethod.POST)
+    public Integer download(@RequestBody Game game){
+        return client.download(game);
+    }
+
 /*
     Client client = Main.client;
 

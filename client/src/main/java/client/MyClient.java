@@ -11,9 +11,12 @@ import message.GamelistMessage;
 import message.LoginMessage;
 import message.UserlistMessage;
 import message.UserupdateMessage;
+import requests.DownloadRequest;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
+import java.net.ServerSocket;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -23,10 +26,12 @@ public class MyClient extends com.esotericsoftware.kryonet.Client {
     private Map<Integer, User> users;
     private User user;
     private Status status;
+    public DownloadManager downloadManager;
 
 
     public MyClient(){
         super();
+        downloadManager = new DownloadManager();
         user = new User();
         status = new Status();
         NetworkClassRegistrationHelper.registerClasses(this);
@@ -110,9 +115,8 @@ public class MyClient extends com.esotericsoftware.kryonet.Client {
                     break;
                 }
             }
-            if(!same) return games;
+            if(!same) return this.games;
         }
-        System.out.println("end");
         return null;
     }
 
@@ -120,7 +124,34 @@ public class MyClient extends com.esotericsoftware.kryonet.Client {
         return new ArrayList<User>(users.values());
     }
 
+    public int download(Game game){
+        if(game.isUptodate() == 0)
+            return -1;
+        File sFile = new File(PropertiesHelper.getGamepath());
+        if(game.getSizeServer() > sFile.getFreeSpace())
+            return -2;
+        int openport = getOpenPort();
+        downloadManager.add(new Download(openport, game, game.getSizeServer()));
+        System.out.println("Requested to download " + game.getName() + ".");
+        sendTCP(new DownloadRequest(game, openport));
+        return 0;
+    }
 
+    private int getOpenPort(){
+        ServerSocket server = null;
+        try {
+            server = new ServerSocket(0);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        int freeport = server.getLocalPort();
+        try {
+            server.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return freeport;
+    }
 
     private void registerListener(){
         addListener(new Listener() {
@@ -160,18 +191,7 @@ public class MyClient extends com.esotericsoftware.kryonet.Client {
 
     /*
 
-    private int downloadGame(Game game){
-        if(!game.isUpToDate()){
-            File sFile = new File(PropertiesHelper.getGamepath());
-            if(game.getSize() > sFile.getFreeSpace()) return 1;
-            int openport = getOpenPort();
-            FileServer fServer = new FileServer(openport, game, game.getSize());
-            System.out.println("Requested to download " + game.getName() + ".");
-            client.sendTCP(new DownloadRequest(game, openport));
-            return 0;
-        }
-        return 2;
-    }
+
 
     public int downloadGame(String gameName){
         for (Game game : gamelist) {
@@ -182,21 +202,7 @@ public class MyClient extends com.esotericsoftware.kryonet.Client {
         return 3;
     }
 
-    private int getOpenPort(){
-        ServerSocket server = null;
-        try {
-            server = new ServerSocket(0);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        int freeport = server.getLocalPort();
-        try {
-            server.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return freeport;
-    }
+
 
     public ArrayList<Game> getGamelist(){
         return this.gamelist;

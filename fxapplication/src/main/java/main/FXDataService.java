@@ -29,4 +29,7 @@ public interface FXDataService {
 
     @GET("users")
     Call<List<User>> getUsers();
+
+    @POST("games/download")
+    Call<Integer> download(@Body Game game);
 }
