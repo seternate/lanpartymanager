@@ -3,14 +3,12 @@ package client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import entities.Game;
-import entities.Status;
+import entities.GameStatus;
+import entities.ServerStatus;
 import entities.User;
 import helper.NetworkClassRegistrationHelper;
 import helper.PropertiesHelper;
-import message.GamelistMessage;
-import message.LoginMessage;
-import message.UserlistMessage;
-import message.UserupdateMessage;
+import message.*;
 import requests.DownloadRequest;
 
 import java.io.File;
@@ -25,7 +23,7 @@ public class MyClient extends com.esotericsoftware.kryonet.Client {
     private List<Game> games;
     private Map<Integer, User> users;
     private User user;
-    private Status status;
+    private ServerStatus status;
     public DownloadManager downloadManager;
 
 
@@ -33,7 +31,7 @@ public class MyClient extends com.esotericsoftware.kryonet.Client {
         super();
         downloadManager = new DownloadManager();
         user = new User();
-        status = new Status();
+        status = new ServerStatus();
         NetworkClassRegistrationHelper.registerClasses(this);
         registerListener();
         start();
@@ -96,7 +94,7 @@ public class MyClient extends com.esotericsoftware.kryonet.Client {
         return true;
     }
 
-    public Status getStatus(){
+    public ServerStatus getStatus(){
         return status;
     }
 
@@ -137,6 +135,29 @@ public class MyClient extends com.esotericsoftware.kryonet.Client {
         return 0;
     }
 
+    public GameStatus getGameStatus(Game game){
+        GameStatus status = new GameStatus();
+        int uptodate = game.isUptodate();
+        switch(uptodate){
+            case -1: status.download = true; break;
+            case -2: status.playable = true; status.version = false; break;
+            case -3: status.update = true; break;
+            case 0: status.playable = true;
+        }
+        Download download = downloadManager.getDownloadStatus(game);
+        if(download == null)
+            return status;
+        if(download.receivedParts < download.totalParts){
+            status.downloading = true;
+            status.downloadProgress = download.downloadProgress;
+            System.out.println(download.downloadProgress);
+        }else{
+            status.unzipping = true;
+            status.unzipProgress = download.unzipProgress;
+        }
+        return status;
+    }
+
     private int getOpenPort(){
         ServerSocket server = null;
         try {
@@ -171,6 +192,10 @@ public class MyClient extends com.esotericsoftware.kryonet.Client {
                     UserlistMessage message = (UserlistMessage)object;
                     users = message.users;
                     System.out.println("Received users.");
+                }
+                if(object instanceof ErrorMessage){
+                    ErrorMessage message = (ErrorMessage)object;
+                    System.err.println(message.error);
                 }
             }
         });

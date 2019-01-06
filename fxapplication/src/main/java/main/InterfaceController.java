@@ -1,7 +1,8 @@
 package main;
 
 import entities.Game;
-import entities.Status;
+import entities.GameStatus;
+import entities.ServerStatus;
 import entities.User;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -26,9 +27,10 @@ import java.util.List;
 import static java.lang.Thread.sleep;
 
 class InterfaceController{
-    Status status;
+    ServerStatus status;
     private Retrofit retrofit;
     private FXDataService client;
+    private GameStatus gamestatus;
 
 
     private ObservableList<Game> games;
@@ -58,6 +60,7 @@ class InterfaceController{
         initializeUI();
         lvGames.setItems(games);
         lvGames.getSelectionModel().selectFirst();
+        updateGameStatus();
     }
 
     private void updateGames(){
@@ -114,7 +117,6 @@ class InterfaceController{
                 return;
             lblGamename.setText(item.getName());
             lblVersion.setText(item.getVersionServer());
-            isUptodate(item);
         });
 
         lvGames.setCellFactory(c -> new ListCell<Game>(){
@@ -136,39 +138,50 @@ class InterfaceController{
         });
     }
 
-    private void isUptodate(Game game){
-        Call<Integer> callUptodate = client.isGameUptodate(game);
-        callUptodate.enqueue(new Callback<Integer>() {
+    private void updateGameStatus(){
+        Game game = lvGames.getSelectionModel().getSelectedItem();
+        Call<GameStatus> callGameStatus = client.getGameStatus(game);
+        callGameStatus.enqueue(new Callback<GameStatus>() {
             @Override
-            public void onResponse(Call<Integer> call, Response<Integer> response) {
-                Integer status = response.body();
-                if(status == 0)
+            public void onResponse(Call<GameStatus> call, Response<GameStatus> response) {
+                GameStatus status = response.body();
+                gamestatus = status;
+                if(status.unzipping)
+                    Platform.runLater(() -> lblAvailable.setText("Unzipping: " + ((double)Math.round(status.unzipProgress*1000))/10. + "%"));
+                else if(status.downloading)
+                    Platform.runLater(() -> lblAvailable.setText("Downloading: " + ((double)Math.round(status.downloadProgress*1000))/10. + "%"));
+                else if(status.playable && status.version)
                     Platform.runLater(() -> lblAvailable.setText("Game is playable."));
-                else if(status == -1)
-                    Platform.runLater(() -> lblAvailable.setText("Download game."));
-                else if(status == -2)
+                else if(status.playable)
                     Platform.runLater(() -> lblAvailable.setText("Game is playable. No version information."));
-                else if(status == -3)
+                else if(status.download)
+                    Platform.runLater(() -> lblAvailable.setText(("Download game.")));
+                else if(status.update)
                     Platform.runLater(() -> lblAvailable.setText("Update game."));
+                try {
+                    sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                updateGameStatus();
             }
             @Override
-            public void onFailure(Call<Integer> call, Throwable t) { }
+            public void onFailure(Call<GameStatus> call, Throwable t) { }
         });
     }
 
 
+    //Todo: Cant re-download a game.
     @FXML
     private void download(ActionEvent event){
+        if(gamestatus.downloading || gamestatus.unzipping)
+            return;
         Call<Integer> callDownload = client.download(lvGames.getSelectionModel().getSelectedItem());
         callDownload.enqueue(new Callback<Integer>() {
             @Override
             public void onResponse(Call<Integer> call, Response<Integer> response) {
                 if(response.body() == -2)
                     Platform.runLater(() -> lblAvailable.setText("Not enough space available."));
-                else if(response.body() == 0) {
-                    Platform.runLater(() -> lblAvailable.setText("Downloading ..."));
-                    //Todo: Progress from downloading
-                }
             }
             @Override
             public void onFailure(Call<Integer> call, Throwable t) { }

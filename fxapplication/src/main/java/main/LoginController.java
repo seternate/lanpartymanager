@@ -1,6 +1,6 @@
 package main;
 
-import entities.Status;
+import entities.ServerStatus;
 import entities.User;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -29,7 +29,7 @@ public class LoginController extends Application {
     private Retrofit retrofit;
     private FXDataService client;
     private Stage stage;
-    private Status status;
+    private ServerStatus status;
     private InterfaceController interfaceController;
 
 
@@ -122,10 +122,10 @@ public class LoginController extends Application {
     }
 
     private void updateStatus(){
-        Call<Status> callStatus = client.getStatus();
-        callStatus.enqueue(new Callback<Status>() {
+        Call<ServerStatus> callStatus = client.getStatus();
+        callStatus.enqueue(new Callback<ServerStatus>() {
             @Override
-            public void onResponse(Call<Status> call, Response<Status> response) {
+            public void onResponse(Call<ServerStatus> call, Response<ServerStatus> response) {
                 status = response.body();
                 interfaceController.status = status;
                 if(status.serverConnection)
@@ -150,7 +150,7 @@ public class LoginController extends Application {
                 updateStatus();
             }
             @Override
-            public void onFailure(Call<Status> call, Throwable t) {
+            public void onFailure(Call<ServerStatus> call, Throwable t) {
                 System.err.println("No client running.");
                 System.exit(-19);
             }

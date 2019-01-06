@@ -141,6 +141,13 @@ public final class Game {
                 && version.equals(game.getVersion()) && sizeServer == game.getSizeServer();
     }
 
+    @Override
+    public boolean equals(Object o){
+        if(o instanceof Game)
+            return equals((Game)o);
+        return super.equals(o);
+    }
+
     private String getLocalVersion(){
         return GameInfoHelper.getVersion(this);
     }

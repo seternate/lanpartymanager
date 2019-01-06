@@ -15,7 +15,7 @@ public final class Main {
         String pathCompressed = args[0];
         File cFile = new File(pathCompressed);
         if(cFile.exists() && cFile.isDirectory()){
-            server = new MyServer(cFile.getAbsolutePath());
+            server = new MyServer(cFile.getAbsolutePath() + "\\");
             server.start();
         }else{
             System.out.println("Directory does not exist: " + pathCompressed);

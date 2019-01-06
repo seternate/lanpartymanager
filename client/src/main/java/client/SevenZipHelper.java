@@ -26,14 +26,19 @@ public class SevenZipHelper {
 
     class ExtractCallback implements IArchiveExtractCallback {
         private IInArchive inArchive;
-        private int index;
+        public int index;
         private OutputStream outputStream;
         private File file;
         private ExtractAskMode extractAskMode;
         private boolean isFolder;
+        public long totalItems;
+        public double unzipProgress = 0;
+        private Download download;
 
-        ExtractCallback(IInArchive inArchive) {
+        ExtractCallback(IInArchive inArchive, Download download) throws SevenZipException {
             this.inArchive = inArchive;
+            this.download = download;
+            totalItems = inArchive.getNumberOfItems();
         }
 
         @Override
@@ -80,6 +85,9 @@ public class SevenZipHelper {
                         throw new SevenZipException("Error writing to file: "
                                 + file.getAbsolutePath());
                     }
+                    unzipProgress = (double)index/(double)totalItems;
+                    download.unzipProgress = unzipProgress;
+                    System.out.println("Unzipped: " + ((double)Math.round(unzipProgress*1000))/10. + "% from " + download.game.getName());
                     return data.length; // Return amount of consumed data
                 }
             };
@@ -137,12 +145,14 @@ public class SevenZipHelper {
     private File outputDirectoryFile;
     private boolean test;
     private String filterRegex;
+    private Download download;
 
-    SevenZipHelper(String archive, String outputDirectory, boolean test, String filter) {
+    SevenZipHelper(String archive, String outputDirectory, boolean test, String filter, Download download) {
         this.archive = archive;
         this.outputDirectory = outputDirectory;
         this.test = test;
         this.filterRegex = filterToRegex(filter);
+        this.download = download;
     }
 
     void extract() throws ExtractionException {
@@ -217,7 +227,7 @@ public class SevenZipHelper {
             if (filterRegex != null) {
                 ids = filterIds(inArchive, filterRegex);
             }
-            inArchive.extract(ids, test, new ExtractCallback(inArchive));
+            inArchive.extract(ids, test, new ExtractCallback(inArchive, download));
             ok = true;
         } catch (SevenZipException e) {
             StringBuilder stringBuilder = new StringBuilder();
@@ -263,31 +273,5 @@ public class SevenZipHelper {
             result[i] = idList.get(i);
         }
         return result ;
-    }
-
-    public static void main(String[] args) {
-        boolean test = false;
-        String filter = null;
-        List<String> argList = new ArrayList<String>(Arrays.asList(args));
-        if (argList.size() > 0 && argList.get(0).equals("-t")) {
-            argList.remove(0);
-            test = true;
-        }
-        if (argList.size() != 2 && argList.size() != 3) {
-            System.out.println("Usage:");
-            System.out
-                    .println("java -cp ... example.ExtractExample [-t] <archive> <output-dir> [filter]");
-            System.exit(1);
-        }
-        if (argList.size() == 3) {
-            filter = argList.get(2);
-        }
-        try {
-            new SevenZipHelper(argList.get(0), argList.get(1), test, filter).extract();
-            System.out.println("Extraction successfull");
-        } catch (ExtractionException e) {
-            System.err.println("ERROR: " + e.getLocalizedMessage());
-            e.printStackTrace();
-        }
     }
 }

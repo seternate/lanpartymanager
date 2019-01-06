@@ -11,12 +11,12 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-//Todo
 public class Download extends Thread {
     private int packageSize = 536870912;
 
     private ServerSocket ss;
-    private Game game;
+    public Game game;
+    private DownloadManager manager = null;
 
     public int totalParts;
     public int receivedParts;
@@ -49,6 +49,10 @@ public class Download extends Thread {
         }
     }
 
+    public void setManager(DownloadManager manager){
+        this.manager = manager;
+    }
+
     private void saveFile(Socket clientSock) throws IOException {
         DataInputStream dis = new DataInputStream(clientSock.getInputStream());
         String path = PropertiesHelper.getGamepath() + game.getFileServer();
@@ -69,17 +73,17 @@ public class Download extends Thread {
                 fos = new FileOutputStream(path, true);
             }
             receivedParts = i;
-            downloadProgress = receivedParts/totalParts;
-            System.out.println("Received " + receivedParts + "/" + totalParts);
+            downloadProgress = (double)(receivedParts+1)/(double)(totalParts+1);
+            System.out.println("Received " + (receivedParts+1) + "/" + (totalParts+1));
         }
         fos.close();
         dis.close();
         System.out.println("Received " + game.getName());
 
-        //Todo Unzip Progress
+
         System.out.println("Unzipping " + game.getName());
         try {
-            new SevenZipHelper(path, PropertiesHelper.getGamepath(), false, null).extract();
+            new SevenZipHelper(path, PropertiesHelper.getGamepath(), false, null, this).extract();
         } catch (SevenZipHelper.ExtractionException e) {
             e.printStackTrace();
         }
@@ -88,5 +92,7 @@ public class Download extends Thread {
         System.out.println("Deleted .7z file");
         File file = new File(path);
         file.delete();
+
+        manager.remove(this);
     }
 }
