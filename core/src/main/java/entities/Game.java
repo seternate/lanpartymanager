@@ -37,7 +37,7 @@ public final class Game {
         }
     }
 
-    private String name, versionServer, connectParam, exeFileRelative, coverUrl, fileServer;
+    private String name, versionServer, connectParam, exeFileRelative, coverUrl, fileServer, param;
     private boolean connectDirect;
     private Version version;
     private long sizeServer;
@@ -65,10 +65,11 @@ public final class Game {
             default: version = new Version(null, null, null);
         }
         sizeServer = Long.valueOf(properties.getProperty("file.server.size"));
+        param = properties.getProperty("exe.param");
     }
 
     public Game(String name, String versionServer, String connectParam, String exeFileRelative, String coverUrl,
-                String fileServer, boolean connectDirect, Version version, long sizeServer){
+                String fileServer,String param, boolean connectDirect, Version version, long sizeServer){
         this.name = name;
         this.versionServer = versionServer;
         this.connectParam = connectParam;
@@ -123,6 +124,10 @@ public final class Game {
         return sizeServer;
     }
 
+    public String getParam(){
+        return param;
+    }
+
     public int isUptodate(){
         if(GameFolderHelper.getAbsolutePath(exeFileRelative) == null)
             return -1;
@@ -135,10 +140,14 @@ public final class Game {
     }
 
     public boolean equals(Game game){
-        return name.equals(game.getName()) && versionServer.equals(game.getVersionServer()) && connectParam.equals(game.getConnectParam())
-            && exeFileRelative.equals(game.getExeFileRelative()) && coverUrl.equals(game.getCoverUrl())
-            && fileServer.equals(game.fileServer) && connectDirect == game.isConnectDirect()
+        boolean equal = name.equals(game.getName()) && versionServer.equals(game.getVersionServer()) && connectParam.equals(game.getConnectParam())
+                && exeFileRelative.equals(game.getExeFileRelative()) && coverUrl.equals(game.getCoverUrl())
+                && fileServer.equals(game.fileServer) && connectDirect == game.isConnectDirect()
                 && version.equals(game.getVersion()) && sizeServer == game.getSizeServer();
+        if(param == null)
+            return equal;
+        else
+            return param.equals(game.getParam()) && equal;
     }
 
     @Override

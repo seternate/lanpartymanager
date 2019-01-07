@@ -170,8 +170,41 @@ public class MyClient extends com.esotericsoftware.kryonet.Client {
     }
 
     public boolean startGame(Game game){
+        if(game.isUptodate() != 0)
+            download(game);
+        String start = "start ";
+        if(game.getParam() == null)
+            start += game.getExeFileRelative().substring(1);
+        else
+            start += game.getExeFileRelative().substring(1) + " " + game.getParam();
+        File file = new File(GameFolderHelper.getAbsolutePath(game.getExeFileRelative()));
         try {
-            new ProcessBuilder(GameFolderHelper.getAbsolutePath(game.getExeFileRelative())).start();
+            ProcessBuilder process = new ProcessBuilder("cmd.exe", "/C", start);
+            process.directory(file.getParentFile());
+            process.start();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
+    public boolean connect(Game game, String ip){
+        if(game.isUptodate() != 0)
+            download(game);
+        if(!game.isConnectDirect())
+            return false;
+        String start;
+        if(game.getParam() == null)
+            start = "start " + game.getExeFileRelative().substring(1);
+        else
+            start = "start " + game.getExeFileRelative().substring(1) + " " + game.getParam();
+        String parameterserver = game.getConnectParam().replace("?", ip);
+        File file = new File(GameFolderHelper.getAbsolutePath(game.getExeFileRelative()));
+        try {
+            ProcessBuilder process = new ProcessBuilder("cmd.exe", "/C", start + " " + parameterserver);
+            process.directory(file.getParentFile());
+            process.start();
         } catch (IOException e) {
             e.printStackTrace();
             return false;

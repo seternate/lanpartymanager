@@ -170,11 +170,8 @@ class InterfaceController{
         });
     }
 
-
-    //Todo: Cant re-download a game.
     @FXML
     private void download(ActionEvent event){
-        System.out.println(gamestatus.downloading + "+" + gamestatus.unzipping);
         if(gamestatus.downloading || gamestatus.unzipping)
             return;
         Call<Integer> callDownload = client.download(lvGames.getSelectionModel().getSelectedItem());
@@ -220,7 +217,13 @@ class InterfaceController{
 
     @FXML
     private void connectServer(){
-
+        Call<Boolean> callConnect = client.connect(lvGames.getSelectionModel().getSelectedItem(), "localhost");
+        callConnect.enqueue(new Callback<Boolean>() {
+            @Override
+            public void onResponse(Call<Boolean> call, Response<Boolean> response) { }
+            @Override
+            public void onFailure(Call<Boolean> call, Throwable t) { }
+        });
     }
 
 /*

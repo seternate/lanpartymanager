@@ -60,4 +60,9 @@ public class FXClientController {
     public Boolean startGame(@RequestBody Game game){
         return client.startGame(game);
     }
+
+    @RequestMapping(value = "/games/connect/{ip}", method = RequestMethod.POST)
+    public Boolean connect(@RequestBody Game game, @PathVariable("ip") String ip){
+        return client.connect(game, ip);
+    }
 }

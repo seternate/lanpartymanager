@@ -8,6 +8,7 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.Path;
 
 import java.util.List;
 
@@ -38,4 +39,7 @@ public interface FXDataService {
 
     @POST("games/startgame")
     Call<Boolean> startGame(@Body Game game);
+
+    @POST("games/connect/{ip}")
+    Call<Boolean> connect(@Body Game game, @Path("ip") String ip);
 }
