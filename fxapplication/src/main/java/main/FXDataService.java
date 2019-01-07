@@ -32,4 +32,10 @@ public interface FXDataService {
 
     @POST("games/download")
     Call<Integer> download(@Body Game game);
+
+    @POST("games/openexplorer")
+    Call<Boolean> openExplorer(@Body Game game);
+
+    @POST("games/startgame")
+    Call<Boolean> startGame(@Body Game game);
 }

@@ -50,4 +50,14 @@ public class FXClientController {
     public Integer download(@RequestBody Game game){
         return client.download(game);
     }
+
+    @RequestMapping(value = "/games/openexplorer", method = RequestMethod.POST)
+    public Boolean openExplorer(@RequestBody Game game){
+        return client.openExplorer(game);
+    }
+
+    @RequestMapping(value = "/games/startgame", method = RequestMethod.POST)
+    public Boolean startGame(@RequestBody Game game){
+        return client.startGame(game);
+    }
 }

@@ -174,6 +174,7 @@ class InterfaceController{
     //Todo: Cant re-download a game.
     @FXML
     private void download(ActionEvent event){
+        System.out.println(gamestatus.downloading + "+" + gamestatus.unzipping);
         if(gamestatus.downloading || gamestatus.unzipping)
             return;
         Call<Integer> callDownload = client.download(lvGames.getSelectionModel().getSelectedItem());
@@ -190,12 +191,26 @@ class InterfaceController{
 
     @FXML
     private void startGame(){
+        Call<Boolean> callStartgame = client.startGame(lvGames.getSelectionModel().getSelectedItem());
+        callStartgame.enqueue(new Callback<Boolean>() {
+            @Override
+            public void onResponse(Call<Boolean> call, Response<Boolean> response) {
 
+            }
+            @Override
+            public void onFailure(Call<Boolean> call, Throwable t) { }
+        });
     }
 
     @FXML
     private void openExplorer(){
-
+        Call<Boolean> callOpenexplorer = client.openExplorer(lvGames.getSelectionModel().getSelectedItem());
+        callOpenexplorer.enqueue(new Callback<Boolean>() {
+            @Override
+            public void onResponse(Call<Boolean> call, Response<Boolean> response) { }
+            @Override
+            public void onFailure(Call<Boolean> call, Throwable t) { }
+        });
     }
 
     @FXML

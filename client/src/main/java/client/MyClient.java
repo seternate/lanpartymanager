@@ -6,6 +6,7 @@ import entities.Game;
 import entities.GameStatus;
 import entities.ServerStatus;
 import entities.User;
+import helper.GameFolderHelper;
 import helper.NetworkClassRegistrationHelper;
 import helper.PropertiesHelper;
 import message.*;
@@ -156,6 +157,26 @@ public class MyClient extends com.esotericsoftware.kryonet.Client {
             status.unzipProgress = download.unzipProgress;
         }
         return status;
+    }
+
+    public boolean openExplorer(Game game){
+        try {
+            Runtime.getRuntime().exec("explorer.exe /select," + GameFolderHelper.getAbsolutePath(game.getExeFileRelative()));
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
+    public boolean startGame(Game game){
+        try {
+            new ProcessBuilder(GameFolderHelper.getAbsolutePath(game.getExeFileRelative())).start();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
     }
 
     private int getOpenPort(){
