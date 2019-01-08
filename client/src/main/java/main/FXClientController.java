@@ -41,9 +41,9 @@ public class FXClientController {
         return client.getGameStatus(game);
     }
 
-    @RequestMapping(value = "/users", method = RequestMethod.GET)
-    public ResponseEntity<?> getUsers(){
-        return new ResponseEntity<>(client.getUsers(), HttpStatus.OK);
+    @RequestMapping(value = "/users", method = RequestMethod.POST)
+    public ResponseEntity<?> getUsers(@RequestBody List<User> users){
+        return new ResponseEntity<>(client.getNewUsers(users), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/games/download", method = RequestMethod.POST)

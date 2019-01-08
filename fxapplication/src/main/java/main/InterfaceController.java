@@ -41,6 +41,8 @@ class InterfaceController{
     @FXML
     private ListView<Game> lvGames;
     @FXML
+    private ListView<User> lvUsers;
+    @FXML
     private Label lblVersion, lblGamename, lblAvailable;
 
 
@@ -58,6 +60,7 @@ class InterfaceController{
 
     void load(){
         initializeUI();
+        lvUsers.setItems(users);
         lvGames.setItems(games);
         lvGames.getSelectionModel().selectFirst();
         updateGameStatus();
@@ -73,7 +76,7 @@ class InterfaceController{
                     System.out.println("Updated gamelist.");
                 }
                 try {
-                    sleep(1000);
+                    sleep(100);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -91,17 +94,32 @@ class InterfaceController{
         });
     }
 
-    //Todo: Just get new list if something changed, see updateGames()
     private void updateUsers(){
-        Call<List<User>> callUsers = client.getUsers();
+        Call<List<User>> callUsers = client.getUsers(new ArrayList<>(users));
         callUsers.enqueue(new Callback<List<User>>() {
             @Override
             public void onResponse(Call<List<User>> call, Response<List<User>> response) {
-                Platform.runLater(() -> users.setAll(response.body()));
-                System.out.println("Updated userlist.");
+                if(response.body() != null) {
+                    Platform.runLater(() -> users.setAll(response.body()));
+                    System.out.println("Updated userlist.");
+                    System.out.println(response.body().get(0).getName());
+                }
+                try {
+                    sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                updateUsers();
             }
             @Override
-            public void onFailure(Call<List<User>> call, Throwable t) { }
+            public void onFailure(Call<List<User>> call, Throwable t) {
+                try {
+                    sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                updateUsers();
+            }
         });
     }
 
@@ -132,6 +150,23 @@ class InterfaceController{
                         imageView.setFitWidth(92);
                         setGraphic(imageView);
                     }
+                    setText(item.getName());
+                }
+            }
+        });
+
+        users.addListener((ListChangeListener<User>) c -> {
+            System.out.println("changed");
+            lvUsers.setItems(users);
+        });
+
+        lvUsers.setCellFactory(c -> new ListCell<User>(){
+            @Override
+            protected void updateItem(User item, boolean empty){
+                super.updateItem(item, empty);
+                setGraphic(null);
+                setText(null);
+                if(item != null){
                     setText(item.getName());
                 }
             }

@@ -28,8 +28,8 @@ public interface FXDataService {
     @POST("games/status")
     Call<GameStatus> getGameStatus(@Body Game game);
 
-    @GET("users")
-    Call<List<User>> getUsers();
+    @POST("users")
+    Call<List<User>> getUsers(@Body List<User> users);
 
     @POST("games/download")
     Call<Integer> download(@Body Game game);
