@@ -12,7 +12,7 @@ public abstract class PropertiesHelper {
 
     public static Properties getProperties(String path){
         Properties properties = new Properties();
-        InputStream pFile = Thread.currentThread().getContextClassLoader().getResourceAsStream("../resources/" + path);
+        InputStream pFile = Thread.currentThread().getContextClassLoader().getResourceAsStream(path);
         if(pFile == null)
             return null;
         try {

@@ -61,6 +61,7 @@ class InterfaceController{
     void load(){
         initializeUI();
         lvUsers.setItems(users);
+        lvUsers.getSelectionModel().selectFirst();
         lvGames.setItems(games);
         lvGames.getSelectionModel().selectFirst();
         updateGameStatus();
@@ -71,10 +72,9 @@ class InterfaceController{
         callGames.enqueue(new Callback<List<Game>>() {
             @Override
             public void onResponse(Call<List<Game>> call, Response<List<Game>> response) {
-                if(response.body() != null) {
-                    Platform.runLater(() -> games.setAll(response.body()));
-                    System.out.println("Updated gamelist.");
-                }
+                List<Game> gamesLocal = response.body();
+                if(gamesLocal != null)
+                    Platform.runLater(() -> games.setAll(gamesLocal));
                 try {
                     sleep(100);
                 } catch (InterruptedException e) {
@@ -101,8 +101,6 @@ class InterfaceController{
             public void onResponse(Call<List<User>> call, Response<List<User>> response) {
                 if(response.body() != null) {
                     Platform.runLater(() -> users.setAll(response.body()));
-                    System.out.println("Updated userlist.");
-                    System.out.println(response.body().get(0).getName());
                 }
                 try {
                     sleep(100);
@@ -252,7 +250,7 @@ class InterfaceController{
 
     @FXML
     private void connectServer(){
-        Call<Boolean> callConnect = client.connect(lvGames.getSelectionModel().getSelectedItem(), "localhost");
+        Call<Boolean> callConnect = client.connect(lvGames.getSelectionModel().getSelectedItem(), lvUsers.getSelectionModel().getSelectedItem().getIp());
         callConnect.enqueue(new Callback<Boolean>() {
             @Override
             public void onResponse(Call<Boolean> call, Response<Boolean> response) { }
