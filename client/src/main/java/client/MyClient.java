@@ -120,8 +120,10 @@ public class MyClient extends com.esotericsoftware.kryonet.Client {
     }
 
     public List<User> getNewUsers(List<User> users){
-        if(this.users.size() != users.size())
+        if(this.users.size() != users.size()) {
+            System.out.println("Updated Users.");
             return new ArrayList<>(this.users.values());
+        }
         for(User user : users){
             boolean same = false;
             for(User thisUser : this.users.values()){
@@ -182,7 +184,7 @@ public class MyClient extends com.esotericsoftware.kryonet.Client {
     }
 
     public boolean startGame(Game game){
-        if(game.isUptodate() != 0)
+        if(game.isUptodate() != 0 && game.isUptodate() != -2)
             download(game);
         String start = "start ";
         if(game.getParam() == null)
@@ -202,7 +204,7 @@ public class MyClient extends com.esotericsoftware.kryonet.Client {
     }
 
     public boolean connect(Game game, String ip){
-        if(game.isUptodate() != 0)
+        if(game.isUptodate() != 0 && game.isUptodate() != -2)
             download(game);
         if(!game.isConnectDirect())
             return false;

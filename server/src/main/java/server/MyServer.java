@@ -96,7 +96,7 @@ public final class MyServer extends com.esotericsoftware.kryonet.Server {
                     return;
                 }
                 System.out.println(user.getName() + " disconnected.");
-                sendToAllTCP(users);
+                sendToAllTCP(new UserlistMessage(users));
             }
             @Override
             public void received(Connection connection, Object object){

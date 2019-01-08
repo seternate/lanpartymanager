@@ -73,8 +73,10 @@ class InterfaceController{
             @Override
             public void onResponse(Call<List<Game>> call, Response<List<Game>> response) {
                 List<Game> gamesLocal = response.body();
-                if(gamesLocal != null)
+                if(gamesLocal != null) {
                     Platform.runLater(() -> games.setAll(gamesLocal));
+                    System.out.println("Updated games.");
+                }
                 try {
                     sleep(100);
                 } catch (InterruptedException e) {
@@ -101,6 +103,7 @@ class InterfaceController{
             public void onResponse(Call<List<User>> call, Response<List<User>> response) {
                 if(response.body() != null) {
                     Platform.runLater(() -> users.setAll(response.body()));
+                    System.out.println("Updated users.");
                 }
                 try {
                     sleep(100);
