@@ -184,10 +184,12 @@ public class MyClient extends com.esotericsoftware.kryonet.Client {
     }
 
     public boolean startGame(Game game){
-        if(game.isUptodate() != 0 && game.isUptodate() != -2)
+        if(game.isUptodate() != 0 && game.isUptodate() != -2){
             download(game);
+            return false;
+        }
         String start = "start ";
-        if(game.getParam() == null)
+        if(game.getParam().equals(""))
             start += game.getExeFileRelative().substring(1);
         else
             start += game.getExeFileRelative().substring(1) + " " + game.getParam();
@@ -204,12 +206,14 @@ public class MyClient extends com.esotericsoftware.kryonet.Client {
     }
 
     public boolean connect(Game game, String ip){
-        if(game.isUptodate() != 0 && game.isUptodate() != -2)
+        if(game.isUptodate() != 0 && game.isUptodate() != -2) {
             download(game);
+            return false;
+        }
         if(!game.isConnectDirect())
             return false;
         String start;
-        if(game.getParam() == null)
+        if(game.getParam().equals(""))
             start = "start " + game.getExeFileRelative().substring(1);
         else
             start = "start " + game.getExeFileRelative().substring(1) + " " + game.getParam();
@@ -217,6 +221,31 @@ public class MyClient extends com.esotericsoftware.kryonet.Client {
         File file = new File(GameFolderHelper.getAbsolutePath(game.getExeFileRelative()));
         try {
             ProcessBuilder process = new ProcessBuilder("cmd.exe", "/C", start + " " + parameterserver);
+            process.directory(file.getParentFile());
+            process.start();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
+    public boolean startServer(Game game, String param){
+        if(game.isUptodate() != 0 && game.isUptodate() != -2) {
+            download(game);
+            return false;
+        }
+        if(!game.getOpenServer())
+            return false;
+        String start;
+        System.out.println("String " + game.getExeServerRelative());
+        if(param.equals(""))
+            start = "start " + game.getExeServerRelative().substring(1);
+        else
+            start = "start " + game.getExeServerRelative().substring(1) + " " + param;
+        File file = new File(GameFolderHelper.getAbsolutePath(game.getExeFileRelative()));
+        try {
+            ProcessBuilder process = new ProcessBuilder("cmd.exe", "/C", start);
             process.directory(file.getParentFile());
             process.start();
         } catch (IOException e) {

@@ -37,8 +37,8 @@ public final class Game {
         }
     }
 
-    private String name, versionServer, connectParam, exeFileRelative, coverUrl, fileServer, param;
-    private boolean connectDirect;
+    private String name, versionServer, connectParam, exeFileRelative, coverUrl, fileServer, param, exeServerRelative, serverParam;
+    private boolean connectDirect, openServer;
     private Version version;
     private long sizeServer;
 
@@ -65,11 +65,15 @@ public final class Game {
             default: version = new Version(null, null, null);
         }
         sizeServer = Long.valueOf(properties.getProperty("file.server.size"));
-        param = properties.getProperty("exe.param");
+        param = properties.getProperty("exe.param")==null ? "" : properties.getProperty("exe.param");
+        exeServerRelative = (properties.getProperty("exe.server")==null || properties.getProperty("exe.server").equals("")) ? exeFileRelative : properties.getProperty("exe.server");
+        serverParam = properties.getProperty("exe.server.param")==null ? "" : properties.getProperty("exe.server.param");
+        openServer = Boolean.valueOf(properties.getProperty("openserver"));
     }
 
     public Game(String name, String versionServer, String connectParam, String exeFileRelative, String coverUrl,
-                String fileServer,String param, boolean connectDirect, Version version, long sizeServer){
+                String fileServer,String param, boolean connectDirect, Version version, long sizeServer,
+                String exeServerRelative, String serverParam, boolean openServer){
         this.name = name;
         this.versionServer = versionServer;
         this.connectParam = connectParam;
@@ -79,13 +83,18 @@ public final class Game {
         this.connectDirect = connectDirect;
         this.version = version;
         this.sizeServer = sizeServer;
+        this.param = param;
+        this.exeServerRelative = exeServerRelative;
+        this.serverParam = serverParam;
+        this.openServer = openServer;
     }
 
     public void print(){
         System.out.println("Name: " + name);
         System.out.println("Version: " + versionServer);
         System.out.println("Size: " + sizeServer);
-        System.out.println("Filename Server: " + fileServer + "\n");
+        System.out.println("Filename Server: " + fileServer);
+        System.out.println("Server Exe: " + exeServerRelative + "\n");
     }
 
     public String getName(){
@@ -128,6 +137,18 @@ public final class Game {
         return param;
     }
 
+    public String getExeServerRelative(){
+        return exeServerRelative;
+    }
+
+    public String getServerParam(){
+        return serverParam;
+    }
+
+    public boolean getOpenServer(){
+        return openServer;
+    }
+
     public int isUptodate(){
         if(GameFolderHelper.getAbsolutePath(exeFileRelative) == null)
             return -1;
@@ -140,14 +161,11 @@ public final class Game {
     }
 
     public boolean equals(Game game){
-        boolean equal = name.equals(game.getName()) && versionServer.equals(game.getVersionServer()) && connectParam.equals(game.getConnectParam())
+        return name.equals(game.getName()) && versionServer.equals(game.getVersionServer()) && connectParam.equals(game.getConnectParam())
                 && exeFileRelative.equals(game.getExeFileRelative()) && coverUrl.equals(game.getCoverUrl())
                 && fileServer.equals(game.fileServer) && connectDirect == game.isConnectDirect()
-                && version.equals(game.getVersion()) && sizeServer == game.getSizeServer();
-        if(param == null)
-            return equal;
-        else
-            return param.equals(game.getParam()) && equal;
+                && version.equals(game.getVersion()) && sizeServer == game.getSizeServer() && exeServerRelative.equals(game.getExeServerRelative())
+                && serverParam.equals(game.getServerParam()) && param.equals(game.getParam()) && openServer == game.getOpenServer();
     }
 
     @Override
@@ -161,43 +179,4 @@ public final class Game {
         return GameInfoHelper.getVersion(this);
     }
 
-
-/*
-
-
-
-
-
-
-
-
-
-    public long getSize(){
-        return gamesize;
-    }
-
-    public boolean isConnectDirect(){
-        return connectDirect;
-    }
-
-    public String getConnectParam(){
-        return connectParam;
-    }
-
-    public String getConnectParam(String ip){
-        if(!isConnectDirect()) return getConnectParam();
-        String cParam = getConnectParam();
-        return cParam.replace("?", ip);
-    }
-
-
-
-    public String getLocalVersion(){
-        return GameInfoHelper.getVersion(this);
-    }
-
-    public boolean isUpToDate(){
-        return this.version.equals(getLocalVersion());
-    }
-    */
 }

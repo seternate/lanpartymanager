@@ -65,4 +65,9 @@ public class FXClientController {
     public Boolean connect(@RequestBody Game game, @PathVariable("ip") String ip){
         return client.connect(game, ip);
     }
+
+    @RequestMapping(value = "/games/startserver", method = RequestMethod.POST)
+    public Boolean startServer(@RequestBody Game game, @RequestParam("param") String param){
+        return client.startServer(game, param);
+    }
 }

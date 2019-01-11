@@ -5,10 +5,7 @@ import entities.GameStatus;
 import entities.ServerStatus;
 import entities.User;
 import retrofit2.Call;
-import retrofit2.http.Body;
-import retrofit2.http.GET;
-import retrofit2.http.POST;
-import retrofit2.http.Path;
+import retrofit2.http.*;
 
 import java.util.List;
 
@@ -42,4 +39,7 @@ public interface FXDataService {
 
     @POST("games/connect/{ip}")
     Call<Boolean> connect(@Body Game game, @Path("ip") String ip);
+
+    @POST("games/startserver")
+    Call<Boolean> startServer(@Body Game game, @Query("param") String param);
 }

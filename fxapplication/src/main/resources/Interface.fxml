@@ -89,7 +89,7 @@
                                           <Insets left="15.0" right="5.0" />
                                        </GridPane.margin>
                                     </Button>
-                                    <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#connectServer" text="Connect to server" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                    <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#connectServer" text="Connect to Server" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                        <GridPane.margin>
                                           <Insets left="5.0" right="15.0" />
                                        </GridPane.margin>

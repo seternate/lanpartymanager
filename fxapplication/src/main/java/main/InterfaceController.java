@@ -13,6 +13,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import retrofit2.Call;
@@ -44,6 +45,8 @@ class InterfaceController{
     private ListView<User> lvUsers;
     @FXML
     private Label lblVersion, lblGamename, lblAvailable;
+    @FXML
+    private TextField txtServerParam;
 
 
     InterfaceController(){
@@ -136,6 +139,7 @@ class InterfaceController{
                 return;
             lblGamename.setText(item.getName());
             lblVersion.setText(item.getVersionServer());
+            txtServerParam.setText(item.getServerParam());
         });
 
         lvGames.setCellFactory(c -> new ListCell<Game>(){
@@ -248,7 +252,13 @@ class InterfaceController{
 
     @FXML
     private void startServer(){
-
+        Call<Boolean> callServer = client.startServer(lvGames.getSelectionModel().getSelectedItem(), txtServerParam.getText());
+        callServer.enqueue(new Callback<Boolean>() {
+            @Override
+            public void onResponse(Call<Boolean> call, Response<Boolean> response) { }
+            @Override
+            public void onFailure(Call<Boolean> call, Throwable t) { }
+        });
     }
 
     @FXML
