@@ -31,6 +31,22 @@ public abstract class PropertiesHelper {
         return Integer.valueOf(getSettings().getProperty("servertcp"));
     }
 
+    public static boolean setGamePath(String gamepath){
+        return setSettingsProperty("gamepath", gamepath);
+    }
+
+    public static boolean setUserName(String username){
+        return setSettingsProperty("username", username);
+    }
+
+    public static String getGamepath(){
+        return getSettings().getProperty("gamepath");
+    }
+
+    public static String getUsername() {
+        return getSettings().getProperty("username");
+    }
+
     private static Properties getSettings(){
         return getProperties(SETTINGS_PROPERTIES);
     }
@@ -55,19 +71,4 @@ public abstract class PropertiesHelper {
         return true;
     }
 
-    public static boolean setGamePath(String gamepath){
-        return setSettingsProperty("gamepath", gamepath);
-    }
-
-    public static boolean setUserName(String username){
-        return setSettingsProperty("username", username);
-    }
-
-    public static String getGamepath(){
-        return getSettings().getProperty("gamepath");
-    }
-
-    public static String getUsername() {
-        return getSettings().getProperty("username");
-    }
 }

@@ -5,12 +5,13 @@ import server.MyServer;
 import java.io.File;
 import java.util.Scanner;
 
-public final class Main {
+public final class LanServer {
     private static MyServer server;
 
 
     public static void main(String[] args) {
         if(args.length != 1)
+            //TODO
             System.out.println("USAGE");
         String pathCompressed = args[0];
         File cFile = new File(pathCompressed);

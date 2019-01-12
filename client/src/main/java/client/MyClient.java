@@ -19,13 +19,14 @@ import java.net.ServerSocket;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
-public class MyClient extends com.esotericsoftware.kryonet.Client {
+public final class MyClient extends com.esotericsoftware.kryonet.Client {
     private List<Game> games;
     private Map<Integer, User> users;
     private User user;
     private ServerStatus status;
-    public DownloadManager downloadManager;
+    private DownloadManager downloadManager;
 
 
     public MyClient(){
@@ -60,38 +61,9 @@ public class MyClient extends com.esotericsoftware.kryonet.Client {
     }
 
     public boolean updateUser(User user){
-        boolean changed = false;
+        boolean changed;
         changed = changeUsername(user.getName()) | changeGamepath(user.getGamepath());
         return changed;
-    }
-
-    private boolean changeUsername(String username){
-        if(user.getName().equals(username)) {
-            System.err.println("Username is allready " + username);
-            return false;
-        }else if(!isConnected()){
-            System.err.println("No connection to the server.");
-        }
-        System.out.println("Changed name from " + user.getName() + " to " + username);
-        if(!PropertiesHelper.setUserName(username))
-            return false;
-        user.setName(username);
-        sendTCP(new UserupdateMessage(user));
-        return true;
-    }
-
-    private boolean changeGamepath(String gamepath){
-        if(user.getGamepath().equals(gamepath)) {
-            System.err.println("Gamepath is allready " + gamepath);
-            return false;
-        }else if(!isConnected()){
-            System.err.println("No connection to the server.");
-        }
-        System.out.println("Changed path from " + user.getGamepath() + " to " + gamepath);
-        if(!PropertiesHelper.setGamePath(gamepath))
-            return false;
-        user.setGamepath(gamepath);
-        return true;
     }
 
     public ServerStatus getStatus(){
@@ -99,6 +71,20 @@ public class MyClient extends com.esotericsoftware.kryonet.Client {
     }
 
     public User getUser(){
+        String winUser = System.getProperty("user.name");
+        if(user.getGamepath().contains("C:\\Users\\")){
+            String[] split = user.getGamepath().split("\\\\");
+            if(split.length >= 3 && !split[2].equals(winUser)){
+                StringBuilder path;
+                path = new StringBuilder("C:\\Users\\" + winUser + "\\");
+                for(int i = 3; i < split.length; i++){
+                    path.append(split[i]).append("\\");
+                }
+                user.setGamepath(path.toString());
+                PropertiesHelper.setGamePath(path.toString());
+                System.out.println("changed username-path");
+            }
+        }
         return user;
     }
 
@@ -192,16 +178,7 @@ public class MyClient extends com.esotericsoftware.kryonet.Client {
             start += game.getExeFileRelative().substring(1);
         else
             start += game.getExeFileRelative().substring(1) + " " + game.getParam();
-        File file = new File(GameFolderHelper.getAbsolutePath(game.getExeFileRelative()));
-        try {
-            ProcessBuilder process = new ProcessBuilder("cmd.exe", "/C", start);
-            process.directory(file.getParentFile());
-            process.start();
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        }
-        return true;
+        return startProcess(game, start);
     }
 
     public boolean connect(Game game, String ip){
@@ -217,7 +194,7 @@ public class MyClient extends com.esotericsoftware.kryonet.Client {
         else
             start = "start " + game.getExeFileRelative().substring(1) + " " + game.getParam();
         String parameterserver = game.getConnectParam().replace("?", ip);
-        File file = new File(GameFolderHelper.getAbsolutePath(game.getExeFileRelative()));
+        File file = new File(Objects.requireNonNull(GameFolderHelper.getAbsolutePath(game.getExeFileRelative())));
         try {
             ProcessBuilder process = new ProcessBuilder("cmd.exe", "/C", start + " " + parameterserver);
             process.directory(file.getParentFile());
@@ -242,16 +219,7 @@ public class MyClient extends com.esotericsoftware.kryonet.Client {
             start = "start " + game.getExeServerRelative().substring(1);
         else
             start = "start " + game.getExeServerRelative().substring(1) + " " + param;
-        File file = new File(GameFolderHelper.getAbsolutePath(game.getExeFileRelative()));
-        try {
-            ProcessBuilder process = new ProcessBuilder("cmd.exe", "/C", start);
-            process.directory(file.getParentFile());
-            process.start();
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        }
-        return true;
+        return startProcess(game, start);
     }
 
     private int getOpenPort(){
@@ -261,7 +229,7 @@ public class MyClient extends com.esotericsoftware.kryonet.Client {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        int freeport = server.getLocalPort();
+        int freeport = Objects.requireNonNull(server).getLocalPort();
         try {
             server.close();
         } catch (IOException e) {
@@ -308,6 +276,50 @@ public class MyClient extends com.esotericsoftware.kryonet.Client {
                 e.printStackTrace();
             }
         }
+    }
+
+    private boolean startProcess(Game game, String start) {
+        File file = new File(Objects.requireNonNull(GameFolderHelper.getAbsolutePath(game.getExeFileRelative())));
+        try {
+            ProcessBuilder process = new ProcessBuilder("cmd.exe", "/C", start);
+            process.directory(file.getParentFile());
+            process.start();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
+    private boolean changeUsername(String username){
+        if(user.getName().equals(username)) {
+            System.err.println("Username is allready " + username);
+            return false;
+        }else if(!isConnected()){
+            System.err.println("No connection to the server.");
+        }
+        System.out.println("Changed name from " + user.getName() + " to " + username);
+        if(!PropertiesHelper.setUserName(username))
+            return false;
+        user.setName(username);
+        sendTCP(new UserupdateMessage(user));
+        return true;
+    }
+
+    private boolean changeGamepath(String gamepath){
+        if(user.getGamepath().equals(gamepath)) {
+            System.err.println("Gamepath is allready " + gamepath);
+            return false;
+        }else if(!isConnected()){
+            System.err.println("No connection to the server.");
+        }
+        if(!gamepath.endsWith("\\"))
+            gamepath += "\\";
+        System.out.println("Changed path from " + user.getGamepath() + " to " + gamepath);
+        if(!PropertiesHelper.setGamePath(gamepath))
+            return false;
+        user.setGamepath(gamepath);
+        return true;
     }
 
 }

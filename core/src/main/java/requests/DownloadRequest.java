@@ -2,11 +2,12 @@ package requests;
 
 import entities.Game;
 
-public class DownloadRequest {
+public final class DownloadRequest {
     public Game game;
     public int port;
 
 
+    @SuppressWarnings("unused")
     public DownloadRequest(){}
 
     public DownloadRequest(Game game, int openPort){

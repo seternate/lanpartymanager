@@ -18,7 +18,7 @@ public final class Game {
             this.query = query;
         }
 
-        public boolean equals(Version version){
+        boolean equals(Version version){
             if(format == null && file == null && query == null)
                 return version.format == null && version.file == null && version.query == null;
             if(format == null && file == null)

@@ -6,11 +6,11 @@ import java.io.IOException;
 import java.net.Socket;
 
 public class FileClient extends Thread{
-
     private Socket s;
     private String file, gamename, username;
 
-    public FileClient(String host, int port, String file, String gamename, String username) {
+
+    FileClient(String host, int port, String file, String gamename, String username) {
         this.file = file;
         this.gamename = gamename;
         this.username = username;

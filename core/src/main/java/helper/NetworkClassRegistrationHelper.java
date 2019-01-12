@@ -36,4 +36,5 @@ public abstract class NetworkClassRegistrationHelper {
         kryo.register(HashMap.class);
         kryo.register(Properties.class);
     }
+
 }

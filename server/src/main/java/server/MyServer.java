@@ -62,11 +62,11 @@ public final class MyServer extends com.esotericsoftware.kryonet.Server {
         return gamepath;
     }
 
-
     private List<Game> loadGames(){
         List<Game> games = new ArrayList<>();
         List<Properties> gameProperties = getGameproperties();
-        gameProperties.forEach(property -> games.add(new Game(property)));
+        if (gameProperties != null)
+            gameProperties.forEach(property -> games.add(new Game(property)));
         return games;
     }
 
@@ -77,7 +77,7 @@ public final class MyServer extends com.esotericsoftware.kryonet.Server {
             return null;
         }
         File rFile = new File(url.getPath()).getParentFile();
-        List<String> properiesNames = new ArrayList<>(Arrays.asList(rFile.list()));
+        List<String> properiesNames = new ArrayList<>(Arrays.asList(Objects.requireNonNull(rFile.list())));
         List<Properties> properties = new ArrayList<>();
         properiesNames.forEach(filename -> {
             if(!filename.equals("dummy.properties"))
@@ -122,7 +122,7 @@ public final class MyServer extends com.esotericsoftware.kryonet.Server {
                         return;
                     }
                     User olduser = users.put(connection.getID(), message.user);
-                    if(!olduser.getName().equals(users.get(connection.getID()).getName()))
+                    if(!Objects.requireNonNull(olduser).getName().equals(users.get(connection.getID()).getName()))
                         System.out.println(olduser.getName() + " changed to " + message.user.getName());
                     sendToAllTCP(new UserlistMessage(users));
                 }
@@ -141,4 +141,5 @@ public final class MyServer extends com.esotericsoftware.kryonet.Server {
             }
         });
     }
+
 }

@@ -1,6 +1,6 @@
 package entities;
 
-public class ServerStatus {
+public final class ServerStatus {
     public boolean serverConnection;
     public String serverIP;
 

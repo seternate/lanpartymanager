@@ -4,10 +4,11 @@ import entities.Game;
 
 import java.util.List;
 
-public class GamelistMessage {
+public final class GamelistMessage {
     public List<Game> games;
 
 
+    @SuppressWarnings("unused")
     public GamelistMessage(){ }
 
     public GamelistMessage(List<Game> games){

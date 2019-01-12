@@ -5,24 +5,24 @@ import entities.Game;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DownloadManager {
+final class DownloadManager {
     private List<Download> downloads;
 
 
-    public DownloadManager(){
+    DownloadManager(){
         downloads = new ArrayList<>();
     }
 
-    public void add(Download download){
+    void add(Download download){
         downloads.add(download);
         download.setManager(this);
     }
 
-    public void remove(Download download){
+    void remove(Download download){
         downloads.remove(download);
     }
 
-    public Download getDownloadStatus(Game game){
+    Download getDownloadStatus(Game game){
         for(Download download : downloads){
             if(download.game.equals(game))
                 return download;

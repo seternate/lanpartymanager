@@ -8,7 +8,7 @@ import static java.lang.Thread.sleep;
 
 @SpringBootApplication
 public class Main {
-    public static MyClient client;
+    static MyClient client;
 
 
     public static void main(String[] args) {

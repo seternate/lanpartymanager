@@ -5,7 +5,7 @@ import helper.PropertiesHelper;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
-public class User {
+public final class User {
     private String name;
     private String gamepath;
     private String ip;

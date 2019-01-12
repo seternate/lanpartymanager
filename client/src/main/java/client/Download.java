@@ -11,20 +11,18 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-public class Download extends Thread {
-    private int packageSize = 536870912;
-
-    private ServerSocket ss;
-    public Game game;
+public final class Download extends Thread {
+    Game game;
+    int totalParts;
+    int receivedParts;
+    double downloadProgress;
+    double unzipProgress;
     private DownloadManager manager = null;
-
-    public int totalParts;
-    public int receivedParts;
-    public double downloadProgress;
-    public double unzipProgress;
+    private int packageSize = 536870912;
+    private ServerSocket ss;
 
 
-    public Download(int port, Game game, long gamesize) {
+    Download(int port, Game game, long gamesize) {
         this.game = game;
         try {
             ss = new ServerSocket(port);
@@ -49,7 +47,7 @@ public class Download extends Thread {
         }
     }
 
-    public void setManager(DownloadManager manager){
+    void setManager(DownloadManager manager){
         this.manager = manager;
     }
 
@@ -62,6 +60,7 @@ public class Download extends Thread {
 
         System.out.println("Receiving " + game.getName());
         for(int i = 0; i <= totalParts; i++){
+            @SuppressWarnings("UnusedAssignment")
             int read = 0;
             int remaining = packageSize;
             while((read = dis.read(buffer, 0, Math.min(buffer.length, remaining))) > 0) {
@@ -91,8 +90,10 @@ public class Download extends Thread {
 
         System.out.println("Deleted .7z file");
         File file = new File(path);
+        //noinspection ResultOfMethodCallIgnored
         file.delete();
 
         manager.remove(this);
     }
+
 }

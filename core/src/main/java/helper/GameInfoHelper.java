@@ -9,6 +9,7 @@ import entities.Game;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.Objects;
 import java.util.Scanner;
 
 public abstract class GameInfoHelper {
@@ -32,7 +33,7 @@ public abstract class GameInfoHelper {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        while(scr.hasNextLine()){
+        while(Objects.requireNonNull(scr).hasNextLine()){
             String line = scr.nextLine();
             if(line.contains(query)){
                 return line.substring(query.length());
@@ -49,13 +50,14 @@ public abstract class GameInfoHelper {
 
         int versionlength = com.sun.jna.platform.win32.Version.INSTANCE.GetFileVersionInfoSize(absolutePath, dwDummy);
 
+        //noinspection MismatchedReadAndWriteOfArray
         byte[] bufferarray = new byte[versionlength];
         Pointer lpData = new Memory(bufferarray.length);
         PointerByReference lplpBuffer = new PointerByReference();
         IntByReference puLen = new IntByReference();
 
-        boolean fileInfoResult = com.sun.jna.platform.win32.Version.INSTANCE.GetFileVersionInfo(absolutePath, 0, versionlength, lpData);
-        boolean verQueryVal = com.sun.jna.platform.win32.Version.INSTANCE.VerQueryValue(lpData, "\\", lplpBuffer, puLen);
+        com.sun.jna.platform.win32.Version.INSTANCE.GetFileVersionInfo(absolutePath, 0, versionlength, lpData);
+        com.sun.jna.platform.win32.Version.INSTANCE.VerQueryValue(lpData, "\\", lplpBuffer, puLen);
 
         VS_FIXEDFILEINFO lplpBufStructure = new VS_FIXEDFILEINFO(lplpBuffer.getValue());
         lplpBufStructure.read();
@@ -66,4 +68,5 @@ public abstract class GameInfoHelper {
         int v4 = (lplpBufStructure.dwFileVersionLS).intValue() & 0xffff;
         return v1 + "." + v2 + "." + v3 + "." + v4;
     }
+
 }

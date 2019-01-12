@@ -8,7 +8,6 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
@@ -24,19 +23,16 @@ import retrofit2.converter.jackson.JacksonConverterFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import static java.lang.Thread.sleep;
 
 class InterfaceController{
     ServerStatus status;
-    private Retrofit retrofit;
     private FXDataService client;
     private GameStatus gamestatus;
-
-
     private ObservableList<Game> games;
     private ObservableList<User> users;
-
     @FXML
     Label lblStatus;
     @FXML
@@ -50,7 +46,7 @@ class InterfaceController{
 
 
     InterfaceController(){
-        retrofit = new Retrofit.Builder()
+        Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://localhost:8080/fx/")
                 .addConverterFactory(JacksonConverterFactory.create())
                 .build();
@@ -160,9 +156,7 @@ class InterfaceController{
             }
         });
 
-        users.addListener((ListChangeListener<User>) c -> {
-            lvUsers.setItems(users);
-        });
+        users.addListener((ListChangeListener<User>) c -> lvUsers.setItems(users));
 
         lvUsers.setCellFactory(c -> new ListCell<User>(){
             @Override
@@ -185,7 +179,7 @@ class InterfaceController{
             public void onResponse(Call<GameStatus> call, Response<GameStatus> response) {
                 GameStatus status = response.body();
                 gamestatus = status;
-                if(status.unzipping)
+                if(Objects.requireNonNull(status).unzipping)
                     Platform.runLater(() -> lblAvailable.setText("Unzipping: " + ((double)Math.round(status.unzipProgress*1000))/10. + "%"));
                 else if(status.downloading)
                     Platform.runLater(() -> lblAvailable.setText("Downloading: " + ((double)Math.round(status.downloadProgress*1000))/10. + "%"));
@@ -217,6 +211,7 @@ class InterfaceController{
         callDownload.enqueue(new Callback<Integer>() {
             @Override
             public void onResponse(Call<Integer> call, Response<Integer> response) {
+                //noinspection ConstantConditions
                 if(response.body() == -2)
                     Platform.runLater(() -> lblAvailable.setText("Not enough space available."));
             }
