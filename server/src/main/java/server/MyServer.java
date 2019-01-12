@@ -122,7 +122,8 @@ public final class MyServer extends com.esotericsoftware.kryonet.Server {
                         return;
                     }
                     User olduser = users.put(connection.getID(), message.user);
-                    System.out.println(olduser.getName() + " changed to " + message.user.getName());
+                    if(!olduser.getName().equals(users.get(connection.getID()).getName()))
+                        System.out.println(olduser.getName() + " changed to " + message.user.getName());
                     sendToAllTCP(new UserlistMessage(users));
                 }
                 if(object instanceof DownloadRequest){

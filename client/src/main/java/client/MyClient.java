@@ -61,7 +61,7 @@ public class MyClient extends com.esotericsoftware.kryonet.Client {
 
     public boolean updateUser(User user){
         boolean changed = false;
-        changed = changeUsername(user.getName()) || changeGamepath(user.getGamepath());
+        changed = changeUsername(user.getName()) | changeGamepath(user.getGamepath());
         return changed;
     }
 
@@ -91,7 +91,6 @@ public class MyClient extends com.esotericsoftware.kryonet.Client {
         if(!PropertiesHelper.setGamePath(gamepath))
             return false;
         user.setGamepath(gamepath);
-        sendTCP(new UserupdateMessage(user));
         return true;
     }
 
@@ -311,38 +310,4 @@ public class MyClient extends com.esotericsoftware.kryonet.Client {
         }
     }
 
-    /*
-
-
-
-    public int downloadGame(String gameName){
-        for (Game game : gamelist) {
-            if(game.getName().equals(gameName)){
-                return downloadGame(game);
-            }
-        }
-        return 3;
-    }
-
-
-
-    public ArrayList<Game> getGamelist(){
-        return this.gamelist;
-    }
-
-    public HashMap<Integer, User> getUserlist(){
-        return this.userlist;
-    }
-
-    public String status(){
-        return status;
-    }
-
-    public void update(){
-        this.user = new User();
-        File dFile = new File(PropertiesHelper.getGamepath());
-        if(!dFile.exists()) dFile.mkdirs();
-        client.sendTCP(user);
-    }
-    */
 }

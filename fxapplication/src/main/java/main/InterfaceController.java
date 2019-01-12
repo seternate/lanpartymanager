@@ -161,7 +161,6 @@ class InterfaceController{
         });
 
         users.addListener((ListChangeListener<User>) c -> {
-            System.out.println("changed");
             lvUsers.setItems(users);
         });
 
