@@ -13,6 +13,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -78,7 +80,7 @@ public class LoginController extends Application {
     }
 
     @FXML
-    public void openInterface(ActionEvent event) throws IOException {
+    public void openInterface() throws IOException {
         if(!status.serverConnection) {
             System.err.println("No connection to a server.");
             return;
@@ -88,6 +90,13 @@ public class LoginController extends Application {
         Call<Boolean> postLogin = client.login(user);
         postLogin.execute();
         loadInterface();
+    }
+
+    @FXML
+    public void enter(KeyEvent event) throws IOException {
+        if(event.getCode() == KeyCode.ENTER){
+            openInterface();
+        }
     }
 
     private void loadInterface() throws IOException {
