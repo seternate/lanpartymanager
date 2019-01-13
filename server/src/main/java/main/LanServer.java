@@ -10,9 +10,10 @@ public final class LanServer {
 
 
     public static void main(String[] args) {
-        if(args.length != 1)
-            //TODO
-            System.out.println("USAGE");
+        if(args.length != 1) {
+            System.out.println("USAGE: LanServer path/to/zip/game/folder");
+            return;
+        }
         String pathCompressed = args[0];
         File cFile = new File(pathCompressed);
         if(cFile.exists() && cFile.isDirectory()){
@@ -20,6 +21,7 @@ public final class LanServer {
             server.start();
         }else{
             System.out.println("Directory does not exist: " + pathCompressed);
+            return;
         }
         userInput();
     }

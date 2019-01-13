@@ -87,7 +87,6 @@ public final class SevenZipHelper {
                     }
                     unzipProgress = (double)index/(double)totalItems;
                     download.unzipProgress = unzipProgress;
-                    System.out.println("Unzipped: " + ((double)Math.round(unzipProgress*1000))/10. + "% from " + download.game.getName());
                     return data.length; // Return amount of consumed data
                 }
             };
@@ -128,6 +127,7 @@ public final class SevenZipHelper {
             if (!isFolder) {
                 switch (extractAskMode) {
                     case EXTRACT:
+                        System.out.println("Unzipped: " + ((double)Math.round(unzipProgress*1000))/10. + "% from " + download.game.getName());
                         System.out.println("Extracted " + path);
                         break;
                     case TEST:

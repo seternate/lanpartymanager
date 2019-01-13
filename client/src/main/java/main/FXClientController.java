@@ -13,7 +13,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/fx")
 public class FXClientController {
-    private MyClient client = Main.client;
+    private MyClient client = LanClient.client;
 
 
     @RequestMapping(value = "/status", method = RequestMethod.GET)

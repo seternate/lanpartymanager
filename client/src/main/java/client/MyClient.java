@@ -32,7 +32,7 @@ public final class MyClient extends com.esotericsoftware.kryonet.Client {
     public MyClient(){
         super();
         downloadManager = new DownloadManager();
-        user = new User();
+        user = new User(true);
         status = new ServerStatus();
         NetworkClassRegistrationHelper.registerClasses(this);
         registerListener();
@@ -82,7 +82,6 @@ public final class MyClient extends com.esotericsoftware.kryonet.Client {
                 }
                 user.setGamepath(path.toString());
                 PropertiesHelper.setGamePath(path.toString());
-                System.out.println("changed username-path");
             }
         }
         return user;
@@ -106,7 +105,6 @@ public final class MyClient extends com.esotericsoftware.kryonet.Client {
 
     public List<User> getNewUsers(List<User> users){
         if(this.users.size() != users.size()) {
-            System.out.println("Updated Users.");
             return new ArrayList<>(this.users.values());
         }
         for(User user : users){
@@ -150,7 +148,6 @@ public final class MyClient extends com.esotericsoftware.kryonet.Client {
         if(download.receivedParts < download.totalParts){
             status.downloading = true;
             status.downloadProgress = download.downloadProgress;
-            System.out.println(download.downloadProgress);
         }else{
             status.unzipping = true;
             status.unzipProgress = download.unzipProgress;
@@ -214,7 +211,6 @@ public final class MyClient extends com.esotericsoftware.kryonet.Client {
         if(!game.getOpenServer())
             return false;
         String start;
-        System.out.println("String " + game.getExeServerRelative());
         if(param.equals(""))
             start = "start " + game.getExeServerRelative().substring(1);
         else

@@ -7,7 +7,7 @@ import java.net.URL;
 import java.util.Properties;
 
 public abstract class PropertiesHelper {
-    private final static String SETTINGS_PROPERTIES = "settings.properties";
+    private final static String SETTINGS_PROPERTIES = "settings/settings.properties";
 
 
     public static Properties getProperties(String path){
@@ -56,7 +56,7 @@ public abstract class PropertiesHelper {
         if(properties == null)
             return false;
         properties.setProperty(key, value);
-        URL url = Thread.currentThread().getContextClassLoader().getResource("../resources/" + SETTINGS_PROPERTIES);
+        URL url = Thread.currentThread().getContextClassLoader().getResource(SETTINGS_PROPERTIES);
         if(url == null)
             return false;
         FileOutputStream output;

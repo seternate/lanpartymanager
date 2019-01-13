@@ -11,6 +11,7 @@ import requests.DownloadRequest;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.BindException;
 import java.net.URL;
 import java.util.*;
 
@@ -30,7 +31,10 @@ public final class MyServer extends com.esotericsoftware.kryonet.Server {
         try {
             bind(tcp, udp);
         } catch (IOException e) {
-            e.printStackTrace();
+            if(e instanceof BindException){
+                System.err.println("Address allready in use.\nServer allready running.");
+                System.exit(-10);
+            }
         }
 
         games = loadGames();
@@ -71,7 +75,7 @@ public final class MyServer extends com.esotericsoftware.kryonet.Server {
     }
 
     private List<Properties> getGameproperties(){
-        URL url = getClass().getClassLoader().getResource("dummy.properties");
+        URL url = getClass().getClassLoader().getResource("games/dummy.properties");
         if(url == null){
             System.err.println("dummy.properties not found in resources.");
             return null;
@@ -81,7 +85,7 @@ public final class MyServer extends com.esotericsoftware.kryonet.Server {
         List<Properties> properties = new ArrayList<>();
         properiesNames.forEach(filename -> {
             if(!filename.equals("dummy.properties"))
-                properties.add(PropertiesHelper.getProperties(filename));
+                properties.add(PropertiesHelper.getProperties("games/" + filename));
         });
         return properties;
     }

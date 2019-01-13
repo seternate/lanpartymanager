@@ -11,7 +11,11 @@ public final class User {
     private String ip;
 
 
-    public User(){
+    public User(){ }
+
+    public User(boolean create){
+        if(!create)
+            return;
         this.name = PropertiesHelper.getUsername();
         this.gamepath = PropertiesHelper.getGamepath();
         try {

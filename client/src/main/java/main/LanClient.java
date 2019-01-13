@@ -7,7 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import static java.lang.Thread.sleep;
 
 @SpringBootApplication
-public class Main {
+public class LanClient {
     static MyClient client;
 
 
@@ -20,6 +20,6 @@ public class Main {
                 e.printStackTrace();
             }
         }
-        SpringApplication.run(Main.class, args);
+        SpringApplication.run(LanClient.class, args);
     }
 }
