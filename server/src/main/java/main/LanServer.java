@@ -27,7 +27,7 @@ public final class LanServer {
         new Thread(() -> {
             Scanner scanner = new Scanner(System.in);
             while(true){
-                System.out.println("Input: [rebuildgames] [games] [game -#] [users] [restart] [exit]");
+                System.out.println("\nInput: [rebuildgames] [games] [game -#] [users] [restart] [exit]");
 
                 String[] inputs = scanner.nextLine().split("-");
 
@@ -88,7 +88,7 @@ public final class LanServer {
         System.out.println("Server Exe: " + game.getExeServerRelative());
         System.out.println("Direct connection: " + game.isConnectDirect());
         System.out.println("Open server: " + game.getOpenServer());
-        System.out.println("Size: " + game.getSizeServer() + "\n");
+        System.out.println("Size: " + game.getSizeServer());
     }
 
     private static void printGames(){
