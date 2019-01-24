@@ -2,8 +2,9 @@ package server;
 
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
-import entities.Game;
+import entities.GameList;
 import entities.User;
+import entities.UserList;
 import helper.NetworkClassRegistrationHelper;
 import helper.PropertiesHelper;
 import message.*;
@@ -12,85 +13,168 @@ import requests.DownloadRequest;
 import java.io.File;
 import java.io.IOException;
 import java.net.BindException;
-import java.net.URL;
 import java.util.*;
 
 public final class MyServer extends com.esotericsoftware.kryonet.Server {
-    private List<Game> games;
-    private Map<Integer, User> users;
-    private String gamepath;
+    private static final String PROPERTYDIR = "games";
+
+    private GameList games;
+    private UserList users;
+    private File gameDir;
 
 
     public MyServer(String gamepath){
         super();
-        this.gamepath = gamepath;
         NetworkClassRegistrationHelper.registerClasses(this);
+        registerListener();
 
         int tcp = PropertiesHelper.getServerTcp();
         int udp = PropertiesHelper.getServerUdp();
         try {
             bind(tcp, udp);
         } catch (IOException e) {
-            if(e instanceof BindException){
-                System.err.println("Address allready in use.\nServer allready running.");
+            if(e instanceof BindException) {
+                System.err.println("Address is already bound and/or server is already running.");
                 System.exit(-10);
             }
         }
 
-        games = loadGames();
-        printGames();
-        users = new HashMap<>();
+        try {
+            games = new GameList(PROPERTYDIR);
 
-        registerListener();
-    }
-
-    public void updateGames(){
-        games = loadGames();
-        printGames();
-        sendToAllTCP(new GamelistMessage(games));
-    }
-
-    public void printGames(){
-        games.forEach(Game::print);
-    }
-
-    public void printUsers(){
-        if(users.isEmpty()) {
-            System.out.println("No users logged in.");
-            return;
+        } catch (IOException e) {
+            System.err.println(e.getMessage());
+            System.exit(-11);
         }
-        users.values().forEach(User::print);
+
+        users = new UserList();
+
+        gameDir = new File(gamepath);
+        if(!gameDir.isDirectory()) {
+            System.err.println("Specified gamepath isn't a directory and/or doesn't exist.");
+            System.exit(-12);
+        }
+
+        games.forEach(game -> {
+            File gameFile = new File(gameDir, game.getServerFileName());
+            if(!gameFile.isFile()) {
+                System.err.println("No file found for '" + game.getName() + "'.");
+                System.exit(-14);
+            }
+        });
     }
 
-    public String getGamepath(){
-        return gamepath;
+    @SuppressWarnings("CopyConstructorMissesField")
+    public MyServer(MyServer server){
+        this(server.gameDir.getAbsolutePath());
+        this.start();
     }
 
-    private List<Game> loadGames(){
-        List<Game> games = new ArrayList<>();
-        List<Properties> gameProperties = getGameproperties();
-        if (gameProperties != null)
-            gameProperties.forEach(property -> games.add(new Game(property)));
+    public GameList getGames(){
         return games;
     }
 
-    private List<Properties> getGameproperties(){
-        URL url = getClass().getClassLoader().getResource("games/dummy.properties");
-        if(url == null){
-            System.err.println("dummy.properties not found in resources.");
-            return null;
+    public List<User> getUsersAsList(){
+        return users.toList();
+    }
+
+    public void updateGames(){
+        try {
+            games = new GameList(PROPERTYDIR);
+        } catch (IOException e) {
+            System.err.println(e.getMessage());
+            System.exit(-13);
         }
-        File rFile = new File(url.getPath()).getParentFile();
-        List<String> properiesNames = new ArrayList<>(Arrays.asList(Objects.requireNonNull(rFile.list())));
-        List<Properties> properties = new ArrayList<>();
-        properiesNames.forEach(filename -> {
-            if(!filename.equals("dummy.properties"))
-                properties.add(PropertiesHelper.getProperties("games/" + filename));
-        });
-        return properties;
+        sendToAllTCP(new GamelistMessage(games));
+    }
+
+
+    private boolean loginPlayer(Connection connection, User user){
+        if(!users.containsKey(connection.getID())){
+            users.put(connection.getID(), user);
+            System.out.println(user + " logged in.");
+            return true;
+        }
+        return false;
+    }
+
+    private boolean playerUpdate(Connection connection, User user){
+        if(users.containsKey(connection.getID()) && !users.get(connection.getID()).equals(user)){
+            User olduser = users.put(connection.getID(), user);
+            System.out.println(olduser + " changed to " + user + ".");
+            return true;
+        }
+        return false;
     }
 
     private void registerListener(){
+        registerLoginListener();
+        registerUserupdateListener();
+        registerDownloadListener();
+        registerDisconnectListener();
+    }
+
+    private void registerLoginListener(){
+        addListener(new Listener() {
+            @Override
+            public void received(Connection connection, Object object) {
+                if(object instanceof LoginMessage) {
+                    LoginMessage message = (LoginMessage)object;
+                    if(!loginPlayer(connection, message.user)) {
+                        connection.sendTCP(new ErrorMessage(ErrorMessage.userAlreadyLoggedIn));
+                        System.err.println(message.user + " is already logged in.");
+                        return;
+                    }
+                    connection.sendTCP(new GamelistMessage(games));
+                    sendToAllTCP(new UserlistMessage(users));
+                }
+            }
+        });
+    }
+
+    private void registerUserupdateListener(){
+        addListener(new Listener() {
+            @Override
+            public void received(Connection connection, Object object) {
+                if(object instanceof UserupdateMessage) {
+                    UserupdateMessage message = (UserupdateMessage)object;
+                    if(!playerUpdate(connection, message.user)) {
+                        connection.sendTCP(new ErrorMessage(ErrorMessage.userNotLoggedIn));
+                        System.err.println(message.user + " is not logged in.");
+                        return;
+                    }
+                    sendToAllTCP(new UserlistMessage(users));
+                }
+            }
+        });
+    }
+
+    private void registerDownloadListener(){
+        addListener(new Listener() {
+            @Override
+            public void received(Connection connection, Object object) {
+                if(object instanceof DownloadRequest) {
+                    DownloadRequest request = (DownloadRequest)object;
+                    if(!users.containsKey(connection.getID())){
+                        System.err.println(users.get(connection.getID()) + " is not logged in.");
+                        connection.sendTCP(new ErrorMessage(ErrorMessage.userNotLoggedIn));
+                        return;
+                    }
+                    if(!games.contains(request.game)){
+                        System.err.println("No game named '" + request.game + "' found on the server.");
+                        connection.sendTCP(new ErrorMessage(ErrorMessage.gameNotOnServer + request.game));
+                        return;
+                    }
+                    String ipAddress = connection.getRemoteAddressTCP().getAddress().getHostAddress();
+                    File gameFile = new File(gameDir , request.game.getServerFileName());
+                    new GameFileSender(ipAddress, request.port, gameFile, request.game.getName(),
+                            users.get(connection.getID()).getName());
+                }
+            }
+        });
+    }
+
+    private void registerDisconnectListener(){
         addListener(new Listener() {
             @Override
             public void disconnected(Connection connection) {
@@ -99,51 +183,9 @@ public final class MyServer extends com.esotericsoftware.kryonet.Server {
                     System.err.println("Can't remove player with ID: " + connection.getID());
                     return;
                 }
-                System.out.println(user.getName() + " disconnected.");
+                System.out.println(user + " disconnected.");
                 sendToAllTCP(new UserlistMessage(users));
-            }
-            @Override
-            public void received(Connection connection, Object object){
-                if(object instanceof LoginMessage){
-                    LoginMessage message = (LoginMessage)object;
-                    System.out.println(message.user.getName() + " trying to log in ...");
-                    if(users.containsKey(connection.getID())){
-                        connection.sendTCP(new ErrorMessage(ErrorMessage.userAllreadyLoggedIn));
-                        System.err.println(message.user.getName() + " is allready logged in.");
-                        return;
-                    }
-                    users.put(connection.getID(), message.user);
-                    System.out.println(message.user.getName() + " logged in and sending games and users.");
-                    connection.sendTCP(new GamelistMessage(games));
-                    sendToAllTCP(new UserlistMessage(users));
-                }
-                if(object instanceof UserupdateMessage){
-                    UserupdateMessage message = (UserupdateMessage)object;
-                    System.out.println("Receiving user update ...");
-                    if(!users.containsKey(connection.getID())){
-                        connection.sendTCP(new ErrorMessage(ErrorMessage.userNotLoggedIn));
-                        System.err.println(message.user.getName() + " not logged in.");
-                        return;
-                    }
-                    User olduser = users.put(connection.getID(), message.user);
-                    if(!Objects.requireNonNull(olduser).getName().equals(users.get(connection.getID()).getName()))
-                        System.out.println(olduser.getName() + " changed to " + message.user.getName());
-                    sendToAllTCP(new UserlistMessage(users));
-                }
-                if(object instanceof DownloadRequest){
-                    DownloadRequest request = (DownloadRequest)object;
-                    if(!games.contains(request.game)){
-                        connection.sendTCP(new ErrorMessage(ErrorMessage.gameNotOnServer + request.game.getName()));
-                        System.err.println(request.game.getName() + " can't be served for download. Game don't exists.");
-                        return;
-                    }
-                    String ipAddress = connection.getRemoteAddressTCP().getAddress().getHostAddress();
-                    String filePath = gamepath + request.game.getFileServer();
-                    new FileClient(ipAddress, request.port, filePath, request.game.getName(),
-                            users.get(connection.getID()).getName());
-                }
             }
         });
     }
-
 }

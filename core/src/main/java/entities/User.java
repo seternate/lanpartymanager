@@ -7,7 +7,6 @@ import java.net.UnknownHostException;
 
 public final class User {
     private String name;
-    private String gamepath;
     private String ip;
 
 
@@ -17,7 +16,6 @@ public final class User {
         if(!create)
             return;
         this.name = PropertiesHelper.getUsername();
-        this.gamepath = PropertiesHelper.getGamepath();
         try {
             ip = InetAddress.getLocalHost().getHostAddress();
         } catch (UnknownHostException e) {
@@ -25,18 +23,13 @@ public final class User {
         }
     }
 
-    public User(String name, String gamepath){
+    public User(String name){
         this.name = name;
-        this.gamepath = gamepath;
     }
 
-    public User(String name, String gamepath, String ip){
-        this(name, gamepath);
+    public User(String name, String ip){
+        this(name);
         this.ip = ip;
-    }
-
-    public void print(){
-        System.out.println(name);
     }
 
     public String getName(){
@@ -47,19 +40,16 @@ public final class User {
         this.name = name;
     }
 
-    public String getGamepath(){
-        return gamepath;
-    }
-
-    public void setGamepath(String gamepath){
-        this.gamepath = gamepath;
-    }
-
     public String getIp(){
         return ip;
     }
 
     public boolean equals(User user){
-        return name.equals(user.getName()) && gamepath.equals(user.getGamepath());
+        return name.equals(user.getName()) && ip.equals(user.getIp());
+    }
+
+    @Override
+    public String toString(){
+        return name;
     }
 }

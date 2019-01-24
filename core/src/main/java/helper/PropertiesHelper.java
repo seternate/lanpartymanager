@@ -1,9 +1,11 @@
 package helper;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.Properties;
 
 public abstract class PropertiesHelper {
@@ -12,9 +14,12 @@ public abstract class PropertiesHelper {
 
     public static Properties getProperties(String path){
         Properties properties = new Properties();
-        InputStream pFile = Thread.currentThread().getContextClassLoader().getResourceAsStream(path);
-        if(pFile == null)
+        InputStream pFile = ClassLoader.getSystemResourceAsStream(path);
+        if(pFile == null) {
+            System.out.println("here");
             return null;
+
+        }
         try {
             properties.load(pFile);
         } catch (IOException e) {

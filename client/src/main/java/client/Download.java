@@ -53,7 +53,7 @@ public final class Download extends Thread {
 
     private void saveFile(Socket clientSock) throws IOException {
         DataInputStream dis = new DataInputStream(clientSock.getInputStream());
-        String path = PropertiesHelper.getGamepath() + game.getFileServer();
+        String path = PropertiesHelper.getGamepath() + game.getServerFileName();
 
         byte[] buffer = new byte[1048576];
         FileOutputStream fos = new FileOutputStream(path, false);
