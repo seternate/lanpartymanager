@@ -3,6 +3,7 @@ package entities;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.*;
 
@@ -21,7 +22,9 @@ public class GameList extends ArrayList<Game> {
             if(fileProperty.getName().equals("dummy.properties") || !fileProperty.getName().endsWith(".properties"))
                 continue;
             Properties property = new Properties();
-            property.load(new FileInputStream(fileProperty));
+            InputStream istream = new FileInputStream(fileProperty);
+            property.load(istream);
+            istream.close();
             this.add(new Game(property));
         }
 
