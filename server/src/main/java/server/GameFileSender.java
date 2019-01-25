@@ -6,7 +6,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.Socket;
 
-public class GameFileSender extends Thread{
+public final class GameFileSender extends Thread{
     private Socket socket;
     private String gameName, username;
     private File gameFile;
