@@ -9,6 +9,8 @@ import java.util.*;
 
 public class GameList extends ArrayList<Game> {
 
+    public GameList(){ }
+
     public GameList(String propertyDirectory) throws IOException {
         super();
 

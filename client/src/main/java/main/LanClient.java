@@ -13,13 +13,18 @@ public class LanClient {
 
     public static void main(String[] args) {
         client = new MyClient();
+        client.start();
+        waitFirstConnection();
+        SpringApplication.run(LanClient.class, args);
+    }
+
+    public static void waitFirstConnection(){
         while(!client.isConnected()){
             try {
-                sleep(100);
+                sleep(10);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
-        SpringApplication.run(LanClient.class, args);
     }
 }

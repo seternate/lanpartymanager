@@ -2,11 +2,9 @@ package server;
 
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
-import entities.GameList;
-import entities.User;
-import entities.UserList;
+import entities.*;
 import helper.NetworkClassRegistrationHelper;
-import helper.PropertiesHelper;
+import helper.PropertyHelper;
 import message.*;
 import requests.DownloadRequest;
 
@@ -28,10 +26,16 @@ public final class MyServer extends com.esotericsoftware.kryonet.Server {
         NetworkClassRegistrationHelper.registerClasses(this);
         registerListener();
 
-        int tcp = PropertiesHelper.getServerTcp();
-        int udp = PropertiesHelper.getServerUdp();
+        Settings settings = null;
         try {
-            bind(tcp, udp);
+            settings = new ServerSettings();
+        } catch (IOException e) {
+            System.err.println("No settings file found.");
+            System.exit(-9);
+        }
+
+        try {
+            bind(settings.getServerTcp(), settings.getServerUdp());
         } catch (IOException e) {
             if(e instanceof BindException) {
                 System.err.println("Address is already bound and/or server is already running.");
@@ -168,7 +172,7 @@ public final class MyServer extends com.esotericsoftware.kryonet.Server {
                     String ipAddress = connection.getRemoteAddressTCP().getAddress().getHostAddress();
                     File gameFile = new File(gameDir , request.game.getServerFileName());
                     new GameFileSender(ipAddress, request.port, gameFile, request.game.getName(),
-                            users.get(connection.getID()).getName());
+                            users.get(connection.getID()).getUsername());
                 }
             }
         });

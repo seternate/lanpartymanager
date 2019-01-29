@@ -1,33 +1,9 @@
-package main;
-
-import entities.Game;
-import entities.GameStatus;
-import entities.ServerStatus;
-import entities.User;
-import javafx.application.Platform;
-import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
-import javafx.collections.ObservableList;
-import javafx.fxml.FXML;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.jackson.JacksonConverterFactory;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+package controller;
 
 import static java.lang.Thread.sleep;
 
 class InterfaceController{
+    /*
     ServerStatus status;
     private FXDataService client;
     private GameStatus gamestatus;
@@ -165,7 +141,7 @@ class InterfaceController{
                 setGraphic(null);
                 setText(null);
                 if(item != null){
-                    setText(item.getName());
+                    setText(item.getUsername());
                 }
             }
         });
@@ -257,7 +233,7 @@ class InterfaceController{
 
     @FXML
     private void connectServer(){
-        Call<Boolean> callConnect = client.connect(lvGames.getSelectionModel().getSelectedItem(), lvUsers.getSelectionModel().getSelectedItem().getIp());
+        Call<Boolean> callConnect = client.connect(lvGames.getSelectionModel().getSelectedItem(), lvUsers.getSelectionModel().getSelectedItem().getIpAddress());
         callConnect.enqueue(new Callback<Boolean>() {
             @Override
             public void onResponse(Call<Boolean> call, Response<Boolean> response) { }
@@ -265,5 +241,6 @@ class InterfaceController{
             public void onFailure(Call<Boolean> call, Throwable t) { }
         });
     }
+    */
 
 }

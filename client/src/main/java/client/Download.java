@@ -2,7 +2,7 @@ package client;
 
 
 import entities.Game;
-import helper.PropertiesHelper;
+import helper.PropertyHelper;
 
 import java.io.DataInputStream;
 import java.io.File;
@@ -40,7 +40,7 @@ public final class Download extends Thread {
         while (!clientSock.isConnected()) {
             try {
                 clientSock = ss.accept();
-                saveFile(clientSock);
+                //saveFile(clientSock);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -51,9 +51,10 @@ public final class Download extends Thread {
         this.manager = manager;
     }
 
+    /*
     private void saveFile(Socket clientSock) throws IOException {
         DataInputStream dis = new DataInputStream(clientSock.getInputStream());
-        String path = PropertiesHelper.getGamepath() + game.getServerFileName();
+        String path = PropertyHelper.getGamepath() + game.getServerFileName();
 
         byte[] buffer = new byte[1048576];
         FileOutputStream fos = new FileOutputStream(path, false);
@@ -82,7 +83,7 @@ public final class Download extends Thread {
 
         System.out.println("Unzipping " + game.getName());
         try {
-            new SevenZipHelper(path, PropertiesHelper.getGamepath(), false, null, this).extract();
+            new SevenZipHelper(path, PropertyHelper.getGamepath(), false, null, this).extract();
         } catch (SevenZipHelper.ExtractionException e) {
             e.printStackTrace();
         }
@@ -95,5 +96,6 @@ public final class Download extends Thread {
 
         manager.remove(this);
     }
+    */
 
 }

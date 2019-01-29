@@ -1,34 +1,43 @@
-package main;
+package controller;
 
-import entities.ServerStatus;
-import entities.User;
 import javafx.application.Application;
-import javafx.application.Platform;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.image.Image;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
+import clientInterface.FXDataClient;
 import javafx.stage.Stage;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import main.LanFXApp;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
-import java.io.IOException;
-import java.net.ConnectException;
-import java.util.Objects;
-
 import static java.lang.Thread.sleep;
 
-public class LoginController extends Application {
+public class LoginStage extends Stage {
+    @FXML
+    private TextField txtfieldUsername, txtfieldGamepath;
+    @FXML
+    private Button btnLogin;
+    @FXML
+    private Label lblStatus;
+
+
+    @FXML
+    private void initialize(){
+        System.out.println("he");
+    }
+
+    @FXML
+    private void openInterface(){
+
+    }
+
+    @FXML
+    private void enter(){
+
+    }
+
+    /*
     private FXDataService client;
     private Stage stage;
     private ServerStatus status;
@@ -41,7 +50,7 @@ public class LoginController extends Application {
     private Button btnFinish;
 
 
-    public LoginController() {
+    public LoginStage() {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://localhost:8080/fx/")
                 .addConverterFactory(JacksonConverterFactory.create())
@@ -60,7 +69,7 @@ public class LoginController extends Application {
     public void start(Stage primaryStage) throws Exception {
         User login = getLogin();
         this.stage = primaryStage;
-        FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("Preloader.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("login.fxml"));
         loader.setController(this);
         Parent root = loader.load();
         Scene scene = new Scene(root);
@@ -69,7 +78,7 @@ public class LoginController extends Application {
         primaryStage.setResizable(false);
         primaryStage.setTitle("Lanpartymanager - Start");
         primaryStage.getIcons().add(new Image(Objects.requireNonNull(getClass().getClassLoader().getResource("icon.png")).toExternalForm()));
-        txtfieldUsername.setText(login.getName());
+        txtfieldUsername.setText(login.getUsername());
         txtfieldGamepath.setText(login.getGamepath());
         primaryStage.show();
     }
@@ -179,5 +188,5 @@ public class LoginController extends Application {
         }
         return login;
     }
-
+    */
 }

@@ -1,15 +1,28 @@
 package helper;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.net.URL;
-import java.net.URLClassLoader;
 import java.util.Properties;
 
-public abstract class PropertiesHelper {
-    private final static String SETTINGS_PROPERTIES = "settings/settings.properties";
+public abstract class PropertyHelper {
+
+    public static Properties getProperty(String propertyFile) throws IOException {
+        URL url = ClassLoader.getSystemResource(propertyFile);
+        File fileSetting = new File(url.getPath());
+        if(!fileSetting.isFile())
+            throw new IOException();
+
+        InputStream istream = new FileInputStream(fileSetting);
+        Properties property = new Properties();
+        property.load(istream);
+        istream.close();
+        return property;
+    }
+
+
+
+
+    /*private final static String SETTINGS_PROPERTIES = "settings/settings.properties";
 
 
     public static Properties getProperties(String path){
@@ -75,5 +88,6 @@ public abstract class PropertiesHelper {
         }
         return true;
     }
+    */
 
 }

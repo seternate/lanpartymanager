@@ -2,72 +2,110 @@ package client;
 
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
-import entities.Game;
-import entities.GameStatus;
-import entities.ServerStatus;
-import entities.User;
-import helper.GameFolderHelper;
+import entities.*;
 import helper.NetworkClassRegistrationHelper;
-import helper.PropertiesHelper;
 import message.*;
-import requests.DownloadRequest;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
-import java.net.ServerSocket;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 
 public final class MyClient extends com.esotericsoftware.kryonet.Client {
-    private List<Game> games;
-    private Map<Integer, User> users;
-    private User user;
-    private ServerStatus status;
+    private UserList users;
+    private GameList games;
     private DownloadManager downloadManager;
+    private User user;
+    private ClientSettings settings;
+    private ServerStatus serverStatus;
 
 
     public MyClient(){
         super();
-        downloadManager = new DownloadManager();
-        user = new User(true);
-        status = new ServerStatus();
         NetworkClassRegistrationHelper.registerClasses(this);
         registerListener();
-        start();
+
+        try {
+            settings = new ClientSettings();
+            user = new User(settings);
+        } catch (IOException e) {
+            System.err.println("User creation was not possible.");
+            System.exit(-10);
+        }
+        downloadManager = new DownloadManager();
+        serverStatus = new ServerStatus();
     }
 
     @Override
     public void start(){
         super.start();
+        new Thread(this).start();
+        connect();
+    }
+
+
+    private void connect(){
         new Thread(() -> {
-            while(true){
-                if(isConnected()) {
-                    status.serverConnection = true;
-                    status.serverIP = getRemoteAddressTCP().getHostString();
+            while(!isConnected()){
+                InetAddress address = discoverHost(settings.getServerUdp(), 5000);
+                if(address != null) {
                     try {
-                        Thread.sleep(500);
-                    } catch (InterruptedException e) {
+                        connect(500, address, settings.getServerTcp(), settings.getServerUdp());
+                    } catch (IOException e) {
                         e.printStackTrace();
                     }
-                }else{
-                    status.serverConnection = false;
-                    connect();
                 }
             }
         }).start();
     }
 
+    private void registerListener(){
+        addListener(new Listener() {
+            @Override
+            public void connected(Connection connection) {
+                sendTCP(new LoginMessage(user));
+                System.out.println("Logged in.");
+                serverStatus.setServerIP(connection.getRemoteAddressTCP().getAddress().getHostAddress());
+                serverStatus.connected();
+            }
+            @Override
+            public void disconnected(Connection connection) {
+                serverStatus.disconnected();
+                connect();
+            }
+            @Override
+            public void received (Connection connection, Object object) {
+                if(object instanceof GamelistMessage){
+                    GamelistMessage message = (GamelistMessage)object;
+                    games = message.games;
+                    System.out.println("Received games.");
+                }
+                if(object instanceof UserlistMessage){
+                    UserlistMessage message = (UserlistMessage)object;
+                    users = message.users;
+                    System.out.println("Received users.");
+                }
+                if(object instanceof ErrorMessage){
+                    ErrorMessage message = (ErrorMessage)object;
+                    System.err.println(message.error);
+                }
+            }
+        });
+    }
+
+
+
+
+
+    /*
+
+
     public boolean updateUser(User user){
         boolean changed;
-        changed = changeUsername(user.getName()) | changeGamepath(user.getGamepath());
+        changed = changeUsername(user.getUsername()) | changeGamepath(user.getGamepath());
         return changed;
     }
 
     public ServerStatus getStatus(){
-        return status;
+        return serverStatus;
     }
 
     public User getUser(){
@@ -81,7 +119,7 @@ public final class MyClient extends com.esotericsoftware.kryonet.Client {
                     path.append(split[i]).append("\\");
                 }
                 user.setGamepath(path.toString());
-                PropertiesHelper.setGamePath(path.toString());
+                PropertyHelper.setGamePath(path.toString());
             }
         }
         return user;
@@ -123,7 +161,7 @@ public final class MyClient extends com.esotericsoftware.kryonet.Client {
     public int download(Game game){
         if(game.isUptodate() == 0)
             return -1;
-        File sFile = new File(PropertiesHelper.getGamepath());
+        File sFile = new File(PropertyHelper.getGamepath());
         if(game.getSizeServer() > sFile.getFreeSpace())
             return -2;
         int openport = getOpenPort();
@@ -134,25 +172,25 @@ public final class MyClient extends com.esotericsoftware.kryonet.Client {
     }
 
     public GameStatus getGameStatus(Game game){
-        GameStatus status = new GameStatus();
+        GameStatus serverStatus = new GameStatus();
         int uptodate = game.isUptodate();
         switch(uptodate){
-            case -1: status.download = true; break;
-            case -2: status.playable = true; status.version = false; break;
-            case -3: status.update = true; break;
-            case 0: status.playable = true;
+            case -1: serverStatus.download = true; break;
+            case -2: serverStatus.playable = true; serverStatus.version = false; break;
+            case -3: serverStatus.update = true; break;
+            case 0: serverStatus.playable = true;
         }
         Download download = downloadManager.getDownloadStatus(game);
         if(download == null)
-            return status;
+            return serverStatus;
         if(download.receivedParts < download.totalParts){
-            status.downloading = true;
-            status.downloadProgress = download.downloadProgress;
+            serverStatus.downloading = true;
+            serverStatus.downloadProgress = download.downloadProgress;
         }else{
-            status.unzipping = true;
-            status.unzipProgress = download.unzipProgress;
+            serverStatus.unzipping = true;
+            serverStatus.unzipProgress = download.unzipProgress;
         }
-        return status;
+        return serverStatus;
     }
 
     public boolean openExplorer(Game game){
@@ -218,6 +256,7 @@ public final class MyClient extends com.esotericsoftware.kryonet.Client {
         return startProcess(game, start);
     }
 
+
     private int getOpenPort(){
         ServerSocket server = null;
         try {
@@ -234,46 +273,6 @@ public final class MyClient extends com.esotericsoftware.kryonet.Client {
         return freeport;
     }
 
-    private void registerListener(){
-        addListener(new Listener() {
-            @Override
-            public void connected(Connection connection) {
-                sendTCP(new LoginMessage(user));
-                System.out.println("Logged in.");
-            }
-            @Override
-            public void received (Connection connection, Object object) {
-                if(object instanceof GamelistMessage){
-                    GamelistMessage message = (GamelistMessage)object;
-                    games = message.games;
-                    System.out.println("Received games.");
-                }
-                if(object instanceof UserlistMessage){
-                    UserlistMessage message = (UserlistMessage)object;
-                    users = message.users;
-                    System.out.println("Received users.");
-                }
-                if(object instanceof ErrorMessage){
-                    ErrorMessage message = (ErrorMessage)object;
-                    System.err.println(message.error);
-                }
-            }
-        });
-    }
-
-    private void connect(){
-        int tcp = PropertiesHelper.getServerTcp();
-        int udp = PropertiesHelper.getServerUdp();
-        InetAddress address = discoverHost(udp, 5000);
-        if(address != null) {
-            try {
-                connect(500, address, tcp, udp);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
     private boolean startProcess(Game game, String start) {
         File file = new File(Objects.requireNonNull(GameFolderHelper.getAbsolutePath(game.getExeFileRelative())));
         try {
@@ -288,14 +287,14 @@ public final class MyClient extends com.esotericsoftware.kryonet.Client {
     }
 
     private boolean changeUsername(String username){
-        if(user.getName().equals(username)) {
+        if(user.getUsername().equals(username)) {
             System.err.println("Username is allready " + username);
             return false;
         }else if(!isConnected()){
             System.err.println("No connection to the server.");
         }
-        System.out.println("Changed name from " + user.getName() + " to " + username);
-        if(!PropertiesHelper.setUserName(username))
+        System.out.println("Changed name from " + user.getUsername() + " to " + username);
+        if(!PropertyHelper.setUserName(username))
             return false;
         user.setName(username);
         sendTCP(new UserupdateMessage(user));
@@ -312,10 +311,12 @@ public final class MyClient extends com.esotericsoftware.kryonet.Client {
         if(!gamepath.endsWith("\\"))
             gamepath += "\\";
         System.out.println("Changed path from " + user.getGamepath() + " to " + gamepath);
-        if(!PropertiesHelper.setGamePath(gamepath))
+        if(!PropertyHelper.setGamePath(gamepath))
             return false;
         user.setGamepath(gamepath);
         return true;
     }
+
+    */
 
 }

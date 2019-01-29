@@ -1,11 +1,19 @@
 package helper;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Objects;
 
 public abstract class GameFolderHelper {
     public static String getAbsolutePath(String path){
-        File root = new File(PropertiesHelper.getGamepath());
+        File root = null;
+        try {
+            root = new File(PropertyHelper.getProperty("settings/settings.properties").getProperty("gamepath"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if(root == null)
+            return null;
         if(!root.exists())
             //noinspection ResultOfMethodCallIgnored
             root.mkdirs();

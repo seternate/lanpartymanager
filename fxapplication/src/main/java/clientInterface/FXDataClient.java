@@ -1,15 +1,14 @@
-package main;
+package clientInterface;
 
-import entities.Game;
-import entities.GameStatus;
 import entities.ServerStatus;
-import entities.User;
 import retrofit2.Call;
-import retrofit2.http.*;
+import retrofit2.http.GET;
 
-import java.util.List;
+public interface FXDataClient {
 
-public interface FXDataService {
+    @GET("status")
+    Call<ServerStatus> getStatus();
+    /*
     @GET("status")
     Call<ServerStatus> getStatus();
 
@@ -42,4 +41,5 @@ public interface FXDataService {
 
     @POST("games/startserver")
     Call<Boolean> startServer(@Body Game game, @Query("param") String param);
+    */
 }
