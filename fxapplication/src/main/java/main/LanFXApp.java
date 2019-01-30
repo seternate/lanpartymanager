@@ -1,7 +1,6 @@
 package main;
 
-import controller.ApplicationManager;
-import controller.LoginStage;
+import controller.PreloaderStage;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
@@ -12,10 +11,7 @@ public class LanFXApp extends Application {
     }
 
     @Override
-    public void start(Stage primaryStage) {
-        LoginStage stage = new LoginStage();
-        stage.show();
-        //ApplicationManager manager = new ApplicationManager(primaryStage);
-        //manager.loadLogin();
+    public void start(Stage primaryStage) throws Exception {
+        new PreloaderStage().show();
     }
 }
