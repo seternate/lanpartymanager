@@ -15,7 +15,12 @@ import java.util.List;
 @RestController
 @RequestMapping("/fx")
 public class FXAppInterface {
+    private static final MyClient client = LanClient.client;
 
+    @RequestMapping(value = "/status", method = RequestMethod.GET)
+    public ResponseEntity status(){
+        return new ResponseEntity<>(client.getStatus(), HttpStatus.OK);
+    }
     /*
     @RequestMapping(value = "/status", method = RequestMethod.GET)
     public ResponseEntity<?> status(){
