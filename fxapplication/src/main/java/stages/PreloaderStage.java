@@ -1,4 +1,4 @@
-package controller;
+package stages;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -22,5 +22,12 @@ public class PreloaderStage extends Stage {
         setScene(new Scene(rootNode));
         initStyle(StageStyle.UNDECORATED);
     }
+
+    public void openMainStage(){
+        LoginStage loginStage = new LoginStage();
+        loginStage.show();
+    }
+
+
 
 }

@@ -1,39 +1,10 @@
-package controller;
+package stages;
 
-import javafx.application.Application;
-import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
-import clientInterface.FXDataClient;
 import javafx.stage.Stage;
-import main.LanFXApp;
-import retrofit2.Retrofit;
-import retrofit2.converter.jackson.JacksonConverterFactory;
-
-import static java.lang.Thread.sleep;
 
 public class LoginStage extends Stage {
-    @FXML
-    private TextField txtfieldUsername, txtfieldGamepath;
-    @FXML
-    private Button btnLogin;
-    @FXML
-    private Label lblStatus;
 
-
-    @FXML
-    private void initialize(){
-        System.out.println("he");
-    }
-
-    @FXML
-    private void openInterface(){
-
-    }
-
-    @FXML
-    private void enter(){
+    public LoginStage(){
 
     }
 

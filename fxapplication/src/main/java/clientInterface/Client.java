@@ -1,14 +1,11 @@
 package clientInterface;
 
+import controller.ApplicationManager;
 import entities.ServerStatus;
 import entities.User;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
-import java.awt.event.ActionListener;
 import java.io.IOException;
 
 public class Client extends Thread {
@@ -22,27 +19,30 @@ public class Client extends Thread {
                 .addConverterFactory(JacksonConverterFactory.create())
                 .build();
         client = retrofit.create(FXDataClient.class);
-        status = new ServerStatus();
+        status = null;
         user = new User();
+        start();
     }
 
     @Override
     public void run() {
-        try {
-            status = client.getStatus().execute().body();
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.out.println(e.getMessage());
+        //Close PreloaderStage after one successful connection to the Client-Application.
+        while(status == null) {
+            try {
+                status = client.getStatus().execute().body();
+                ApplicationManager.notifyPreloader();
+            } catch (Exception e) {
+                System.err.println("Cannot initialize.");
+            }
         }
-    }
 
-    public String getUsername(){
-        //Todo
-        return String.valueOf(status.isConnected());
-    }
+        //Update all fields.
+        while(true){
+            try {
+                status = client.getStatus().execute().body();
+            } catch (IOException e) {
 
-    public String getGamepath(){
-        //Todo
-        return "gamepath";
+            }
+        }
     }
 }
