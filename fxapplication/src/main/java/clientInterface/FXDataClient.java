@@ -8,6 +8,7 @@ public interface FXDataClient {
 
     @GET("status")
     Call<ServerStatus> getStatus();
+
     /*
     @GET("status")
     Call<ServerStatus> getStatus();

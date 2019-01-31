@@ -8,6 +8,11 @@ public class LoginStage extends Stage {
 
     }
 
+    public void show(PreloaderStage preloaderStage){
+        super.show();
+        preloaderStage.hide();
+    }
+
     /*
     private FXDataService client;
     private Stage stage;

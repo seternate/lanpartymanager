@@ -1,10 +1,8 @@
 package main;
 
-import clientInterface.Client;
 import controller.ApplicationManager;
 import javafx.application.Application;
 import javafx.stage.Stage;
-import stages.PreloaderStage;
 
 public class LanFXApp extends Application {
 
@@ -14,6 +12,6 @@ public class LanFXApp extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        ApplicationManager.startApplication();
+        ApplicationManager.start();
     }
 }
