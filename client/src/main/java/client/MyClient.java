@@ -96,6 +96,10 @@ public final class MyClient extends com.esotericsoftware.kryonet.Client {
         return serverStatus;
     }
 
+    public User getUser(){
+        return user;
+    }
+
 
 
 

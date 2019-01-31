@@ -1,16 +1,10 @@
 package springboot;
 
 import client.MyClient;
-import entities.Game;
-import entities.GameStatus;
-import entities.User;
-import javafx.stage.Stage;
 import main.LanClient;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/fx")
@@ -20,6 +14,11 @@ public class FXAppInterface {
     @RequestMapping(value = "/status", method = RequestMethod.GET)
     public ResponseEntity status(){
         return new ResponseEntity<>(client.getStatus(), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/user", method = RequestMethod.GET)
+    public ResponseEntity user(){
+        return new ResponseEntity<>(client.getUser(), HttpStatus.OK);
     }
     /*
     @RequestMapping(value = "/status", method = RequestMethod.GET)

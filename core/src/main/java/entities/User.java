@@ -31,6 +31,10 @@ public final class User {
         return false;
     }
 
+    public String getGamepath(){
+        return settings.getGamepath();
+    }
+
     public String getIpAddress(){
         return ipAddress;
     }

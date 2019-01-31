@@ -25,4 +25,12 @@ public class ApplicationManager {
     public static boolean isRunning(){
         return preloaderStage == null && loginStage == null;
     }
+
+    public static String getUsername(){
+        return client.getUsername();
+    }
+
+    public static String getGamepath(){
+        return client.getGamepath();
+    }
 }

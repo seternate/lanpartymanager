@@ -54,9 +54,18 @@ public class Client extends Thread {
             try {
                 sleep(50);
                 status = client.getStatus().execute().body();
+                user = client.getUser().execute().body();
             } catch (Exception e) {
                 System.err.println("Client-application connection problems.");
             }
         }
+    }
+
+    public String getUsername(){
+        return user.getUsername();
+    }
+
+    public String getGamepath(){
+        return user.getGamepath();
     }
 }

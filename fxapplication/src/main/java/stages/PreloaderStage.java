@@ -28,6 +28,7 @@ public class PreloaderStage extends Stage {
             getIcons().add(new Image(icon));
         }
         initStyle(StageStyle.UNDECORATED);
+        setTitle("Lanpartymanager - Loading...");
         controller = loader.getController();
     }
 
