@@ -50,7 +50,7 @@ public final class MyClient extends com.esotericsoftware.kryonet.Client {
                     try {
                         connect(500, address, settings.getServerTcp(), settings.getServerUdp());
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        System.err.println("No server running.");
                     }
                 }
             }
@@ -70,6 +70,7 @@ public final class MyClient extends com.esotericsoftware.kryonet.Client {
             public void disconnected(Connection connection) {
                 serverStatus.disconnected();
                 connect();
+                System.err.println("Server connection lost.");
             }
             @Override
             public void received (Connection connection, Object object) {
@@ -91,6 +92,9 @@ public final class MyClient extends com.esotericsoftware.kryonet.Client {
         });
     }
 
+    public ServerStatus getStatus(){
+        return serverStatus;
+    }
 
 
 

@@ -3,28 +3,17 @@ package main;
 import client.MyClient;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-
-import static java.lang.Thread.sleep;
+import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
+@ComponentScan(basePackages="springboot")
 public class LanClient {
-    static MyClient client;
+    public static MyClient client;
 
 
     public static void main(String[] args) {
         client = new MyClient();
         client.start();
-        waitFirstConnection();
         SpringApplication.run(LanClient.class, args);
-    }
-
-    public static void waitFirstConnection(){
-        while(!client.isConnected()){
-            try {
-                sleep(10);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
     }
 }
