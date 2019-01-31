@@ -8,15 +8,22 @@ import javafx.scene.control.Label;
 import javafx.util.Duration;
 
 public class PreloaderController {
+    private Animation animation;
+
     @FXML
     private Label lblStatus;
 
     @FXML
     private void initialize(){
-        animateText(lblStatus);
+        animation = animateText(lblStatus);
+        animation.play();
     }
 
-    private void animateText(Label label){
+    public void stopAnimations(){
+        animation.stop();
+    }
+
+    private Animation animateText(Label label){
         final Animation animation = new Transition() {
             {
                 setCycleDuration(Duration.millis(3000));
@@ -27,6 +34,6 @@ public class PreloaderController {
             }
         };
         animation.setOnFinished((ActionEvent event) -> animation.play());
-        animation.play();
+        return animation;
     }
 }
