@@ -1,5 +1,8 @@
 package entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public final class ServerStatus {
     private boolean serverConnection;
     private String serverIP;
@@ -15,14 +18,18 @@ public final class ServerStatus {
     }
 
     public void connected(){
-        serverConnection = true;
+        setServerConnection(true);
     }
 
     public void disconnected(){
-        serverConnection = false;
+        setServerConnection(false);
     }
 
     public void setServerIP(String ipAddress){
         serverIP = ipAddress;
+    }
+
+    public void setServerConnection(boolean connection){
+        serverConnection = connection;
     }
 }
