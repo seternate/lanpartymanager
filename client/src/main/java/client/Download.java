@@ -2,11 +2,7 @@ package client;
 
 
 import entities.Game;
-import helper.PropertyHelper;
 
-import java.io.DataInputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;

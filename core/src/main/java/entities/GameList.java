@@ -7,7 +7,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.*;
 
-public class GameList extends ArrayList<Game> {
+public final class GameList extends ArrayList<Game> {
 
     public GameList(){ }
 

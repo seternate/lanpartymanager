@@ -7,10 +7,6 @@ import entities.*;
 import message.*;
 import requests.DownloadRequest;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Properties;
-
 public abstract class NetworkClassRegistrationHelper {
 
     public static void registerClasses(Server server){

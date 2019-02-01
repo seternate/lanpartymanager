@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class UserList extends HashMap<Integer, User> {
+public final class UserList extends HashMap<Integer, User> {
 
     public UserList(){ }
 

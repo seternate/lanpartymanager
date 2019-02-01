@@ -1,7 +1,7 @@
 package clientInterface;
 
+import deserialize.User;
 import entities.ServerStatus;
-import entities.User;
 import retrofit2.Call;
 import retrofit2.http.GET;
 

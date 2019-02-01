@@ -3,7 +3,7 @@ package entities;
 import java.io.*;
 import java.net.InetAddress;
 
-public final class User {
+public final class User implements UserInterface{
     private ClientSettings settings;
     private String ipAddress;
 
@@ -39,8 +39,8 @@ public final class User {
         return ipAddress;
     }
 
-    public boolean equals(User user){
-        return getUsername().equals(user.getUsername()) && ipAddress.equals(user.getIpAddress());
+    public boolean equals(UserInterface user){
+        return getUsername().equals(user.getUsername()) && getIpAddress().equals(user.getIpAddress());
     }
 
     @Override

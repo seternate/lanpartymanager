@@ -7,7 +7,7 @@ import stages.PreloaderStage;
 public class ApplicationManager {
     private static PreloaderStage preloaderStage = null;
     private static LoginStage loginStage = null;
-    private static Client client = null;
+    private static volatile Client client = null;
 
 
     public static void start(){
@@ -23,7 +23,11 @@ public class ApplicationManager {
     }
 
     public static boolean isRunning(){
-        return preloaderStage == null && loginStage == null;
+        return !(preloaderStage == null && loginStage == null);
+    }
+
+    public static void close(){
+        loginStage = null;
     }
 
     public static String getUsername(){

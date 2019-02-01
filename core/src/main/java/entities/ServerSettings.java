@@ -2,7 +2,7 @@ package entities;
 
 import java.io.IOException;
 
-public class ServerSettings extends Settings {
+public final class ServerSettings extends Settings {
 
     public ServerSettings() throws IOException {
         super();

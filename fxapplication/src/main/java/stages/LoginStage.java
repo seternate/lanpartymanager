@@ -1,5 +1,6 @@
 package stages;
 
+import controller.ApplicationManager;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -33,6 +34,12 @@ public class LoginStage extends Stage {
     public void show(PreloaderStage preloaderStage){
         super.show();
         preloaderStage.hide();
+    }
+
+    @Override
+    public void hide(){
+        super.hide();
+        ApplicationManager.close();
     }
 
     /*

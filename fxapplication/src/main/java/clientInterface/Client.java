@@ -1,19 +1,16 @@
 package clientInterface;
 
-import com.sun.javafx.stage.StageHelper;
 import controller.ApplicationManager;
+import deserialize.User;
 import entities.ServerStatus;
-import entities.User;
 import javafx.application.Platform;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
-import java.io.IOException;
-
 public class Client extends Thread {
     private FXDataClient client;
-    private ServerStatus status;
-    private User user;
+    private volatile ServerStatus status;
+    private volatile User user;
 
     public Client(){
         start();
@@ -32,7 +29,7 @@ public class Client extends Thread {
 
         //Ensure the preloader is shown at least 3 seconds.
         try {
-            sleep(3000);
+            sleep(1500);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -41,10 +38,10 @@ public class Client extends Thread {
         while(status == null) {
             try {
                 status = client.getStatus().execute().body();
+                user = client.getUser().execute().body();
                 sleep(50);
                 Platform.runLater(ApplicationManager::openLoginStage);
             } catch (Exception e) {
-                e.printStackTrace();
                 System.err.println("No client-application found.");
             }
         }
@@ -52,9 +49,9 @@ public class Client extends Thread {
         //Update all fields while any stage is open.
         while(ApplicationManager.isRunning()){
             try {
-                sleep(50);
                 status = client.getStatus().execute().body();
                 user = client.getUser().execute().body();
+                sleep(50);
             } catch (Exception e) {
                 System.err.println("Client-application connection problems.");
             }
@@ -62,7 +59,7 @@ public class Client extends Thread {
     }
 
     public String getUsername(){
-        return user.getUsername();
+        return this.user.getUsername();
     }
 
     public String getGamepath(){

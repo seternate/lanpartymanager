@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URL;
 
-public class ClientSettings extends Settings {
+public final class ClientSettings extends Settings {
 
     public ClientSettings() throws IOException {
         super();
@@ -20,7 +20,7 @@ public class ClientSettings extends Settings {
     }
 
     public void setUsername(String username) throws IOException {
-        URL url = ClassLoader.getSystemResource(Settings.SETTINGS);
+        URL url = ClassLoader.getSystemResource(SETTINGS);
         OutputStream ostream = new FileOutputStream(url.getPath());
         setProperty("username", username);
         store(ostream, "");
