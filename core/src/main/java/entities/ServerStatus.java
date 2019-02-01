@@ -1,35 +1,39 @@
 package entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+//import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
+//@JsonIgnoreProperties(ignoreUnknown = true)
 public final class ServerStatus {
-    private boolean serverConnection;
+    private boolean connected;
     private String serverIP;
 
 
     public ServerStatus(){
-        serverConnection = false;
+        connected = false;
         serverIP = null;
     }
 
     public boolean isConnected(){
-        return serverConnection;
+        return connected;
     }
 
     public void connected(){
-        setServerConnection(true);
+        setConnected(true);
     }
 
     public void disconnected(){
-        setServerConnection(false);
+        setConnected(false);
     }
 
     public void setServerIP(String ipAddress){
         serverIP = ipAddress;
     }
 
-    public void setServerConnection(boolean connection){
-        serverConnection = connection;
+    public String getServerIP(){
+        return serverIP;
+    }
+
+    public void setConnected(boolean connection){
+        connected = connection;
     }
 }

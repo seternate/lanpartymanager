@@ -5,16 +5,15 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 
 import java.io.IOException;
 import java.io.InputStream;
 
-public class PreloaderStage extends Stage {
+public class MainStage extends Stage {
 
-    public PreloaderStage(){
+    public MainStage(){
         super();
-        FXMLLoader loader = new FXMLLoader(ClassLoader.getSystemResource("preloader.fxml"));
+        FXMLLoader loader = new FXMLLoader(ClassLoader.getSystemResource("login.fxml"));
         try {
             Parent rootNode = loader.load();
             setScene(new Scene(rootNode));
@@ -25,9 +24,7 @@ public class PreloaderStage extends Stage {
         if (icon != null) {
             getIcons().add(new Image(icon));
         }
-        initStyle(StageStyle.UNDECORATED);
-        setResizable(false);
-        setTitle("Lanpartymanager - Loading...");
+        setTitle("Lanpartymanager");
     }
 
 }

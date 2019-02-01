@@ -35,6 +35,18 @@ public final class User implements UserInterface{
         return settings.getGamepath();
     }
 
+    public boolean setGamepath(String gamepath){
+        if(!getGamepath().equals(gamepath)){
+            try {
+                settings.setGamepath(gamepath);
+                return true;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return false;
+    }
+
     public String getIpAddress(){
         return ipAddress;
     }

@@ -23,6 +23,12 @@ public final class User implements UserInterface {
     }
 
     @Override
+    public boolean setGamepath(String gamepath){
+        this.gamepath = gamepath;
+        return true;
+    }
+
+    @Override
     public String getIpAddress() {
         return ipAddress;
     }

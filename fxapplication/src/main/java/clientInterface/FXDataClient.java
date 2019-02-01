@@ -3,7 +3,9 @@ package clientInterface;
 import deserialize.User;
 import entities.ServerStatus;
 import retrofit2.Call;
+import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.POST;
 
 public interface FXDataClient {
 
@@ -12,6 +14,9 @@ public interface FXDataClient {
 
     @GET("user")
     Call<User> getUser();
+
+    @POST("user")
+    Call<Boolean> sendUser(@Body User userdata);
 
     /*
     @GET("status")

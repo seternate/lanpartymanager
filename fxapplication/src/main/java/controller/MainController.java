@@ -2,7 +2,7 @@ package controller;
 
 import static java.lang.Thread.sleep;
 
-class InterfaceController{
+class MainController {
     /*
     ServerStatus status;
     private FXDataService client;
@@ -21,7 +21,7 @@ class InterfaceController{
     private TextField txtServerParam;
 
 
-    InterfaceController(){
+    MainController(){
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://localhost:8080/fx/")
                 .addConverterFactory(JacksonConverterFactory.create())

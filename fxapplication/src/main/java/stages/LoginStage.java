@@ -1,12 +1,10 @@
 package stages;
 
-import controller.ApplicationManager;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,18 +26,6 @@ public class LoginStage extends Stage {
         }
         setTitle("Lanpartymanager - Login");
         setResizable(false);
-        //controller = loader.getController();
-    }
-
-    public void show(PreloaderStage preloaderStage){
-        super.show();
-        preloaderStage.hide();
-    }
-
-    @Override
-    public void hide(){
-        super.hide();
-        ApplicationManager.close();
     }
 
     /*

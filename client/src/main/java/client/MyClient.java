@@ -8,6 +8,7 @@ import message.*;
 
 import java.io.IOException;
 import java.net.InetAddress;
+import java.util.List;
 
 public final class MyClient extends com.esotericsoftware.kryonet.Client {
     private UserList users;
@@ -24,7 +25,7 @@ public final class MyClient extends com.esotericsoftware.kryonet.Client {
         registerListener();
 
         try {
-            settings = new ClientSettings();
+            settings = new ClientSettings(true);
             user = new User(settings);
         } catch (IOException e) {
             System.err.println("User creation was not possible.");
@@ -64,6 +65,7 @@ public final class MyClient extends com.esotericsoftware.kryonet.Client {
                 sendTCP(new LoginMessage(user));
                 System.out.println("Logged in.");
                 serverStatus.setServerIP(connection.getRemoteAddressTCP().getAddress().getHostAddress());
+                System.out.println();
                 serverStatus.connected();
             }
             @Override
@@ -98,6 +100,11 @@ public final class MyClient extends com.esotericsoftware.kryonet.Client {
 
     public User getUser(){
         return user;
+    }
+
+    public boolean updateUser(User userdata){
+        System.out.println(userdata.getUsername() + " : " + userdata.getGamepath());
+        return false;
     }
 
 

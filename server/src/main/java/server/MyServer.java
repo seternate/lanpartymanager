@@ -2,7 +2,6 @@ package server;
 
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
-import deserialize.*;
 import entities.*;
 import helper.NetworkClassRegistrationHelper;
 import message.*;
