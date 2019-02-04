@@ -1,8 +1,24 @@
 package controller;
 
-import static java.lang.Thread.sleep;
+import entities.GameList;
+import javafx.fxml.FXML;
+import javafx.scene.control.Label;
+import javafx.scene.layout.TilePane;
 
-class MainController {
+public class MainController {
+    @FXML
+    private TilePane root;
+    @FXML
+    private Label lblStatus;
+
+    @FXML
+    private void initialize(){
+        ApplicationManager.setServerStatusLabel(lblStatus);
+        GameList games = ApplicationManager.getGames();
+    }
+
+
+
     /*
     ServerStatus status;
     private FXDataService client;

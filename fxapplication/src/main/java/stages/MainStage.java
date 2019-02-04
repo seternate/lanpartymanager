@@ -13,7 +13,7 @@ public class MainStage extends Stage {
 
     public MainStage(){
         super();
-        FXMLLoader loader = new FXMLLoader(ClassLoader.getSystemResource("login.fxml"));
+        FXMLLoader loader = new FXMLLoader(ClassLoader.getSystemResource("main.fxml"));
         try {
             Parent rootNode = loader.load();
             setScene(new Scene(rootNode));

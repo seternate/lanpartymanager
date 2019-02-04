@@ -1,9 +1,8 @@
 package clientInterface;
 
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import controller.ApplicationManager;
-import deserialize.User;
+import deserializer.User;
+import entities.GameList;
 import entities.ServerStatus;
 import javafx.application.Platform;
 import javafx.scene.control.Label;
@@ -11,14 +10,13 @@ import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class Client extends Thread {
     private FXDataClient client;
     private volatile ServerStatus status;
     private volatile User user;
     private volatile Label lblStatus;
+    private volatile GameList games;
 
     public Client(){
         start();
@@ -70,12 +68,16 @@ public class Client extends Thread {
         return user;
     }
 
-    public void setServerStatusLabel(Label lblStatus){
-        this.lblStatus = lblStatus;
-    }
-
     public ServerStatus getServerStatus(){
         return status;
+    }
+
+    public GameList getGames(){
+        return games;
+    }
+
+    public void setServerStatusLabel(Label lblStatus){
+        this.lblStatus = lblStatus;
     }
 
     public void sendUserData(String username, String gamepath){
@@ -95,6 +97,7 @@ public class Client extends Thread {
     private void update() throws IOException {
         status = client.getStatus().execute().body();
         user = client.getUser().execute().body();
+        games = client.getGames().execute().body();
     }
 
     private void updateStatusLabel(){

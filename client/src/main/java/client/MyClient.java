@@ -8,7 +8,6 @@ import message.*;
 
 import java.io.IOException;
 import java.net.InetAddress;
-import java.util.List;
 
 public final class MyClient extends com.esotericsoftware.kryonet.Client {
     private UserList users;
@@ -102,7 +101,7 @@ public final class MyClient extends com.esotericsoftware.kryonet.Client {
         return user;
     }
 
-    public boolean updateUser(User userdata){
+    public boolean updateUser(deserializer.User userdata){
         System.out.println(userdata.getUsername() + " : " + userdata.getGamepath());
         return false;
     }

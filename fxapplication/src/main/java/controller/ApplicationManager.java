@@ -1,6 +1,7 @@
 package controller;
 
 import clientInterface.Client;
+import entities.GameList;
 import javafx.scene.control.Label;
 import stages.LoginStage;
 import stages.MainStage;
@@ -46,6 +47,10 @@ public class ApplicationManager {
 
     public static String getGamepath(){
         return client.getUser().getGamepath();
+    }
+
+    public static GameList getGames(){
+        return client.getGames();
     }
 
     public static void setServerStatusLabel(Label lblStatus){

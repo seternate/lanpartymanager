@@ -1,4 +1,4 @@
-package deserialize;
+package deserializer;
 
 import entities.UserInterface;
 
