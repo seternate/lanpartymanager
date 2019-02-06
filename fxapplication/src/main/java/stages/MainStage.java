@@ -29,6 +29,8 @@ public class MainStage extends Stage {
         }
         setTitle("Lanpartymanager");
         controller = loader.getController();
+        setMinWidth(640);
+        setMinHeight(480);
     }
 
     public void updateRoot(){

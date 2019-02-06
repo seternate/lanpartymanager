@@ -49,7 +49,6 @@ public class Client extends Thread {
         while(status == null) {
             try {
                 update();
-                System.out.println(games == null);
                 Platform.runLater(ApplicationManager::openLoginStage);
                 sleep(50);
             } catch (Exception e) {

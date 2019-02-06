@@ -2,11 +2,15 @@ package controller;
 
 import entities.Game;
 import entities.GameList;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.ImageViewBuilder;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.TilePane;
 
 public class MainController {
@@ -22,19 +26,29 @@ public class MainController {
     }
 
     public void updateRoot(){
-        System.out.println("here");
         GameList games = ApplicationManager.getGames();
         root.getChildren().clear();
-        System.out.println(games.isEmpty());
         for(Game game : games){
             root.getChildren().add(gameImageview(game));
         }
     }
 
-    private ImageView gameImageview(Game game){
+    private Pane gameImageview(Game game){
+        Pane pane = new Pane();
+        pane.setStyle("-fx-padding:10px;");
         ImageView image = new ImageView(new Image(game.getCoverUrl(), true));
         image.setPreserveRatio(false);
-        return image;
+        image.setFitHeight(480/2);
+        image.setFitWidth(640/4);
+        image.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                System.out.println(game.getName());
+                event.consume();
+            }
+        });
+        pane.getChildren().add(image);
+        return pane;
     }
 
 
