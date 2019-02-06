@@ -1,5 +1,7 @@
 package stages;
 
+import controller.MainController;
+import entities.GameList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -10,6 +12,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 public class MainStage extends Stage {
+    private MainController controller;
 
     public MainStage(){
         super();
@@ -25,6 +28,11 @@ public class MainStage extends Stage {
             getIcons().add(new Image(icon));
         }
         setTitle("Lanpartymanager");
+        controller = loader.getController();
+    }
+
+    public void updateRoot(){
+        controller.updateRoot();
     }
 
 }

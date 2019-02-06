@@ -1,7 +1,7 @@
 package springboot;
 
 import client.MyClient;
-import deserializer.User;
+import entities.User;
 import main.LanClient;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,8 +23,13 @@ public class FXAppInterface {
     }
 
     @RequestMapping(value = "/user", method = RequestMethod.POST)
-    public boolean setUser(@RequestBody User userdata){
-        return client.updateUser(userdata);
+    public boolean setUser(@RequestBody User user) {
+        return client.updateUser(user);
+    }
+
+    @RequestMapping(value = "/games", method = RequestMethod.GET)
+    public ResponseEntity getGames(){
+        return new ResponseEntity<>(client.getGames(), HttpStatus.OK);
     }
 
     /*

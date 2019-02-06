@@ -1,8 +1,12 @@
 package controller;
 
+import entities.Game;
 import entities.GameList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.image.ImageViewBuilder;
 import javafx.scene.layout.TilePane;
 
 public class MainController {
@@ -14,9 +18,24 @@ public class MainController {
     @FXML
     private void initialize(){
         ApplicationManager.setServerStatusLabel(lblStatus);
-        GameList games = ApplicationManager.getGames();
+        updateRoot();
     }
 
+    public void updateRoot(){
+        System.out.println("here");
+        GameList games = ApplicationManager.getGames();
+        root.getChildren().clear();
+        System.out.println(games.isEmpty());
+        for(Game game : games){
+            root.getChildren().add(gameImageview(game));
+        }
+    }
+
+    private ImageView gameImageview(Game game){
+        ImageView image = new ImageView(new Image(game.getCoverUrl(), true));
+        image.setPreserveRatio(false);
+        return image;
+    }
 
 
     /*

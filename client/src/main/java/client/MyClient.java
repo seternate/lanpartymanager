@@ -24,7 +24,7 @@ public final class MyClient extends com.esotericsoftware.kryonet.Client {
         registerListener();
 
         try {
-            settings = new ClientSettings(true);
+            settings = new ClientSettings(true, true);
             user = new User(settings);
         } catch (IOException e) {
             System.err.println("User creation was not possible.");
@@ -101,9 +101,17 @@ public final class MyClient extends com.esotericsoftware.kryonet.Client {
         return user;
     }
 
-    public boolean updateUser(deserializer.User userdata){
-        System.out.println(userdata.getUsername() + " : " + userdata.getGamepath());
+    public boolean updateUser(User user) {
+        try {
+            return this.user.update(user);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return false;
+    }
+
+    public GameList getGames(){
+        return games;
     }
 
 

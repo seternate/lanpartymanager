@@ -1,9 +1,13 @@
 package entities;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import deserializer.UserDeserializer;
+
 import java.io.*;
 import java.net.InetAddress;
 
-public final class User implements UserInterface{
+@JsonDeserialize(using = UserDeserializer.class)
+public final class User {
     private ClientSettings settings;
     private String ipAddress;
 
@@ -19,40 +23,49 @@ public final class User implements UserInterface{
         return settings.getUsername();
     }
 
-    public boolean setUsername(String username){
-        if(!getUsername().equals(username)){
-            try {
-                settings.setUsername(username);
-                return true;
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        return false;
+    public void setUsername(String username){
+        settings.setUsername(username);
     }
 
     public String getGamepath(){
         return settings.getGamepath();
     }
 
-    public boolean setGamepath(String gamepath){
-        if(!getGamepath().equals(gamepath)){
-            try {
-                settings.setGamepath(gamepath);
-                return true;
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        return false;
+    public void setGamepath(String gamepath){
+        settings.setGamepath(gamepath);
     }
 
     public String getIpAddress(){
         return ipAddress;
     }
 
-    public boolean equals(UserInterface user){
-        return getUsername().equals(user.getUsername()) && getIpAddress().equals(user.getIpAddress());
+    public void setIpAddress(String ipAddress){
+        this.ipAddress = ipAddress;
+    }
+
+    public boolean update(User user) throws IOException {
+        if(!this.equals(user)){
+            if(!user.getUsername().isEmpty())
+                setUsername(user.getUsername());
+            else
+                return false;
+            if(!user.getGamepath().isEmpty())
+                setGamepath(user.getGamepath());
+            else
+                return false;
+            if(!user.getIpAddress().isEmpty())
+                setIpAddress(user.getIpAddress());
+            else
+                return false;
+        }else{
+            return false;
+        }
+        settings.save();
+        return true;
+    }
+
+    public boolean equals(User user){
+        return getUsername().equals(user.getUsername()) && getGamepath().equals(user.getGamepath()) && getIpAddress().equals(user.getIpAddress());
     }
 
     @Override

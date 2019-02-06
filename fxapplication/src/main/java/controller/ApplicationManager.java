@@ -61,7 +61,8 @@ public class ApplicationManager {
         return client.getServerStatus().isConnected();
     }
 
-
-
+    public static void updateMainstageRoot(){
+        mainStage.updateRoot();
+    }
 
 }

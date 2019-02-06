@@ -1,6 +1,6 @@
 package clientInterface;
 
-import deserializer.User;
+import entities.User;
 import entities.GameList;
 import entities.ServerStatus;
 import retrofit2.Call;
@@ -17,7 +17,7 @@ public interface FXDataClient {
     Call<User> getUser();
 
     @POST("user")
-    Call<Boolean> sendUser(@Body User userdata);
+    Call<Boolean> sendUser(@Body User user);
 
     @GET("games")
     Call<GameList> getGames();

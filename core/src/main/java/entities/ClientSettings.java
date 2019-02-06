@@ -1,18 +1,13 @@
 package entities;
 
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.net.URL;
 
 public final class ClientSettings extends Settings {
 
-    public ClientSettings() throws IOException {
-        super();
-    }
+    public ClientSettings(){ }
 
-    public ClientSettings(boolean checkGamepath) throws IOException {
-        this();
+    public ClientSettings(boolean checkGamepath, boolean loadSettings) throws IOException {
+        super(loadSettings);
 
         if(getGamepath().contains("C:/Users/") && checkGamepath){
             String[] splitted = getGamepath().split("/");
@@ -31,23 +26,16 @@ public final class ClientSettings extends Settings {
         return getProperty("username");
     }
 
-    public void setUsername(String username) throws IOException {
-        URL url = ClassLoader.getSystemResource(SETTINGS);
-        OutputStream ostream = new FileOutputStream(url.getPath());
+    public void setUsername(String username) {
         setProperty("username", username);
-        store(ostream, "");
-        ostream.close();
     }
 
     public String getGamepath(){
         return getProperty("gamepath");
     }
 
-    public void setGamepath(String gamepath) throws IOException {
-        URL url = ClassLoader.getSystemResource(SETTINGS);
-        OutputStream ostream = new FileOutputStream(url.getPath());
+    public void setGamepath(String gamepath) {
         setProperty("gamepath", gamepath);
-        store(ostream, "");
-        ostream.close();
     }
+
 }
