@@ -46,7 +46,7 @@ public class Client extends Thread {
         }
 
         //Close PreloaderStage after one successful connection to the Client-Application.
-        while(status == null) {
+        while(status == null && ApplicationManager.isRunning()) {
             try {
                 update();
                 Platform.runLater(ApplicationManager::openLoginStage);

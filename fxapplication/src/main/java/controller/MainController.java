@@ -22,6 +22,8 @@ public class MainController {
     @FXML
     private void initialize(){
         ApplicationManager.setServerStatusLabel(lblStatus);
+        root.setVgap(10);
+        root.setHgap(10);
         updateRoot();
     }
 
@@ -35,11 +37,11 @@ public class MainController {
 
     private Pane gameImageview(Game game){
         Pane pane = new Pane();
-        pane.setStyle("-fx-padding:10px;");
+        //pane.setStyle("-fx-padding:10px;");
         ImageView image = new ImageView(new Image(game.getCoverUrl(), true));
         image.setPreserveRatio(false);
-        image.setFitHeight(480/2);
-        image.setFitWidth(640/4);
+        image.setFitHeight(256);
+        image.setFitWidth(256/1.5);
         image.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
@@ -48,6 +50,7 @@ public class MainController {
             }
         });
         pane.getChildren().add(image);
+        //root.setMargin(pane, new Insets(10));
         return pane;
     }
 
