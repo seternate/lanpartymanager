@@ -4,54 +4,54 @@ import entities.Game;
 import entities.GameList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.geometry.Insets;
+import javafx.geometry.HPos;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.image.ImageViewBuilder;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.TilePane;
+import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Priority;
 
 public class MainController {
     @FXML
-    private TilePane root;
+    private ScrollPane spMain;
     @FXML
     private Label lblStatus;
 
     @FXML
     private void initialize(){
         ApplicationManager.setServerStatusLabel(lblStatus);
-        root.setVgap(10);
-        root.setHgap(10);
-        updateRoot();
+        spMain.setFitToWidth(true);
+        updateGamePane();
     }
 
-    public void updateRoot(){
+    private void updateGamePane(){
         GameList games = ApplicationManager.getGames();
-        root.getChildren().clear();
-        for(Game game : games){
-            root.getChildren().add(gameImageview(game));
+        GridPane imagePane = new GridPane();
+        imagePane.setHgap(20);
+        imagePane.setVgap(30);
+        for(int i = 0; i < games.size(); i++){
+            ImageView iv = gameImageview(games.get(i));
+            imagePane.addRow(i/3, iv);
+            imagePane.setHgrow(iv, Priority.ALWAYS);
+            imagePane.setHalignment(iv, HPos.CENTER);
         }
+        spMain.setContent(imagePane);
     }
 
-    private Pane gameImageview(Game game){
-        Pane pane = new Pane();
-        //pane.setStyle("-fx-padding:10px;");
+    private ImageView gameImageview(Game game){
         ImageView image = new ImageView(new Image(game.getCoverUrl(), true));
         image.setPreserveRatio(false);
-        image.setFitHeight(256);
-        image.setFitWidth(256/1.5);
-        image.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                System.out.println(game.getName());
-                event.consume();
-            }
+        image.fitWidthProperty().bind(spMain.widthProperty().divide(3.5));
+        image.fitHeightProperty().bind(spMain.widthProperty().multiply(0.4));
+        image.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+            //Todo
+            System.out.println(game.getName());
+            event.consume();
         });
-        pane.getChildren().add(image);
-        //root.setMargin(pane, new Insets(10));
-        return pane;
+        return image;
     }
 
 

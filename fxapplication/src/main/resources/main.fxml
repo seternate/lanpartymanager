@@ -6,21 +6,12 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.StackPane?>
-<?import javafx.scene.layout.TilePane?>
 
 <StackPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="480.0" prefWidth="640.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MainController">
    <children>
-      <ScrollPane>
-         <StackPane.margin>
-            <Insets bottom="40.0" left="10.0" right="10.0" top="10.0" />
-         </StackPane.margin>
-         <content>
-            <TilePane fx:id="root" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="480.0" prefWidth="640.0" />
-         </content>
-      </ScrollPane>
       <Label fx:id="lblStatus" alignment="CENTER" text="Waiting for server connection." StackPane.alignment="BOTTOM_LEFT">
          <StackPane.margin>
-            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+            <Insets bottom="15.0" left="5.0" right="5.0" top="5.0" />
          </StackPane.margin>
       </Label>
       <ImageView fitHeight="150.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true" StackPane.alignment="BOTTOM_RIGHT">
@@ -31,5 +22,10 @@
             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
          </StackPane.margin>
       </ImageView>
+      <ScrollPane fx:id="spMain" hbarPolicy="NEVER" vbarPolicy="NEVER">
+         <StackPane.margin>
+            <Insets bottom="45.0" left="10.0" right="10.0" top="15.0" />
+         </StackPane.margin>
+      </ScrollPane>
    </children>
 </StackPane>
