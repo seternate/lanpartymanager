@@ -209,3 +209,12 @@
 {
     -fx-background-color: #F0544C;
 }
+#gameoverlaylabel
+{
+    -fx-text-fill: black;
+    -fx-effect: dropshadow(gaussian, grey, 10, 0.05, 0, 3);
+}
+#gametileoverlay
+{
+    -fx-background-color: rgba(255, 255, 255, 0.6);
+}

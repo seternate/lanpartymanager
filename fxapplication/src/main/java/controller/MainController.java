@@ -2,17 +2,21 @@ package controller;
 
 import entities.Game;
 import entities.GameList;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.HPos;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
+
+import java.io.IOException;
 
 public class MainController {
     @FXML
@@ -29,29 +33,53 @@ public class MainController {
 
     private void updateGamePane(){
         GameList games = ApplicationManager.getGames();
-        GridPane imagePane = new GridPane();
-        imagePane.setHgap(20);
-        imagePane.setVgap(30);
+        GridPane tilePane = new GridPane();
+        tilePane.setHgap(20);
+        tilePane.setVgap(30);
         for(int i = 0; i < games.size(); i++){
-            ImageView iv = gameImageview(games.get(i));
-            imagePane.addRow(i/3, iv);
-            imagePane.setHgrow(iv, Priority.ALWAYS);
-            imagePane.setHalignment(iv, HPos.CENTER);
+            Node gameTile = gameTile(games.get(i));
+            tilePane.addRow(i/3, gameTile);
+            tilePane.setHgrow(gameTile, Priority.ALWAYS);
+            tilePane.setHalignment(gameTile, HPos.CENTER);
         }
-        spMain.setContent(imagePane);
+        spMain.setContent(tilePane);
     }
 
-    private ImageView gameImageview(Game game){
-        ImageView image = new ImageView(new Image(game.getCoverUrl(), true));
-        image.setPreserveRatio(false);
-        image.fitWidthProperty().bind(spMain.widthProperty().divide(3.5));
-        image.fitHeightProperty().bind(spMain.widthProperty().multiply(0.4));
-        image.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-            //Todo
-            System.out.println(game.getName());
+    private Node gameTile(Game game){
+        ImageView gameTileImage = new ImageView(new Image(game.getCoverUrl(), true));
+        gameTileImage.setPreserveRatio(false);
+        gameTileImage.fitWidthProperty().bind(spMain.widthProperty().divide(3.5));
+        gameTileImage.fitHeightProperty().bind(spMain.widthProperty().multiply(0.4));
+
+        VBox gameTileOverlay = gameTileOverlay(gameTileImage, game);
+        gameTileOverlay.prefHeightProperty().bind(gameTileImage.fitHeightProperty());
+        gameTileOverlay.prefWidthProperty().bind(gameTileImage.fitWidthProperty());
+        gameTileOverlay.setVisible(false);
+
+        StackPane gameTile = new StackPane(gameTileImage, gameTileOverlay);
+        gameTile.addEventHandler(MouseEvent.MOUSE_ENTERED, event -> {
+            gameTile.getChildren().get(1).setVisible(true);
+            System.out.println(game.getName() + " entered.");
             event.consume();
         });
-        return image;
+        gameTile.addEventHandler(MouseEvent.MOUSE_EXITED, event -> {
+            gameTile.getChildren().get(1).setVisible(false);
+            System.out.println(game.getName() + " exited");
+            event.consume();
+        });
+        return gameTile;
+    }
+
+    private VBox gameTileOverlay(ImageView gameTileImage, Game game){
+        FXMLLoader loader = new FXMLLoader(ClassLoader.getSystemResource("gameoverlay.fxml"));
+        loader.setController(new GameOverlayController(gameTileImage, game));
+        try {
+            VBox rootNode = loader.load();
+            return rootNode;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
 
