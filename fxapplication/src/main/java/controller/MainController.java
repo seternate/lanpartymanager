@@ -59,12 +59,10 @@ public class MainController {
         StackPane gameTile = new StackPane(gameTileImage, gameTileOverlay);
         gameTile.addEventHandler(MouseEvent.MOUSE_ENTERED, event -> {
             gameTile.getChildren().get(1).setVisible(true);
-            System.out.println(game.getName() + " entered.");
             event.consume();
         });
         gameTile.addEventHandler(MouseEvent.MOUSE_EXITED, event -> {
             gameTile.getChildren().get(1).setVisible(false);
-            System.out.println(game.getName() + " exited");
             event.consume();
         });
         return gameTile;

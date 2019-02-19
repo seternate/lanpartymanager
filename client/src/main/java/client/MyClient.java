@@ -3,11 +3,16 @@ package client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import entities.*;
+import helper.GameFolderHelper;
 import helper.NetworkClassRegistrationHelper;
 import message.*;
+import requests.DownloadRequest;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
+import java.net.ServerSocket;
+import java.util.Objects;
 
 public final class MyClient extends com.esotericsoftware.kryonet.Client {
     private UserList users;
@@ -40,7 +45,6 @@ public final class MyClient extends com.esotericsoftware.kryonet.Client {
         new Thread(this).start();
         connect();
     }
-
 
     private void connect(){
         new Thread(() -> {
@@ -114,8 +118,66 @@ public final class MyClient extends com.esotericsoftware.kryonet.Client {
         return games;
     }
 
+    public int download(Game game){
+        if(game.isUptodate() == 0)
+            return -1;
+        File sFile = new File(user.getGamepath());
+        if(game.getSizeServer() > sFile.getFreeSpace())
+            return -2;
+        int openport = getOpenPort();
+        downloadManager.add(new Download(openport, game, game.getSizeServer(), user.getGamepath()));
+        System.out.println("Requested to download " + game.getName() + ".");
+        sendTCP(new DownloadRequest(game, openport));
+        return 0;
+    }
+
+    public boolean startGame(Game game){
+        if(game.isUptodate() != 0 && game.isUptodate() != -2){
+            download(game);
+            return false;
+        }
+        String start = "start ";
+        if(game.getParam().equals(""))
+            start += game.getExeFileRelative().substring(1);
+        else
+            start += game.getExeFileRelative().substring(1) + " " + game.getParam();
+        return startProcess(game, start);
+    }
 
 
+
+
+
+
+
+    private int getOpenPort(){
+        ServerSocket server = null;
+        try {
+            server = new ServerSocket(0);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        int freeport = Objects.requireNonNull(server).getLocalPort();
+        try {
+            server.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return freeport;
+    }
+
+    private boolean startProcess(Game game, String start) {
+        File file = new File(Objects.requireNonNull(GameFolderHelper.getAbsolutePath(game.getExeFileRelative())));
+        try {
+            ProcessBuilder process = new ProcessBuilder("cmd.exe", "/C", start);
+            process.directory(file.getParentFile());
+            process.start();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
 
     /*
 

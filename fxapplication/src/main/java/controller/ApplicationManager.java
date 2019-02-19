@@ -1,6 +1,7 @@
 package controller;
 
 import clientInterface.Client;
+import entities.Game;
 import entities.GameList;
 import javafx.scene.control.Label;
 import stages.LoginStage;
@@ -31,6 +32,14 @@ public class ApplicationManager {
         mainStage = new MainStage();
         mainStage.show();
         loginStage.hide();
+    }
+
+    public static void startGame(Game game){
+        client.startGame(game);
+    }
+
+    public static void downloadGame(Game game){
+        client.downloadGame(game);
     }
 
     public static boolean isRunning(){

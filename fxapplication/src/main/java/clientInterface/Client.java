@@ -1,10 +1,7 @@
 package clientInterface;
 
 import controller.ApplicationManager;
-import entities.ClientSettings;
-import entities.User;
-import entities.GameList;
-import entities.ServerStatus;
+import entities.*;
 import javafx.application.Platform;
 import javafx.scene.control.Label;
 import retrofit2.Retrofit;
@@ -103,6 +100,25 @@ public class Client extends Thread {
         }).start();
     }
 
+    public void startGame(Game game){
+        new Thread(() -> {
+            try {
+                client.startGame(game).execute();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }).start();
+    }
+
+    public void downloadGame(Game game){
+        new Thread(() -> {
+            try {
+                client.downloadGame(game).execute();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }).start();
+    }
 
     private void update() throws IOException {
         status = client.getStatus().execute().body();

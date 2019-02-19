@@ -1,6 +1,7 @@
 package springboot;
 
 import client.MyClient;
+import entities.Game;
 import entities.User;
 import main.LanClient;
 import org.springframework.http.HttpStatus;
@@ -30,6 +31,16 @@ public class FXAppInterface {
     @RequestMapping(value = "/games", method = RequestMethod.GET)
     public ResponseEntity getGames(){
         return new ResponseEntity<>(client.getGames(), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/startgame", method = RequestMethod.POST)
+    public boolean startGame(@RequestBody Game game){
+        return client.startGame(game);
+    }
+
+    @RequestMapping(value = "/download", method = RequestMethod.POST)
+    public int download(@RequestBody Game game){
+        return client.download(game);
     }
 
     /*

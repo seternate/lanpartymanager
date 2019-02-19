@@ -127,8 +127,8 @@ public final class SevenZipHelper {
             if (!isFolder) {
                 switch (extractAskMode) {
                     case EXTRACT:
-                        System.out.println("Unzipped: " + ((double)Math.round(unzipProgress*1000))/10. + "% from " + download.game.getName());
-                        System.out.println("Extracted " + path);
+                        //System.out.println("Unzipped: " + ((double)Math.round(unzipProgress*1000))/10. + "% from " + download.game.getName());
+                        //System.out.println("Extracted " + path);
                         break;
                     case TEST:
                         System.out.println("Tested " + path);

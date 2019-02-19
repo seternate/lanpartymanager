@@ -1,5 +1,6 @@
 package clientInterface;
 
+import entities.Game;
 import entities.User;
 import entities.GameList;
 import entities.ServerStatus;
@@ -21,6 +22,12 @@ public interface FXDataClient {
 
     @GET("games")
     Call<GameList> getGames();
+
+    @POST("startgame")
+    Call<Boolean> startGame(@Body Game game);
+
+    @POST("download")
+    Call<Integer> downloadGame(@Body Game game);
 
     /*
     @GET("status")

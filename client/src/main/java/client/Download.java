@@ -3,6 +3,9 @@ package client;
 
 import entities.Game;
 
+import java.io.DataInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -16,10 +19,12 @@ public final class Download extends Thread {
     private DownloadManager manager = null;
     private int packageSize = 536870912;
     private ServerSocket ss;
+    private String gamepath;
 
 
-    Download(int port, Game game, long gamesize) {
+    Download(int port, Game game, long gamesize, String gamepath) {
         this.game = game;
+        this.gamepath = gamepath;
         try {
             ss = new ServerSocket(port);
         } catch (IOException e) {
@@ -36,7 +41,7 @@ public final class Download extends Thread {
         while (!clientSock.isConnected()) {
             try {
                 clientSock = ss.accept();
-                //saveFile(clientSock);
+                saveFile(clientSock);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -47,10 +52,9 @@ public final class Download extends Thread {
         this.manager = manager;
     }
 
-    /*
     private void saveFile(Socket clientSock) throws IOException {
         DataInputStream dis = new DataInputStream(clientSock.getInputStream());
-        String path = PropertyHelper.getGamepath() + game.getServerFileName();
+        String path = gamepath + game.getServerFileName();
 
         byte[] buffer = new byte[1048576];
         FileOutputStream fos = new FileOutputStream(path, false);
@@ -79,19 +83,17 @@ public final class Download extends Thread {
 
         System.out.println("Unzipping " + game.getName());
         try {
-            new SevenZipHelper(path, PropertyHelper.getGamepath(), false, null, this).extract();
+            new SevenZipHelper(path, gamepath, false, null, this).extract();
         } catch (SevenZipHelper.ExtractionException e) {
             e.printStackTrace();
         }
         System.out.println("Unzipped " + game.getName());
 
-        System.out.println("Deleted .7z file");
+        System.out.println("Deleted .7z file from " + game.getName());
         File file = new File(path);
-        //noinspection ResultOfMethodCallIgnored
         file.delete();
 
         manager.remove(this);
     }
-    */
 
 }

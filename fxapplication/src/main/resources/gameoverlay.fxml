@@ -2,11 +2,13 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressBar?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
-
 
 <VBox id="gametileoverlay" accessibleRole="NODE" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="390.0" prefWidth="283.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <children>
@@ -34,14 +36,32 @@
             <Insets />
          </VBox.margin>
       </ImageView>
-      <ImageView fx:id="ivDownloadGame" fitHeight="150.0" fitWidth="64.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@download_game.png" />
-         </image>
-         <VBox.margin>
-            <Insets />
-         </VBox.margin>
-      </ImageView>
+      <HBox fx:id="hbDownloadGame" alignment="CENTER_LEFT">
+         <children>
+            <ImageView fx:id="ivDownloadGame" fitHeight="150.0" fitWidth="64.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@download_game.png" />
+               </image>
+            </ImageView>
+            <VBox alignment="CENTER_LEFT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS">
+               <children>
+                  <StackPane fx:id="spDownloadGame" VBox.vgrow="ALWAYS">
+                     <children>
+                        <ProgressBar fx:id="pbDownload" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="200.0" progress="0.0">
+                           <StackPane.margin>
+                              <Insets />
+                           </StackPane.margin>
+                        </ProgressBar>
+                        <Label id="gameoverlaylabel" fx:id="lblDownloadbar" text="Downloading ...." />
+                     </children>
+                  </StackPane>
+               </children>
+               <HBox.margin>
+                  <Insets />
+               </HBox.margin>
+            </VBox>
+         </children>
+      </HBox>
       <ImageView fx:id="ivOpenExplorer" fitHeight="150.0" fitWidth="64.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@folder.png" />
