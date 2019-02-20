@@ -17,7 +17,7 @@ public final class Download extends Thread {
     double downloadProgress;
     double unzipProgress;
     private DownloadManager manager = null;
-    private int packageSize = 536870912;
+    private int packageSize = 10485760;
     private ServerSocket ss;
     private String gamepath;
 

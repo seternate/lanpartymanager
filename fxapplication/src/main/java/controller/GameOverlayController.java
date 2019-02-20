@@ -1,6 +1,10 @@
 package controller;
 
 import entities.Game;
+import entities.GameStatus;
+import entities.GameStatusProperty;
+import javafx.beans.property.Property;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
@@ -38,9 +42,26 @@ public class GameOverlayController {
 
     @FXML
     private void initialize(){
+        GameStatusProperty gameStatus = ApplicationManager.getGamestatusProperty();
+
         lblGamename.setText(game.getName());
         lblVersion.setText(game.getVersionServer());
         lblDownloadbar.setFont(Font.font("System", FontWeight.NORMAL, pbDownload.getHeight()*0.5));
+
+        spDownloadGame.setVisible(false);
+        gameStatus.downloading.addListener(new ChangeListener<Boolean>() {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                if(newValue == true && ApplicationManager.getFocusedGame().equals(game)){
+                    spDownloadGame.setVisible(true);
+                    lblDownloadbar.textProperty().bind(gameStatus.downloadProgress.asString());
+                    pbDownload.progressProperty().bind(gameStatus.downloadProgress);
+                }
+                if(newValue == false){
+                    spDownloadGame.setVisible(false);
+                }
+            }
+        });
 
         ivRunGame.fitHeightProperty().bind(gameTileImage.fitHeightProperty().divide(7));
         ivDownloadGame.fitHeightProperty().bind(gameTileImage.fitHeightProperty().divide(7));
@@ -94,6 +115,7 @@ public class GameOverlayController {
             @Override
             public void handle(MouseEvent event) {
                 ApplicationManager.downloadGame(game);
+                event.consume();
             }
         });
     }

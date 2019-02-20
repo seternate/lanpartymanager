@@ -3,6 +3,8 @@ package controller;
 import clientInterface.Client;
 import entities.Game;
 import entities.GameList;
+import entities.GameStatus;
+import entities.GameStatusProperty;
 import javafx.scene.control.Label;
 import stages.LoginStage;
 import stages.MainStage;
@@ -68,6 +70,15 @@ public class ApplicationManager {
 
     public static boolean isConnected(){
         return client.getServerStatus().isConnected();
+    }
+
+    public static Game getFocusedGame(){
+
+        return mainStage == null ? null : mainStage.getFocusedGame();
+    }
+
+    public static GameStatusProperty getGamestatusProperty(){
+        return client.getGamestatusProperty();
     }
 
     public static void updateMainstageRoot(){

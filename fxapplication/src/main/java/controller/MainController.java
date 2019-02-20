@@ -19,6 +19,8 @@ import javafx.scene.layout.VBox;
 import java.io.IOException;
 
 public class MainController {
+    public volatile Game focusedGame;
+
     @FXML
     private ScrollPane spMain;
     @FXML
@@ -58,6 +60,7 @@ public class MainController {
 
         StackPane gameTile = new StackPane(gameTileImage, gameTileOverlay);
         gameTile.addEventHandler(MouseEvent.MOUSE_ENTERED, event -> {
+            focusedGame = game;
             gameTile.getChildren().get(1).setVisible(true);
             event.consume();
         });

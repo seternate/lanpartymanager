@@ -1,9 +1,6 @@
 package clientInterface;
 
-import entities.Game;
-import entities.User;
-import entities.GameList;
-import entities.ServerStatus;
+import entities.*;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
@@ -29,6 +26,9 @@ public interface FXDataClient {
     @POST("download")
     Call<Integer> downloadGame(@Body Game game);
 
+    @POST("games/status")
+    Call<GameStatus> getGameStatus(@Body Game game);
+
     /*
     @GET("status")
     Call<ServerStatus> getStatus();
@@ -42,8 +42,7 @@ public interface FXDataClient {
     @POST("games")
     Call<List<Game>> getGames(@Body List<Game> games);
 
-    @POST("games/status")
-    Call<GameStatus> getGameStatus(@Body Game game);
+
 
     @POST("users")
     Call<List<User>> getUsers(@Body List<User> users);

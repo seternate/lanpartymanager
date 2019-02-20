@@ -40,7 +40,13 @@ public class FXAppInterface {
 
     @RequestMapping(value = "/download", method = RequestMethod.POST)
     public int download(@RequestBody Game game){
-        return client.download(game);
+        int download = client.download(game);
+        return download;
+    }
+
+    @RequestMapping(value = "/games/status", method = RequestMethod.POST)
+    public ResponseEntity getGameStatus(@RequestBody Game game){
+        return new ResponseEntity<>(client.getGameStatus(game), HttpStatus.OK);
     }
 
     /*

@@ -15,4 +15,5 @@ public final class GameStatus {
         downloadProgress = 0;
         unzipProgress = 0;
     }
+
 }

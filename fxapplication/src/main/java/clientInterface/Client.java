@@ -14,7 +14,7 @@ public class Client extends Thread {
     private volatile ServerStatus status;
     private volatile User user;
     private volatile GameList games;
-
+    private volatile GameStatusProperty gamestatus = new GameStatusProperty();
     private volatile Label lblStatus;
 
 
@@ -100,6 +100,10 @@ public class Client extends Thread {
         }).start();
     }
 
+    public GameStatusProperty getGamestatusProperty(){
+        return gamestatus;
+    }
+
     public void startGame(Game game){
         new Thread(() -> {
             try {
@@ -124,6 +128,19 @@ public class Client extends Thread {
         status = client.getStatus().execute().body();
         user = client.getUser().execute().body();
         games = client.getGames().execute().body();
+        if(ApplicationManager.getFocusedGame() != null){
+            GameStatus newStatus = client.getGameStatus(ApplicationManager.getFocusedGame()).execute().body();
+            Platform.runLater(() -> {
+                gamestatus.unzipping.setValue(newStatus.unzipping);
+                gamestatus.downloading.setValue(newStatus.downloading);
+                gamestatus.download.setValue(newStatus.download);
+                gamestatus.update.setValue(newStatus.update);
+                gamestatus.version.setValue(newStatus.version);
+                gamestatus.playable.setValue(newStatus.playable);
+                gamestatus.downloadProgress.setValue(newStatus.downloadProgress);
+                gamestatus.unzipProgress.setValue(newStatus.unzipProgress);
+            });
+        }
         //updateGames();
     }
 

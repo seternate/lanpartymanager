@@ -1,6 +1,7 @@
 package stages;
 
 import controller.MainController;
+import entities.Game;
 import entities.GameList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -35,6 +36,10 @@ public class MainStage extends Stage {
 
     public void updateRoot(){
         //controller.updateRoot();
+    }
+
+    public Game getFocusedGame(){
+        return controller.focusedGame;
     }
 
 }

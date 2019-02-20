@@ -14,6 +14,8 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.util.Objects;
 
+import static java.lang.Thread.sleep;
+
 public final class MyClient extends com.esotericsoftware.kryonet.Client {
     private UserList users;
     private GameList games;
@@ -101,6 +103,32 @@ public final class MyClient extends com.esotericsoftware.kryonet.Client {
         return serverStatus;
     }
 
+    public GameList getGames(){
+        return games;
+    }
+
+    public GameStatus getGameStatus(Game game){
+        GameStatus gamestatus = new GameStatus();
+        int uptodate = game.isUptodate();
+        switch(uptodate){
+            case -1: gamestatus.download = true; break;
+            case -2: gamestatus.playable = true; gamestatus.version = false; break;
+            case -3: gamestatus.update = true; break;
+            case 0: gamestatus.playable = true;
+        }
+        Download download = downloadManager.getDownloadStatus(game);
+        if(download == null)
+            return gamestatus;
+        if(download.receivedParts < download.totalParts){
+            gamestatus.downloading = true;
+            gamestatus.downloadProgress = download.downloadProgress;
+        }else{
+            gamestatus.unzipping = true;
+            gamestatus.unzipProgress = download.unzipProgress;
+        }
+        return gamestatus;
+    }
+
     public User getUser(){
         return user;
     }
@@ -114,13 +142,12 @@ public final class MyClient extends com.esotericsoftware.kryonet.Client {
         return false;
     }
 
-    public GameList getGames(){
-        return games;
-    }
+
 
     public int download(Game game){
-        if(game.isUptodate() == 0)
+        if(downloadManager.getDownloadStatus(game) != null){
             return -1;
+        }
         File sFile = new File(user.getGamepath());
         if(game.getSizeServer() > sFile.getFreeSpace())
             return -2;
@@ -134,6 +161,16 @@ public final class MyClient extends com.esotericsoftware.kryonet.Client {
     public boolean startGame(Game game){
         if(game.isUptodate() != 0 && game.isUptodate() != -2){
             download(game);
+            new Thread(() -> {
+                while(downloadManager.getDownloadStatus(game) != null){
+                    try {
+                        sleep(10);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                startGame(game);
+            }).start();
             return false;
         }
         String start = "start ";
@@ -186,10 +223,6 @@ public final class MyClient extends com.esotericsoftware.kryonet.Client {
         boolean changed;
         changed = changeUsername(user.getUsername()) | changeGamepath(user.getGamepath());
         return changed;
-    }
-
-    public ServerStatus getStatus(){
-        return serverStatus;
     }
 
     public User getUser(){
