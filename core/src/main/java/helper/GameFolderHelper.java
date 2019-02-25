@@ -19,7 +19,6 @@ public abstract class GameFolderHelper {
         if(!root.exists())
             //noinspection ResultOfMethodCallIgnored
             root.mkdirs();
-        System.out.println(root.getAbsolutePath());
         String[] dirs = root.list();
         for(String dir : Objects.requireNonNull(dirs)){
             File child = new File(root.getAbsolutePath()+"\\"+dir+path);

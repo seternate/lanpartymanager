@@ -7,6 +7,7 @@ import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
+import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
@@ -40,6 +41,14 @@ public class GameOverlayController {
     @FXML
     private void initialize(){
         GameStatusProperty gameStatus = ApplicationManager.getGamestatusProperty();
+
+        Tooltip.install(lblVersion, new Tooltip("Version"));
+        Tooltip.install(ivRunGame, new Tooltip("Run game"));
+        Tooltip.install(ivDownloadGame, new Tooltip("Download game"));
+        Tooltip.install(ivOpenExplorer, new Tooltip("Open game folder in explorer"));
+        Tooltip.install(ivConnectServer, new Tooltip("Connect to an open server"));
+        Tooltip.install(ivStartServer, new Tooltip("Start a new server"));
+
 
         lblGamename.setText(game.getName());
         lblVersion.setText(game.getVersionServer());

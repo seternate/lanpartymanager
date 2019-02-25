@@ -110,6 +110,8 @@ public class ApplicationManager {
     }
 
     public static void updateMainstageRoot(){
+        if(mainStage == null)
+            return;
         mainStage.updateRoot();
     }
 

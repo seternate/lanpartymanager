@@ -34,5 +34,19 @@ public final class GameList extends ArrayList<Game> {
             throw new IOException("No properties files in the server properties directory");
     }
 
+    public boolean equals(GameList gamelist){
+        if(size() != gamelist.size())
+            return false;
+        for(Game game : this){
+            for(int k = 0; k < gamelist.size(); k++){
+                if(!game.equals(gamelist.get(k)) && k == gamelist.size() - 1){
+                    return false;
+                }else if(game.equals(gamelist.get(k))){
+                    break;
+                }
+            }
+        }
+        return true;
+    }
 
 }

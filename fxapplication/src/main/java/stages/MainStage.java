@@ -36,7 +36,7 @@ public class MainStage extends Stage {
     }
 
     public void updateRoot(){
-        //controller.updateRoot();
+        controller.updateGamePane();
     }
 
     public Game getFocusedGame(){

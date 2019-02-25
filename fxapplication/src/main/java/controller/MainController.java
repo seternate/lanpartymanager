@@ -8,6 +8,7 @@ import javafx.geometry.HPos;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -26,10 +27,12 @@ public class MainController {
     @FXML
     private Label lblStatus;
     @FXML
-    private ImageView ivUsers;
+    private ImageView ivUsers, ivSettings;
 
     @FXML
     private void initialize(){
+        Tooltip.install(ivUsers, new Tooltip("Connected users"));
+        Tooltip.install(ivSettings, new Tooltip("Open settings"));
         ApplicationManager.setServerStatusLabel(lblStatus);
         spMain.setFitToWidth(true);
         updateGamePane();
@@ -38,7 +41,7 @@ public class MainController {
         });
     }
 
-    private void updateGamePane(){
+    public void updateGamePane(){
         GameList games = ApplicationManager.getGames();
         GridPane tilePane = new GridPane();
         tilePane.setHgap(20);

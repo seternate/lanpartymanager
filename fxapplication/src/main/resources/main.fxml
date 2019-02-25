@@ -14,7 +14,7 @@
             <Insets bottom="15.0" left="5.0" right="5.0" top="5.0" />
          </StackPane.margin>
       </Label>
-      <ImageView fitHeight="150.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true" StackPane.alignment="BOTTOM_RIGHT">
+      <ImageView fx:id="ivSettings" fitHeight="150.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true" StackPane.alignment="BOTTOM_RIGHT">
          <image>
             <Image url="@config_icon.png" />
          </image>

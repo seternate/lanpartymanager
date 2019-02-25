@@ -16,29 +16,33 @@ public class Client extends Thread {
     private volatile ServerStatus status;
     private volatile User user;
     private volatile GameList games;
-    private volatile GameStatusProperty gamestatus = new GameStatusProperty();
+    private volatile GameStatusProperty gamestatus;
     private volatile Label lblStatus;
-    private volatile ObservableList<User> users = FXCollections.observableArrayList();
-    private volatile UserList userlist = new UserList();
+    private volatile ObservableList<User> users;
+    private volatile UserList userlist;
 
 
     public Client(){
-        start();
-    }
-
-    @Override
-    public void run() {
         //Client initiation
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://localhost:8080/fx/")
                 .addConverterFactory(JacksonConverterFactory.create())
                 .build();
         client = retrofit.create(FXDataClient.class);
-        status = null;
-        user = new User();
-        games = null;
-        lblStatus = null;
 
+        status = null;
+        lblStatus = null;
+        games = new GameList();
+        gamestatus = new GameStatusProperty();
+        users = FXCollections.observableArrayList();
+        userlist = new UserList();
+        user = new User();
+
+        start();
+    }
+
+    @Override
+    public void run() {
         //Ensure the preloader is shown at least 1.5 seconds.
         try {
             sleep(1500);
@@ -146,9 +150,8 @@ public class Client extends Thread {
     }
 
     private void update() throws IOException {
-        status = client.getStatus().execute().body();
         user = client.getUser().execute().body();
-        games = client.getGames().execute().body();
+        //games = client.getGames().execute().body();
         if(ApplicationManager.getFocusedGame() != null){
             GameStatus newStatus = client.getGameStatus(ApplicationManager.getFocusedGame()).execute().body();
             gamestatus.downloading.setValue(newStatus.downloading);
@@ -161,15 +164,15 @@ public class Client extends Thread {
             gamestatus.unzipProgress.setValue(newStatus.unzipProgress);
         }
         updateUsers();
-        //updateGames();
+        updateGames();
+        status = client.getStatus().execute().body();
     }
 
     private void updateGames() throws IOException {
-        //Todo
         GameList gamelist = client.getGames().execute().body();
-        System.out.println(games != null && !games.equals(gamelist));
-        if(games != null && !games.equals(gamelist)){
-            ApplicationManager.updateMainstageRoot();
+        if(!gamelist.equals(games)){
+            games = gamelist;
+            Platform.runLater(ApplicationManager::updateMainstageRoot);
         }
         games = gamelist;
     }
@@ -177,7 +180,7 @@ public class Client extends Thread {
     private void updateUsers() throws IOException {
         UserList userlist = client.getUserlist().execute().body();
         if(!userlist.equals(this.userlist)){
-            System.out.println("updating");
+            userlist.remove(user);
             Platform.runLater(() -> users.setAll(userlist.toList()));
         }
         this.userlist = userlist;

@@ -18,7 +18,6 @@ public final class UserList extends HashMap<Integer, User> {
         for(User user : toList()){
             for(int k = 0; k < userlist.toList().size(); k++){
                 if(!user.equals(userlist.toList().get(k)) && k == userlist.toList().size() - 1){
-                    //System.out.println("here");
                     return false;
                 }else if(user.equals(userlist.toList().get(k))){
                     break;
@@ -26,5 +25,12 @@ public final class UserList extends HashMap<Integer, User> {
             }
         }
         return true;
+    }
+
+    public void remove(User user){
+        for(Integer key : this.keySet()){
+            if(get(key).equals(user))
+                remove(key);
+        }
     }
 }
