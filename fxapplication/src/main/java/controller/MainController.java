@@ -25,12 +25,17 @@ public class MainController {
     private ScrollPane spMain;
     @FXML
     private Label lblStatus;
+    @FXML
+    private ImageView ivUsers;
 
     @FXML
     private void initialize(){
         ApplicationManager.setServerStatusLabel(lblStatus);
         spMain.setFitToWidth(true);
         updateGamePane();
+        ivUsers.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+            ApplicationManager.openUsers();
+        });
     }
 
     private void updateGamePane(){

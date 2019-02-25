@@ -3,6 +3,8 @@ package clientInterface;
 import controller.ApplicationManager;
 import entities.*;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.scene.control.Label;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
@@ -16,6 +18,8 @@ public class Client extends Thread {
     private volatile GameList games;
     private volatile GameStatusProperty gamestatus = new GameStatusProperty();
     private volatile Label lblStatus;
+    private volatile ObservableList<User> users = FXCollections.observableArrayList();
+    private volatile UserList userlist = new UserList();
 
 
     public Client(){
@@ -56,12 +60,15 @@ public class Client extends Thread {
         //Update all fields while any stage is open.
         while(ApplicationManager.isRunning()){
             try {
-                update();
                 updateStatusLabel();
+                update();
                 sleep(50);
             } catch (Exception e) {
                 e.printStackTrace();
                 System.err.println("Client-application connection problems.");
+                if(e instanceof IOException){
+                    status.disconnected();
+                }
             }
         }
     }
@@ -80,6 +87,10 @@ public class Client extends Thread {
 
     public void setServerStatusLabel(Label lblStatus){
         this.lblStatus = lblStatus;
+    }
+
+    public ObservableList<User> getUsersList(){
+        return this.users;
     }
 
     public void sendUserData(String username, String gamepath){
@@ -124,33 +135,51 @@ public class Client extends Thread {
         }).start();
     }
 
+    public void openExplorer(Game game){
+        new Thread(() -> {
+            try {
+                client.openExplorer(game).execute();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }).start();
+    }
+
     private void update() throws IOException {
         status = client.getStatus().execute().body();
         user = client.getUser().execute().body();
         games = client.getGames().execute().body();
         if(ApplicationManager.getFocusedGame() != null){
             GameStatus newStatus = client.getGameStatus(ApplicationManager.getFocusedGame()).execute().body();
-            Platform.runLater(() -> {
-                gamestatus.unzipping.setValue(newStatus.unzipping);
-                gamestatus.downloading.setValue(newStatus.downloading);
-                gamestatus.download.setValue(newStatus.download);
-                gamestatus.update.setValue(newStatus.update);
-                gamestatus.version.setValue(newStatus.version);
-                gamestatus.playable.setValue(newStatus.playable);
-                gamestatus.downloadProgress.setValue(newStatus.downloadProgress);
-                gamestatus.unzipProgress.setValue(newStatus.unzipProgress);
-            });
+            gamestatus.downloading.setValue(newStatus.downloading);
+            gamestatus.unzipping.setValue(newStatus.unzipping);
+            gamestatus.download.setValue(newStatus.download);
+            gamestatus.update.setValue(newStatus.update);
+            gamestatus.version.setValue(newStatus.version);
+            gamestatus.playable.setValue(newStatus.playable);
+            gamestatus.downloadProgress.setValue(newStatus.downloadProgress);
+            gamestatus.unzipProgress.setValue(newStatus.unzipProgress);
         }
+        updateUsers();
         //updateGames();
     }
 
     private void updateGames() throws IOException {
+        //Todo
         GameList gamelist = client.getGames().execute().body();
         System.out.println(games != null && !games.equals(gamelist));
         if(games != null && !games.equals(gamelist)){
             ApplicationManager.updateMainstageRoot();
         }
         games = gamelist;
+    }
+
+    private void updateUsers() throws IOException {
+        UserList userlist = client.getUserlist().execute().body();
+        if(!userlist.equals(this.userlist)){
+            users.setAll(userlist.toList());
+        }
+        this.userlist = userlist;
     }
 
     private void updateStatusLabel(){
@@ -163,4 +192,5 @@ public class Client extends Thread {
                 lblStatus.setText("Waiting for server connection.");
         });
     }
+
 }

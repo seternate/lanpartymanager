@@ -133,6 +133,10 @@ public final class MyClient extends com.esotericsoftware.kryonet.Client {
         return user;
     }
 
+    public UserList getUserList(){
+        return users;
+    }
+
     public boolean updateUser(User user) {
         try {
             return this.user.update(user);
@@ -140,22 +144,6 @@ public final class MyClient extends com.esotericsoftware.kryonet.Client {
             e.printStackTrace();
         }
         return false;
-    }
-
-
-
-    public int download(Game game){
-        if(downloadManager.getDownloadStatus(game) != null){
-            return -1;
-        }
-        File sFile = new File(user.getGamepath());
-        if(game.getSizeServer() > sFile.getFreeSpace())
-            return -2;
-        int openport = getOpenPort();
-        downloadManager.add(new Download(openport, game, game.getSizeServer(), user.getGamepath()));
-        System.out.println("Requested to download " + game.getName() + ".");
-        sendTCP(new DownloadRequest(game, openport));
-        return 0;
     }
 
     public boolean startGame(Game game){
@@ -180,6 +168,31 @@ public final class MyClient extends com.esotericsoftware.kryonet.Client {
             start += game.getExeFileRelative().substring(1) + " " + game.getParam();
         return startProcess(game, start);
     }
+
+    public int download(Game game){
+        if(downloadManager.getDownloadStatus(game) != null){
+            return -1;
+        }
+        File sFile = new File(user.getGamepath());
+        if(game.getSizeServer() > sFile.getFreeSpace())
+            return -2;
+        int openport = getOpenPort();
+        downloadManager.add(new Download(openport, game, game.getSizeServer(), user.getGamepath()));
+        System.out.println("Requested to download " + game.getName() + ".");
+        sendTCP(new DownloadRequest(game, openport));
+        return 0;
+    }
+
+    public boolean openExplorer(Game game){
+        try {
+            Runtime.getRuntime().exec("explorer.exe /select," + GameFolderHelper.getAbsolutePath(game.getExeFileRelative()));
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
 
 
 

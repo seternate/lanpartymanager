@@ -11,4 +11,19 @@ public final class UserList extends HashMap<Integer, User> {
     public List<User> toList(){
         return new ArrayList<>(values());
     }
+
+    public boolean equals(UserList userlist){
+        if(toList().size() != userlist.toList().size())
+            return false;
+        for(User user : toList()){
+            for(int k = 0; k < userlist.toList().size(); k++){
+                if(!user.equals(userlist.toList().get(k)) && k == userlist.toList().size() - 1){
+                    //System.out.println("here");
+                    return false;
+                }
+            }
+        }
+        //System.out.println("here");
+        return true;
+    }
 }

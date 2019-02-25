@@ -1,13 +1,8 @@
 package controller;
 
 import entities.Game;
-import entities.GameStatus;
 import entities.GameStatusProperty;
-import javafx.beans.property.Property;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.event.EventHandler;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
@@ -20,9 +15,11 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 
+import java.util.Locale;
+
 public class GameOverlayController {
     @FXML
-    private ImageView ivRunGame, ivDownloadGame, ivOpenExplorer, ivStartServer, ivConnectServer;
+    private ImageView ivRunGame, ivDownloadGame, ivOpenExplorer, ivConnectServer, ivStartServer;
     @FXML
     private HBox hbDownloadGame;
     @FXML
@@ -49,17 +46,25 @@ public class GameOverlayController {
         lblDownloadbar.setFont(Font.font("System", FontWeight.NORMAL, pbDownload.getHeight()*0.5));
 
         spDownloadGame.setVisible(false);
-        gameStatus.downloading.addListener(new ChangeListener<Boolean>() {
-            @Override
-            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-                if(newValue == true && ApplicationManager.getFocusedGame().equals(game)){
-                    spDownloadGame.setVisible(true);
-                    lblDownloadbar.textProperty().bind(gameStatus.downloadProgress.asString());
-                    pbDownload.progressProperty().bind(gameStatus.downloadProgress);
-                }
-                if(newValue == false){
-                    spDownloadGame.setVisible(false);
-                }
+        gameStatus.downloading.addListener((observable, oldValue, newValue) -> setDownloadbarVisibility(newValue));
+        gameStatus.downloadProgress.addListener((observable, oldValue, newValue) -> {
+            if(ApplicationManager.getFocusedGame().equals(game) && newValue.doubleValue() > 0) {
+                spDownloadGame.setVisible(true);
+                Platform.runLater(() -> {
+                    pbDownload.setProgress(newValue.doubleValue());
+                    lblDownloadbar.setText(String.format(Locale.ENGLISH,"%.02f %%", newValue.doubleValue() * 100));
+                });
+            }
+        });
+
+        gameStatus.unzipping.addListener((observable, oldValue, newValue) -> setDownloadbarVisibility(newValue));
+        gameStatus.unzipProgress.addListener((observable, oldValue, newValue) -> {
+            if(ApplicationManager.getFocusedGame().equals(game) && newValue.doubleValue() > 0) {
+                spDownloadGame.setVisible(true);
+                Platform.runLater(() -> {
+                    pbDownload.setProgress(newValue.doubleValue());
+                    lblDownloadbar.setText(String.format(Locale.ENGLISH, "Unzip: %.02f %%", newValue.doubleValue() * 100));
+                });
             }
         });
 
@@ -69,54 +74,56 @@ public class GameOverlayController {
         ivStartServer.fitHeightProperty().bind(gameTileImage.fitHeightProperty().divide(7));
         ivConnectServer.fitHeightProperty().bind(gameTileImage.fitHeightProperty().divide(7));
 
-        gameTileImage.fitHeightProperty().addListener(new ChangeListener<Number>() {
-            @Override
-            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                double fontSize = newValue.doubleValue()/12.0;
-                lblGamename.setFont(Font.font("System", FontWeight.BOLD, fontSize));
-                lblVersion.setFont(Font.font("System", FontWeight.BOLD, fontSize));
+        gameTileImage.fitHeightProperty().addListener((observable, oldValue, newValue) -> {
+            double fontSize = newValue.doubleValue()/12.0;
+            lblGamename.setFont(Font.font("System", FontWeight.BOLD, fontSize));
+            lblVersion.setFont(Font.font("System", FontWeight.BOLD, fontSize));
 
-                double leftSpace = newValue.doubleValue() - lblGamename.getFont().getSize() - lblVersion.getFont().getSize() - 5.75*ivRunGame.fitHeightProperty().get();
-                Insets margin = new Insets(leftSpace/6.0, newValue.doubleValue()/30.0, 0, newValue.doubleValue()/30.0);
+            double leftSpace = newValue.doubleValue() - lblGamename.getFont().getSize() - lblVersion.getFont().getSize() - 5.75*ivRunGame.fitHeightProperty().get();
+            Insets margin = new Insets(leftSpace/6.0, newValue.doubleValue()/30.0, 0, newValue.doubleValue()/30.0);
 
-                VBox.setMargin(lblGamename, new Insets(0, 0, 0, margin.getLeft()));
-                VBox.setMargin(lblVersion, new Insets(0, 0, 0, margin.getLeft()));
-                VBox.setMargin(ivRunGame, margin);
-                VBox.setMargin(hbDownloadGame, margin);
-                VBox.setMargin(ivOpenExplorer, margin);
-                VBox.setMargin(ivStartServer, margin);
-                VBox.setMargin(ivConnectServer, new Insets(margin.getTop(), 0, margin.getTop(), margin.getLeft()));
-            }
+            VBox.setMargin(lblGamename, new Insets(0, 0, 0, margin.getLeft()));
+            VBox.setMargin(lblVersion, new Insets(0, 0, 0, margin.getLeft()));
+            VBox.setMargin(ivRunGame, margin);
+            VBox.setMargin(hbDownloadGame, margin);
+            VBox.setMargin(ivOpenExplorer, margin);
+            VBox.setMargin(ivStartServer, margin);
+            VBox.setMargin(ivConnectServer, new Insets(margin.getTop(), 0, margin.getTop(), margin.getLeft()));
         });
 
-        hbDownloadGame.heightProperty().addListener(new ChangeListener<Number>() {
-            @Override
-            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                VBox.setMargin(spDownloadGame, new Insets(newValue.doubleValue()*0.1, 0, newValue.doubleValue()*0.1, newValue.doubleValue()*0.25));
-            }
+        hbDownloadGame.heightProperty().addListener((observable, oldValue, newValue) -> VBox.setMargin(spDownloadGame, new Insets(newValue.doubleValue()*0.1, 0, newValue.doubleValue()*0.1, newValue.doubleValue()*0.25)));
+
+        pbDownload.heightProperty().addListener((observable, oldValue, newValue) -> lblDownloadbar.setFont(Font.font("System", FontWeight.NORMAL, newValue.doubleValue()*0.5)));
+
+        ivRunGame.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+            ApplicationManager.startGame(game);
+            event.consume();
         });
 
-        pbDownload.heightProperty().addListener(new ChangeListener<Number>() {
-            @Override
-            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                lblDownloadbar.setFont(Font.font("System", FontWeight.NORMAL, newValue.doubleValue()*0.5));
-            }
+        ivDownloadGame.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+            ApplicationManager.downloadGame(game);
+            event.consume();
         });
 
-        ivRunGame.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                ApplicationManager.startGame(game);
-                event.consume();
-            }
+        ivOpenExplorer.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+            ApplicationManager.openExplorer(game);
+            event.consume();
         });
 
-        ivDownloadGame.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                ApplicationManager.downloadGame(game);
-                event.consume();
-            }
+        ivConnectServer.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+            ApplicationManager.openServerList(game);
+            event.consume();
         });
+
+        ivStartServer.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+            ApplicationManager.openServerStartup(game);
+            event.consume();
+        });
+    }
+
+    private void setDownloadbarVisibility(Boolean newValue) {
+        if(newValue == false){
+            spDownloadGame.setVisible(false);
+        }
     }
 }

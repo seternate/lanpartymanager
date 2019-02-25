@@ -6,6 +6,8 @@ import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 
+import java.util.List;
+
 public interface FXDataClient {
 
     @GET("status")
@@ -28,6 +30,12 @@ public interface FXDataClient {
 
     @POST("games/status")
     Call<GameStatus> getGameStatus(@Body Game game);
+
+    @POST("openexplorer")
+    Call<Boolean> openExplorer(@Body Game game);
+
+    @GET("users")
+    Call<UserList> getUserlist();
 
     /*
     @GET("status")

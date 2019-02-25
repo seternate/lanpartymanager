@@ -70,7 +70,7 @@
             <Insets />
          </VBox.margin>
       </ImageView>
-      <ImageView fx:id="ivStartServer" fitHeight="150.0" fitWidth="64.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fx:id="ivConnectServer" fitHeight="150.0" fitWidth="64.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@start_server.png" />
          </image>
@@ -78,7 +78,7 @@
             <Insets />
          </VBox.margin>
       </ImageView>
-      <ImageView fx:id="ivConnectServer" fitHeight="150.0" fitWidth="64.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fx:id="ivStartServer" fitHeight="150.0" fitWidth="64.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@connect_server.png" />
          </image>

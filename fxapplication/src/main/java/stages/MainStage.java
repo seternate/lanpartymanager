@@ -1,5 +1,6 @@
 package stages;
 
+import controller.ApplicationManager;
 import controller.MainController;
 import entities.Game;
 import entities.GameList;
@@ -42,4 +43,10 @@ public class MainStage extends Stage {
         return controller.focusedGame;
     }
 
+
+    @Override
+    public void hide() {
+        super.hide();
+        ApplicationManager.closeAllMainStages();
+    }
 }

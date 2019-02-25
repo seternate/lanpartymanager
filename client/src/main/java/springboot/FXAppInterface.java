@@ -49,6 +49,16 @@ public class FXAppInterface {
         return new ResponseEntity<>(client.getGameStatus(game), HttpStatus.OK);
     }
 
+    @RequestMapping(value = "/openexplorer", method = RequestMethod.POST)
+    public boolean openExplorer(@RequestBody Game game){
+        return client.openExplorer(game);
+    }
+
+    @RequestMapping(value="/users", method = RequestMethod.GET)
+    public ResponseEntity getUserlist(){
+        return new ResponseEntity<>(client.getUserList(), HttpStatus.OK);
+    }
+
     /*
     @RequestMapping(value = "/status", method = RequestMethod.GET)
     public ResponseEntity<?> status(){
