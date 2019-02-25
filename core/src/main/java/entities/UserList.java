@@ -23,7 +23,6 @@ public final class UserList extends HashMap<Integer, User> {
                 }
             }
         }
-        //System.out.println("here");
         return true;
     }
 }
