@@ -177,6 +177,7 @@ public class Client extends Thread {
     private void updateUsers() throws IOException {
         UserList userlist = client.getUserlist().execute().body();
         if(!userlist.equals(this.userlist)){
+            System.out.println("updating");
             Platform.runLater(() -> users.setAll(userlist.toList()));
         }
         this.userlist = userlist;

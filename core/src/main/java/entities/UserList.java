@@ -20,6 +20,8 @@ public final class UserList extends HashMap<Integer, User> {
                 if(!user.equals(userlist.toList().get(k)) && k == userlist.toList().size() - 1){
                     //System.out.println("here");
                     return false;
+                }else if(user.equals(userlist.toList().get(k))){
+                    break;
                 }
             }
         }

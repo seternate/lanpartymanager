@@ -1,7 +1,6 @@
 package controller;
 
 import entities.User;
-import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
