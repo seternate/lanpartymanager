@@ -37,7 +37,10 @@ public class MainController {
         spMain.setFitToWidth(true);
         updateGamePane();
         ivUsers.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-            ApplicationManager.openUsers();
+            ApplicationManager.showUsers();
+        });
+        ivSettings.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+            ApplicationManager.showSettings();
         });
     }
 

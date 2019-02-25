@@ -1,5 +1,6 @@
 package stages;
 
+import controller.ApplicationManager;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -24,7 +25,10 @@ public class LoginStage extends Stage {
         if (icon != null) {
             getIcons().add(new Image(icon));
         }
-        setTitle("Lanpartymanager - Login");
+        if(!ApplicationManager.isMainstage())
+            setTitle("Lanpartymanager - Login");
+        else
+            setTitle("Settings");
         setResizable(false);
     }
 

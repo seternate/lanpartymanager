@@ -99,11 +99,12 @@ public class Client extends Thread {
 
     public void sendUserData(String username, String gamepath){
         new Thread(() -> {
-            User userdata = null;
+            User userdata;
             try {
                 userdata = new User(new ClientSettings());
             } catch (IOException e) {
                 e.printStackTrace();
+                return;
             }
             userdata.setUsername(username);
             userdata.setGamepath(gamepath);
@@ -151,9 +152,9 @@ public class Client extends Thread {
 
     private void update() throws IOException {
         user = client.getUser().execute().body();
-        //games = client.getGames().execute().body();
         if(ApplicationManager.getFocusedGame() != null){
             GameStatus newStatus = client.getGameStatus(ApplicationManager.getFocusedGame()).execute().body();
+            assert newStatus != null;
             gamestatus.downloading.setValue(newStatus.downloading);
             gamestatus.unzipping.setValue(newStatus.unzipping);
             gamestatus.download.setValue(newStatus.download);
@@ -170,6 +171,7 @@ public class Client extends Thread {
 
     private void updateGames() throws IOException {
         GameList gamelist = client.getGames().execute().body();
+        assert gamelist != null;
         if(!gamelist.equals(games)){
             games = gamelist;
             Platform.runLater(ApplicationManager::updateMainstageRoot);
@@ -179,6 +181,7 @@ public class Client extends Thread {
 
     private void updateUsers() throws IOException {
         UserList userlist = client.getUserlist().execute().body();
+        assert userlist != null;
         if(!userlist.equals(this.userlist)){
             userlist.remove(user);
             Platform.runLater(() -> users.setAll(userlist.toList()));

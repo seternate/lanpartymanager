@@ -38,10 +38,20 @@ public class ApplicationManager {
         usersStage = new UsersStage();
         mainStage.show();
         loginStage.hide();
+        loginStage = new LoginStage();
     }
 
-    public static void openUsers(){
+    public static void saveSettings(String username, String gamepath){
+        client.sendUserData(username, gamepath);
+        loginStage.hide();
+    }
+
+    public static void showUsers(){
         usersStage.show();
+    }
+
+    public static void showSettings(){
+        loginStage.show();
     }
 
     public static void closeAllMainStages(){
@@ -74,6 +84,10 @@ public class ApplicationManager {
 
     public static boolean isPreloader(){
         return preloaderStage.isShowing();
+    }
+
+    public static boolean isMainstage(){
+        return mainStage != null;
     }
 
     public static String getUsername(){
