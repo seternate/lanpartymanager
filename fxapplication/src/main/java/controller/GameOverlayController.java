@@ -17,6 +17,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 
+import java.awt.*;
 import java.util.Locale;
 
 public class GameOverlayController {
@@ -134,11 +135,34 @@ public class GameOverlayController {
                 ApplicationManager.openServerStartup(game);
             event.consume();
         });
+
+        ivRunGame.addEventHandler(MouseEvent.MOUSE_ENTERED, event -> mouseEntered(event));
+        ivStartServer.addEventHandler(MouseEvent.MOUSE_ENTERED, event -> mouseEntered(event));
+        ivConnectServer.addEventHandler(MouseEvent.MOUSE_ENTERED, event -> mouseEntered(event));
+        ivOpenExplorer.addEventHandler(MouseEvent.MOUSE_ENTERED, event -> mouseEntered(event));
+        ivDownloadGame.addEventHandler(MouseEvent.MOUSE_ENTERED, event -> mouseEntered(event));
+
+        ivRunGame.addEventHandler(MouseEvent.MOUSE_EXITED, event -> mouseExited(event));
+        ivDownloadGame.addEventHandler(MouseEvent.MOUSE_EXITED, event -> mouseExited(event));
+        ivOpenExplorer.addEventHandler(MouseEvent.MOUSE_EXITED, event -> mouseExited(event));
+        ivConnectServer.addEventHandler(MouseEvent.MOUSE_EXITED, event -> mouseExited(event));
+        ivStartServer.addEventHandler(MouseEvent.MOUSE_EXITED, event -> mouseExited(event));
+
     }
 
     private void setDownloadbarVisibility(Boolean newValue) {
         if(newValue == false){
             spDownloadGame.setVisible(false);
         }
+    }
+
+    private void mouseEntered(MouseEvent event){
+        ((ImageView)event.getTarget()).setStyle("-fx-effect: dropshadow(gaussian, grey, 10, 0.05, 0, 3);");
+        ((ImageView)event.getTarget()).fitHeightProperty().bind(gameTileImage.fitHeightProperty().divide(6.75));
+    }
+
+    private void mouseExited(MouseEvent event){
+        ((ImageView)event.getTarget()).setStyle("-fx-effect: nothing;");
+        ((ImageView)event.getTarget()).fitHeightProperty().bind(gameTileImage.fitHeightProperty().divide(7));
     }
 }
