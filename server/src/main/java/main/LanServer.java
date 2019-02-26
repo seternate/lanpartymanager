@@ -87,7 +87,7 @@ public final class LanServer {
         System.out.println("Exe: " + game.getExeFileRelative());
         System.out.println("Server Exe: " + game.getExeServerRelative());
         System.out.println("Direct connection: " + game.isConnectDirect());
-        System.out.println("Open server: " + game.getOpenServer());
+        System.out.println("Open server: " + game.isOpenServer());
         System.out.println("Size: " + game.getSizeServer());
     }
 

@@ -137,7 +137,7 @@ public final class Game {
         return serverParam;
     }
 
-    public boolean getOpenServer(){
+    public boolean isOpenServer(){
         return openServer;
     }
 
@@ -157,7 +157,7 @@ public final class Game {
                 && exeFileRelative.equals(game.getExeFileRelative()) && coverUrl.equals(game.getCoverUrl())
                 && serverFileName.equals(game.serverFileName) && connectDirect == game.isConnectDirect()
                 && version.equals(game.getVersion()) && sizeServer == game.getSizeServer() && exeServerRelative.equals(game.getExeServerRelative())
-                && serverParam.equals(game.getServerParam()) && param.equals(game.getParam()) && openServer == game.getOpenServer();
+                && serverParam.equals(game.getServerParam()) && param.equals(game.getParam()) && openServer == game.isOpenServer();
     }
 
     @Override

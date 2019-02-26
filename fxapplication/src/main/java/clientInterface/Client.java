@@ -150,6 +150,26 @@ public class Client extends Thread {
         }).start();
     }
 
+    public void startServer(Game game, String parameters){
+        new Thread(() -> {
+            try {
+                client.startServer(game, parameters).execute();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }).start();
+    }
+
+    public void connectServer(Game game, String ip){
+        new Thread(() -> {
+            try {
+                client.connectServer(game, ip).execute();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }).start();
+    }
+
     private void update() throws IOException {
         user = client.getUser().execute().body();
         if(ApplicationManager.getFocusedGame() != null){

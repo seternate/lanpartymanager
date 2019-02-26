@@ -2,11 +2,7 @@ package clientInterface;
 
 import entities.*;
 import retrofit2.Call;
-import retrofit2.http.Body;
-import retrofit2.http.GET;
-import retrofit2.http.POST;
-
-import java.util.List;
+import retrofit2.http.*;
 
 public interface FXDataClient {
 
@@ -37,37 +33,10 @@ public interface FXDataClient {
     @GET("users")
     Call<UserList> getUserlist();
 
-    /*
-    @GET("status")
-    Call<ServerStatus> getStatus();
+    @POST("startserver")
+    Call<Boolean> startServer(@Body Game game, @Query("param") String parameters);
 
-    @GET("login")
-    Call<User> getLogin();
+    @POST("connect")
+    Call<Boolean> connectServer(@Body Game game, @Query("ip") String ip);
 
-    @POST("login")
-    Call<Boolean> login(@Body User user);
-
-    @POST("games")
-    Call<List<Game>> getGames(@Body List<Game> games);
-
-
-
-    @POST("users")
-    Call<List<User>> getUsers(@Body List<User> users);
-
-    @POST("games/download")
-    Call<Integer> download(@Body Game game);
-
-    @POST("games/openexplorer")
-    Call<Boolean> openExplorer(@Body Game game);
-
-    @POST("games/startgame")
-    Call<Boolean> startGame(@Body Game game);
-
-    @POST("games/connect/{ip}")
-    Call<Boolean> connect(@Body Game game, @Path("ip") String ip);
-
-    @POST("games/startserver")
-    Call<Boolean> startServer(@Body Game game, @Query("param") String param);
-    */
 }

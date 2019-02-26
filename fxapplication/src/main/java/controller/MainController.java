@@ -11,6 +11,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
@@ -37,10 +38,12 @@ public class MainController {
         spMain.setFitToWidth(true);
         updateGamePane();
         ivUsers.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-            ApplicationManager.showUsers();
+            if(event.getButton() == MouseButton.PRIMARY)
+                ApplicationManager.showUsers();
         });
         ivSettings.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-            ApplicationManager.showSettings();
+            if(event.getButton() == MouseButton.PRIMARY)
+                ApplicationManager.showSettings();
         });
     }
 

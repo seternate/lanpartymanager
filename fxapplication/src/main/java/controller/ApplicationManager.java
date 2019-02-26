@@ -7,16 +7,15 @@ import entities.GameStatusProperty;
 import entities.User;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Label;
-import stages.LoginStage;
-import stages.MainStage;
-import stages.PreloaderStage;
-import stages.UsersStage;
+import stages.*;
 
 public class ApplicationManager {
     private static PreloaderStage preloaderStage;
     private static LoginStage loginStage;
     private static MainStage mainStage;
     private static UsersStage usersStage;
+    private static ServerStartStage serverstartstage;
+    private static ServerConnectStage serverconnectstage;
     private static Client client;
 
 
@@ -71,11 +70,13 @@ public class ApplicationManager {
     }
 
     public static void openServerList(Game game){
-        //Todo
+        serverconnectstage = new ServerConnectStage(game);
+        serverconnectstage.show();
     }
 
     public static void openServerStartup(Game game){
-        //Todo
+        serverstartstage = new ServerStartStage(game);
+        serverstartstage.show();
     }
 
     public static boolean isRunning(){
@@ -127,6 +128,20 @@ public class ApplicationManager {
         if(mainStage == null)
             return;
         mainStage.updateRoot();
+    }
+
+    public static void startServer(Game game, String parameters){
+        client.startServer(game, parameters);
+        serverstartstage.hide();
+    }
+
+    public static void connectServer(Game game, String ip){
+        client.connectServer(game, ip);
+        serverconnectstage.hide();
+    }
+
+    public static User getUser(){
+        return client.getUser();
     }
 
 }

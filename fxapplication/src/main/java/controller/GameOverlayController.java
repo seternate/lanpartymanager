@@ -9,6 +9,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
@@ -105,27 +106,32 @@ public class GameOverlayController {
         pbDownload.heightProperty().addListener((observable, oldValue, newValue) -> lblDownloadbar.setFont(Font.font("System", FontWeight.NORMAL, newValue.doubleValue()*0.5)));
 
         ivRunGame.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-            ApplicationManager.startGame(game);
+            if(event.getButton() == MouseButton.PRIMARY)
+                ApplicationManager.startGame(game);
             event.consume();
         });
 
         ivDownloadGame.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-            ApplicationManager.downloadGame(game);
+            if(event.getButton() == MouseButton.PRIMARY)
+                ApplicationManager.downloadGame(game);
             event.consume();
         });
 
         ivOpenExplorer.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-            ApplicationManager.openExplorer(game);
+            if(event.getButton() == MouseButton.PRIMARY)
+                ApplicationManager.openExplorer(game);
             event.consume();
         });
 
         ivConnectServer.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-            ApplicationManager.openServerList(game);
+            if(game.isConnectDirect() && event.getButton() == MouseButton.PRIMARY)
+                ApplicationManager.openServerList(game);
             event.consume();
         });
 
         ivStartServer.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-            ApplicationManager.openServerStartup(game);
+            if(game.isOpenServer() && event.getButton() == MouseButton.PRIMARY)
+                ApplicationManager.openServerStartup(game);
             event.consume();
         });
     }
