@@ -157,12 +157,19 @@ public class GameOverlayController {
     }
 
     private void mouseEntered(MouseEvent event){
-        ((ImageView)event.getTarget()).setStyle("-fx-effect: dropshadow(gaussian, grey, 10, 0.05, 0, 3);");
-        ((ImageView)event.getTarget()).fitHeightProperty().bind(gameTileImage.fitHeightProperty().divide(6.75));
+        if((event.getTarget().equals(ivConnectServer) && game.isConnectDirect()) || (event.getTarget().equals(ivStartServer) && game.isOpenServer())
+                || event.getTarget().equals(ivRunGame) || event.getTarget().equals(ivDownloadGame) || event.getTarget().equals(ivOpenExplorer)) {
+            ((ImageView) event.getTarget()).setStyle("-fx-effect: dropshadow(gaussian, grey, 10, 0.05, 0, 3);");
+            ((ImageView) event.getTarget()).fitHeightProperty().bind(gameTileImage.fitHeightProperty().divide(6.75));
+        }
     }
 
     private void mouseExited(MouseEvent event){
-        ((ImageView)event.getTarget()).setStyle("-fx-effect: nothing;");
-        ((ImageView)event.getTarget()).fitHeightProperty().bind(gameTileImage.fitHeightProperty().divide(7));
+        if((event.getTarget().equals(ivConnectServer) && game.isConnectDirect()) || (event.getTarget().equals(ivStartServer) && game.isOpenServer())
+                || event.getTarget().equals(ivRunGame) || event.getTarget().equals(ivDownloadGame) || event.getTarget().equals(ivOpenExplorer)) {
+            ((ImageView)event.getTarget()).setStyle("-fx-effect: nothing;");
+            ((ImageView)event.getTarget()).fitHeightProperty().bind(gameTileImage.fitHeightProperty().divide(7));
+        }
+
     }
 }
