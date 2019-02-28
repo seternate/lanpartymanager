@@ -10,8 +10,10 @@ import javafx.stage.StageStyle;
 import java.io.IOException;
 import java.io.InputStream;
 
+/**
+ * PreloaderStage for the preloading splashscreen.
+ */
 public class PreloaderStage extends Stage {
-
     public PreloaderStage(){
         super();
         FXMLLoader loader = new FXMLLoader(ClassLoader.getSystemResource("preloader.fxml"));
@@ -29,5 +31,4 @@ public class PreloaderStage extends Stage {
         setResizable(false);
         setTitle("Lanpartymanager - Loading...");
     }
-
 }
