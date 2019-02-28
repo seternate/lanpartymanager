@@ -1,7 +1,6 @@
 package stages;
 
 import controller.ServerConnectController;
-import controller.ServerStartController;
 import entities.Game;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -13,8 +12,11 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.io.InputStream;
 
+/**
+ * ServerConnectStage for opening a window with a userlist to which players server should be connected.
+ * Modal window.
+ */
 public class ServerConnectStage extends Stage {
-
     public ServerConnectStage(Game game){
         super();
         FXMLLoader loader = new FXMLLoader(ClassLoader.getSystemResource("serverconnect.fxml"));

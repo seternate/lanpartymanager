@@ -9,8 +9,11 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.io.InputStream;
 
+/**
+ * UserStage for showing the userlist of all connected users to the server except yourself showing from the main stage
+ * button at the bottom.
+ */
 public class UsersStage extends Stage {
-
     public UsersStage(){
         super();
         FXMLLoader loader = new FXMLLoader(ClassLoader.getSystemResource("users.fxml"));
