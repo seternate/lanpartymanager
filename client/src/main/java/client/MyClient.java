@@ -140,7 +140,6 @@ public final class MyClient extends com.esotericsoftware.kryonet.Client {
     public boolean updateUser(User user) {
         try {
             if(this.user.update(user)) {
-                System.out.println(this.user.getOrder());
                 sendTCP(new UserupdateMessage(user));
                 return true;
             }
