@@ -40,11 +40,13 @@ public class OrderController {
         ApplicationManager.getUserslist().addListener(new ListChangeListener<User>() {
             @Override
             public void onChanged(Change<? extends User> c) {
-                for(User user : c.getRemoved())
-                    userorders.remove(user);
-                for(User user : c.getAddedSubList()){
-                    if(user.getOrder() != null && !user.getOrder().isEmpty())
-                        userorders.add(user);
+                while(c.next()){
+                    for(User user : c.getRemoved())
+                        userorders.remove(user);
+                    for(User user : c.getAddedSubList()){
+                        if(user.getOrder() != null && !user.getOrder().isEmpty())
+                            userorders.add(user);
+                    }
                 }
             }
         });
