@@ -7,6 +7,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 
+/**
+ * Controller class of the login and settings stage.
+ */
 public class LoginController {
     @FXML
     private TextField txtfieldUsername, txtfieldGamepath;

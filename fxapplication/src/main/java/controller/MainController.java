@@ -28,7 +28,7 @@ public class MainController {
     @FXML
     private Label lblStatus;
     @FXML
-    private ImageView ivUsers, ivSettings;
+    private ImageView ivUsers, ivSettings, ivOrder;
 
     @FXML
     private void initialize(){
@@ -44,6 +44,10 @@ public class MainController {
         ivSettings.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
             if(event.getButton() == MouseButton.PRIMARY)
                 ApplicationManager.showSettings();
+        });
+        ivOrder.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+            if(event.getButton() == MouseButton.PRIMARY)
+                ApplicationManager.showOrder();
         });
     }
 

@@ -10,6 +10,7 @@ import java.net.InetAddress;
 public final class User {
     private ClientSettings settings;
     private String ipAddress;
+    private String order;
 
 
     public User(){ }
@@ -17,6 +18,7 @@ public final class User {
     public User(ClientSettings settings) throws IOException {
         this.settings = settings;
         ipAddress = InetAddress.getLocalHost().getHostAddress();
+        order = new String();
     }
 
     public String getUsername(){
@@ -43,20 +45,23 @@ public final class User {
         this.ipAddress = ipAddress;
     }
 
+    public String getOrder(){
+        return order;
+    }
+
+    public void setOrder(String order){
+        this.order = order;
+    }
+
     public boolean update(User user) throws IOException {
         if(!this.equals(user)){
             if(!user.getUsername().isEmpty())
                 setUsername(user.getUsername());
-            else
-                return false;
             if(!user.getGamepath().isEmpty())
                 setGamepath(user.getGamepath());
-            else
-                return false;
             if(!user.getIpAddress().isEmpty())
                 setIpAddress(user.getIpAddress());
-            else
-                return false;
+            setOrder(user.getOrder());
         }else{
             return false;
         }
@@ -65,7 +70,8 @@ public final class User {
     }
 
     public boolean equals(User user){
-        return getUsername().equals(user.getUsername()) && getGamepath().equals(user.getGamepath()) && getIpAddress().equals(user.getIpAddress());
+        return getUsername().equals(user.getUsername()) && getGamepath().equals(user.getGamepath()) && getIpAddress().equals(user.getIpAddress())
+                && getOrder().equals(user.getOrder());
     }
 
     @Override

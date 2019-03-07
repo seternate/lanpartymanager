@@ -67,5 +67,4 @@ public class FXAppInterface {
     public Boolean connect(@RequestBody Game game, @RequestParam("ip") String ip){
         return client.connectServer(game, ip);
     }
-
 }

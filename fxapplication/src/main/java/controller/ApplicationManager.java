@@ -17,6 +17,7 @@ public class ApplicationManager {
     private static LoginStage loginStage;
     private static MainStage mainStage;
     private static UsersStage usersStage;
+    private static OrderStage orderStage;
     private static ServerStartStage serverstartstage;
     private static ServerConnectStage serverconnectstage;
     private static Client client;
@@ -46,9 +47,10 @@ public class ApplicationManager {
      * @param gamepath gampath from the login stage.
      */
     static void openMainStage(String username, String gamepath){
-        client.sendUserData(username, gamepath);
+        client.sendUserData(username, gamepath, getUser().getOrder());
         mainStage = new MainStage();
         usersStage = new UsersStage();
+        orderStage = new OrderStage();
         mainStage.show();
         loginStage.hide();
         loginStage = new LoginStage();
@@ -61,7 +63,7 @@ public class ApplicationManager {
      * @param gamepath gampath from the login stage.
      */
     static void saveSettings(String username, String gamepath){
-        client.sendUserData(username, gamepath);
+        client.sendUserData(username, gamepath, getUser().getOrder());
         loginStage.hide();
     }
 
@@ -80,11 +82,19 @@ public class ApplicationManager {
     }
 
     /**
+     * Shows the food ordering stage.
+     */
+    static void showOrder(){
+        orderStage.show();
+    }
+
+    /**
      * Called from main stage to proper exit the application.
      */
     public static void closeAllMainStages(){
         usersStage.hide();
         loginStage.hide();
+        orderStage.hide();
     }
 
     /**
@@ -251,5 +261,9 @@ public class ApplicationManager {
 
     static User getUser(){
         return client.getUser();
+    }
+
+    static void setOrder(String order){
+        client.sendUserData(getUsername(), getGamepath(), order);
     }
 }

@@ -30,6 +30,14 @@
             <Insets right="42.0" />
          </StackPane.margin>
       </ImageView>
+      <ImageView fx:id="ivOrder" fitHeight="150.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true" StackPane.alignment="BOTTOM_RIGHT">
+         <image>
+            <Image url="@food-icon-vector-27.jpg" />
+         </image>
+         <StackPane.margin>
+            <Insets bottom="7.0" right="90.0" />
+         </StackPane.margin>
+      </ImageView>
       <ScrollPane fx:id="spMain" hbarPolicy="NEVER" vbarPolicy="NEVER">
          <StackPane.margin>
             <Insets bottom="45.0" left="10.0" right="10.0" top="15.0" />

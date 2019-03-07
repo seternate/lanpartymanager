@@ -27,6 +27,7 @@ public final class UserDeserializer extends StdDeserializer<User> {
         String username = node.get("username").asText();
         String gamepath = node.get("gamepath").asText();
         String ipaddress = node.get("ipAddress").asText();
+        String order = node.get("order").asText();
 
         ClientSettings settings = new ClientSettings();
         settings.setUsername(username);
@@ -34,6 +35,7 @@ public final class UserDeserializer extends StdDeserializer<User> {
 
         User user = new User(settings);
         user.setIpAddress(ipaddress);
+        user.setOrder(order);
 
         return user;
     }

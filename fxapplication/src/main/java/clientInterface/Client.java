@@ -57,6 +57,7 @@ public class Client extends Thread {
                 Platform.runLater(ApplicationManager::openLoginStage);
                 sleep(50);
             } catch (Exception e) {
+                e.printStackTrace();
                 System.err.println("No client-application found.");
             }
         }
@@ -97,7 +98,7 @@ public class Client extends Thread {
         return this.users;
     }
 
-    public void sendUserData(String username, String gamepath){
+    public void sendUserData(String username, String gamepath, String order){
         new Thread(() -> {
             User userdata;
             try {
@@ -108,6 +109,7 @@ public class Client extends Thread {
             }
             userdata.setUsername(username);
             userdata.setGamepath(gamepath);
+            userdata.setOrder(order);
             try {
                 client.sendUser(userdata).execute();
             } catch (IOException e) {

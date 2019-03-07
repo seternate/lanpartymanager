@@ -1,6 +1,7 @@
 package main;
 
 import entities.Game;
+import entities.User;
 import server.MyServer;
 
 import java.util.Scanner;
@@ -27,7 +28,7 @@ public final class LanServer {
         new Thread(() -> {
             Scanner scanner = new Scanner(System.in);
             while(true){
-                System.out.println("\nInput: [rebuildgames] [games] [game -#] [users] [restart] [exit]");
+                System.out.println("\nInput: [rebuildgames] [games] [game -#] [users] [user -#] [restart] [exit]");
 
                 String[] inputs = scanner.nextLine().split("-");
 
@@ -56,6 +57,16 @@ public final class LanServer {
 
                 else if(arg.equals("users"))
                     printUsers();
+
+                else if(arg.trim().equals("user")){
+                    int user;
+                    try {
+                        user = Integer.valueOf(inputs[1]) - 1;
+                        printUsersDetails(user);
+                    } catch (Exception e) {
+                        System.out.println("Wrong arguments provided!");
+                    }
+                }
 
                 else if(arg.equals("restart")){
                     server.stop();
@@ -97,10 +108,24 @@ public final class LanServer {
         }
     }
 
+    private static void printUsersDetails(int usernumber){
+        User user = server.getUsersAsList().get(usernumber);
+
+        System.out.println("Name: " + user.getUsername());
+        System.out.println("IP-Address: " + user.getIpAddress());
+        System.out.println("Gamepath: " + user.getGamepath());
+        if(user.getOrder() == null)
+            System.out.println("Order:");
+        else
+            System.out.println("Order: " + user.getOrder());
+    }
+
     private static void printUsers(){
         if(server.getUsersAsList().isEmpty()) {
             System.out.println("No users logged in.");
         }
-        server.getUsersAsList().forEach(System.out::println);
+        for(int i = 0; i < server.getUsersAsList().size(); i++){
+            System.out.println("(" + (i+1) + ") " + server.getUsersAsList().get(i));
+        }
     }
 }
