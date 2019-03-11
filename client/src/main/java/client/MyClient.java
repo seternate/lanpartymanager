@@ -4,6 +4,7 @@ import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import entities.*;
 import helper.GameFolderHelper;
+import helper.GameInfoHelper;
 import helper.NetworkClassRegistrationHelper;
 import message.*;
 import requests.DownloadRequest;
@@ -267,7 +268,7 @@ public final class MyClient extends com.esotericsoftware.kryonet.Client {
         File file = new File(Objects.requireNonNull(GameFolderHelper.getAbsolutePath(game.getExeFileRelative())));
         try {
             ProcessBuilder process = new ProcessBuilder("cmd.exe", "/C", start);
-            process.directory(file.getParentFile());
+            process.directory(new File(GameFolderHelper.getGameFolder(game.getExeFileRelative())));
             process.start();
         } catch (IOException e) {
             e.printStackTrace();

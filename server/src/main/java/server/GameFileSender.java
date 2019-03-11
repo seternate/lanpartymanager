@@ -29,6 +29,7 @@ public final class GameFileSender extends Thread{
         try {
             sendFile(gameFile);
         } catch (IOException e) {
+            System.err.println("Error while sending " + gameName + ".");
             e.printStackTrace();
         }
     }

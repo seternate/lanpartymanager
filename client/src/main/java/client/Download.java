@@ -74,7 +74,7 @@ public final class Download extends Thread {
             }
             receivedParts = i;
             downloadProgress = (double)(receivedParts+1)/(double)(totalParts+1);
-            System.out.println("Received " + (receivedParts+1) + "/" + (totalParts+1));
+            //System.out.println("Received " + (receivedParts+1) + "/" + (totalParts+1));
         }
         fos.close();
         dis.close();
