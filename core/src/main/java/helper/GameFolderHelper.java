@@ -26,4 +26,9 @@ public abstract class GameFolderHelper {
         }
         return null;
     }
+
+    public static String getGameFolder(String path){
+        String absolutepath = getAbsolutePath(path);
+        return absolutepath.subSequence(0, absolutepath.length() - path.length()).toString();
+    }
 }
