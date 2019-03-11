@@ -53,7 +53,6 @@ public class DragAndDropServer extends Thread {
 
         //Read number of files to be received
         int fileCount = data.readInt();
-        System.out.println(fileCount);
 
         //Read filenames and filesizes
         List<File> files = new ArrayList<>(fileCount);
@@ -63,9 +62,6 @@ public class DragAndDropServer extends Thread {
             files.add(file);
             filesizes.add(data.readInt());
         }
-
-        System.out.println(files);
-        System.out.println(filesizes);
 
         //Read files
         for(int i = 0; i < fileCount; i++){
