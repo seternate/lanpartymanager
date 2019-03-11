@@ -17,7 +17,6 @@ public class UsersController {
                 event.consume();
             });
             setOnDragDropped(event -> {
-                System.out.println(event.getDragboard().getFiles());
                 ApplicationManager.sendFiles(getItem(), event.getDragboard().getFiles());
                 event.consume();
             });
