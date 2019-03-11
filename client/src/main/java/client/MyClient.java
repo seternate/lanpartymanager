@@ -4,7 +4,6 @@ import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import entities.*;
 import helper.GameFolderHelper;
-import helper.GameInfoHelper;
 import helper.NetworkClassRegistrationHelper;
 import message.*;
 import requests.DownloadRequest;
@@ -13,6 +12,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
+import java.util.List;
 import java.util.Objects;
 
 import static java.lang.Thread.sleep;
@@ -47,6 +47,7 @@ public final class MyClient extends com.esotericsoftware.kryonet.Client {
         super.start();
         new Thread(this).start();
         connect();
+        new DragAndDropServer();
     }
 
     private void connect(){
@@ -274,6 +275,11 @@ public final class MyClient extends com.esotericsoftware.kryonet.Client {
             return false;
         }
         return true;
+    }
+
+    public boolean sendFiles(User user, List<File> files){
+        DragAndDropClient ddclient = new DragAndDropClient(user, files);
+        return false;
     }
 
 }

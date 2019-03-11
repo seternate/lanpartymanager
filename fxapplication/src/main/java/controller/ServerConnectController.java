@@ -23,7 +23,7 @@ public class ServerConnectController {
 
     @FXML
     private void initialize(){
-        ObservableList<User> userlist = FXCollections.observableArrayList();
+        ObservableList<User> userlist = FXCollections.observableArrayList(ApplicationManager.getUserslist());
         FXCollections.copy(userlist, ApplicationManager.getUserslist());
         userlist.add(ApplicationManager.getUser());
         lvUsers.setItems(userlist);

@@ -4,6 +4,9 @@ import entities.*;
 import retrofit2.Call;
 import retrofit2.http.*;
 
+import java.io.File;
+import java.util.List;
+
 public interface FXDataClient {
 
     @GET("status")
@@ -38,5 +41,8 @@ public interface FXDataClient {
 
     @POST("connect")
     Call<Boolean> connectServer(@Body Game game, @Query("ip") String ip);
+
+    @POST("sendfiles")
+    Call<Boolean> sendFiles(@Body User user, @Query("files") List<File> files);
 
 }

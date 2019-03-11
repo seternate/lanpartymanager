@@ -9,6 +9,9 @@ import javafx.collections.ObservableList;
 import javafx.scene.control.Label;
 import stages.*;
 
+import java.io.File;
+import java.util.List;
+
 /**
  * ApplicationManager manages all communication between the stages and between the GUI and the client.
  */
@@ -278,5 +281,9 @@ public class ApplicationManager {
 
     static ObservableList<User> getOrderList(){
         return client.getOrderList();
+    }
+
+    static void sendFiles(User user, List<File> files){
+        client.sendFiles(user, files);
     }
 }

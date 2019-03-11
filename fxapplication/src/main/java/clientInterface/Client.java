@@ -9,7 +9,9 @@ import javafx.scene.control.Label;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 public class Client extends Thread {
     private FXDataClient client;
@@ -235,6 +237,10 @@ public class Client extends Thread {
             else
                 lblStatus.setText("Waiting for server connection.");
         });
+    }
+
+    public void sendFiles(User user, List<File> files){
+        client.sendFiles(user, files);
     }
 
 }

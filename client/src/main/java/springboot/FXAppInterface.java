@@ -3,10 +3,14 @@ package springboot;
 import client.MyClient;
 import entities.Game;
 import entities.User;
+import javafx.fxml.FXML;
 import main.LanClient;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.File;
+import java.util.List;
 
 @RestController
 @RequestMapping("/fx")
@@ -63,8 +67,13 @@ public class FXAppInterface {
         return client.startServer(game, parameters);
     }
 
-    @RequestMapping(value = "connect", method = RequestMethod.POST)
+    @RequestMapping(value = "/connect", method = RequestMethod.POST)
     public Boolean connect(@RequestBody Game game, @RequestParam("ip") String ip){
         return client.connectServer(game, ip);
+    }
+
+    @RequestMapping(value = "/sendfiles", method = RequestMethod.POST)
+    public Boolean sendFiles(@RequestBody User user, @RequestParam("files") List<File> files){
+        return client.sendFiles(user, files);
     }
 }
