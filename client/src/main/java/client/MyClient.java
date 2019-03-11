@@ -278,6 +278,8 @@ public final class MyClient extends com.esotericsoftware.kryonet.Client {
     }
 
     public boolean sendFiles(User user, List<File> files){
+        System.out.println("Sending file ....");
+        System.out.println(files);
         DragAndDropClient ddclient = new DragAndDropClient(user, files);
         return false;
     }

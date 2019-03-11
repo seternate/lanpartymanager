@@ -240,7 +240,13 @@ public class Client extends Thread {
     }
 
     public void sendFiles(User user, List<File> files){
-        client.sendFiles(user, files);
+        new Thread(() -> {
+            try {
+                client.sendFiles(user, files).execute();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }).start();
     }
 
 }

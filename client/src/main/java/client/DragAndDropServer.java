@@ -39,6 +39,7 @@ public class DragAndDropServer extends Thread {
     }
 
     private void saveFiles() throws IOException {
+        System.out.println("Saving ....");
         DataInputStream data = new DataInputStream(socket.getInputStream());
         BufferedInputStream buffered = new BufferedInputStream(socket.getInputStream());
 

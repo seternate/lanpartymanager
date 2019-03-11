@@ -19,6 +19,7 @@ public class DragAndDropClient extends Thread {
     @Override
     public void run() {
         try {
+            System.out.println("here");
             Socket socket = new Socket(user.getIpAddress(), 1337);
             OutputStream os = socket.getOutputStream();
             DataOutputStream dos = new DataOutputStream(os);
