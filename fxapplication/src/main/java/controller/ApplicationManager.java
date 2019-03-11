@@ -266,4 +266,8 @@ public class ApplicationManager {
     static void setOrder(String order){
         client.sendUserData(getUsername(), getGamepath(), order);
     }
+
+    static ObservableList<User> getOrderList(){
+        return client.getOrderList();
+    }
 }

@@ -19,7 +19,9 @@ public class Client extends Thread {
     private volatile GameStatusProperty gamestatus;
     private volatile Label lblStatus;
     private volatile ObservableList<User> users;
+    private volatile ObservableList<User> orders;
     private volatile UserList userlist;
+    private volatile UserList orderlist;
 
 
     public Client(){
@@ -35,7 +37,9 @@ public class Client extends Thread {
         games = new GameList();
         gamestatus = new GameStatusProperty();
         users = FXCollections.observableArrayList();
+        orders = FXCollections.observableArrayList();
         userlist = new UserList();
+        orderlist = new UserList();
         user = new User();
 
         start();
@@ -96,6 +100,10 @@ public class Client extends Thread {
 
     public ObservableList<User> getUsersList(){
         return this.users;
+    }
+
+    public ObservableList<User> getOrderList(){
+        return this.orders;
     }
 
     public void sendUserData(String username, String gamepath, String order){
@@ -202,13 +210,22 @@ public class Client extends Thread {
     }
 
     private void updateUsers() throws IOException {
-        UserList userlist = client.getUserlist().execute().body();
-        assert userlist != null;
-        if(!userlist.equals(this.userlist)){
-            userlist.remove(user);
-            Platform.runLater(() -> users.setAll(userlist.toList()));
+        UserList list = client.getUserlist().execute().body();
+        assert list != null;
+        if(!list.equals(orderlist)){
+            System.out.println("Updating orderlist");
+            UserList temp = new UserList(list);
+            Platform.runLater(() -> orders.setAll(temp.toList()));
         }
-        this.userlist = userlist;
+        orderlist = new UserList(list);
+
+        list.remove(user);
+        if(!list.equals(userlist)){
+            System.out.println("Updating userlist");
+            UserList temp = new UserList(list);
+            Platform.runLater(() -> users.setAll(temp.toList()));
+        }
+        userlist = new UserList(list);
     }
 
     private void updateStatusLabel(){

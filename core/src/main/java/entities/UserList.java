@@ -8,6 +8,10 @@ public final class UserList extends HashMap<Integer, User> {
 
     public UserList(){ }
 
+    public UserList(UserList userlist){
+        super(userlist);
+    }
+
     public List<User> toList(){
         return new ArrayList<>(values());
     }
@@ -28,9 +32,6 @@ public final class UserList extends HashMap<Integer, User> {
     }
 
     public void remove(User user){
-        for(Integer key : this.keySet()){
-            if(get(key).equals(user))
-                remove(key);
-        }
+        this.keySet().removeIf(e -> get(e).equals(user));
     }
 }

@@ -18,7 +18,7 @@ public final class User {
     public User(ClientSettings settings) throws IOException {
         this.settings = settings;
         ipAddress = InetAddress.getLocalHost().getHostAddress();
-        order = new String();
+        order = "";
     }
 
     public String getUsername(){
