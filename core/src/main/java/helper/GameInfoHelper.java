@@ -16,17 +16,17 @@ public abstract class GameInfoHelper {
 
     public static String getVersion(Game game){
         switch(game.getVersion().format){
-            case "file": return getVersionFile(game.getVersion().file, game.getVersion().query);
+            case "file": return getVersionFile(game.getExeFileRelative(), game.getVersion().file, game.getVersion().query);
             case "exe": return getVersionExe(game.getExeFileRelative());
             default: return "";
         }
     }
 
-    private static String getVersionFile(String file, String query){
-        String absolutePath = GameFolderHelper.getAbsolutePath(file);
-        if(absolutePath== null)
+    private static String getVersionFile(String exe, String file, String query){
+        String absolutePath = GameFolderHelper.getAbsolutePath(exe);
+        if(absolutePath == null)
             return null;
-        File versionFile = new File(absolutePath);
+        File versionFile = new File(GameFolderHelper.getGameFolder(exe), file);
         Scanner scr = null;
         try {
             scr = new Scanner(versionFile);
