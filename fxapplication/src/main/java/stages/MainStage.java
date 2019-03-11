@@ -43,6 +43,7 @@ public class MainStage extends Stage {
      */
     public void updateRoot(){
         controller.updateGamePane();
+        setWidth(getWidth()+1);
     }
     /**
      *

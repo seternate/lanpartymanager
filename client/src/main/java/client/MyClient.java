@@ -164,11 +164,11 @@ public final class MyClient extends com.esotericsoftware.kryonet.Client {
             }).start();
             return false;
         }
-        String start = "start ";
+        String start;
         if(game.getParam().equals(""))
-            start += game.getExeFileRelative().substring(1);
+            start = "start " + "\"\" " + "\"" + game.getExeFileRelative().substring(1) + "\"";
         else
-            start += game.getExeFileRelative().substring(1) + " " + game.getParam();
+            start = "start " + "\"\" " + "\"" + game.getExeFileRelative().substring(1) + "\"" + " " + game.getParam();
         return startProcess(game, start);
     }
 
@@ -215,9 +215,9 @@ public final class MyClient extends com.esotericsoftware.kryonet.Client {
         }
         String start;
         if(param.equals(""))
-            start = "start " + game.getExeServerRelative().substring(1);
+            start = "start " + "\"\" " + "\"" + game.getExeServerRelative().substring(1) + "\"";
         else
-            start = "start " + game.getExeServerRelative().substring(1) + " " + param;
+            start = "start " + "\"\" " + "\"" + game.getExeServerRelative().substring(1) + "\"" + " " + param;
         return startProcess(game, start);
     }
 

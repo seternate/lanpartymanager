@@ -107,27 +107,27 @@ class GameOverlayController {
         /*
             Dynamically resizing image buttons to the gametile image.
          */
-        ivRunGame.fitHeightProperty().bind(gameTileImage.fitHeightProperty().divide(7));
-        ivDownloadGame.fitHeightProperty().bind(gameTileImage.fitHeightProperty().divide(7));
-        ivOpenExplorer.fitHeightProperty().bind(gameTileImage.fitHeightProperty().divide(7));
-        ivStartServer.fitHeightProperty().bind(gameTileImage.fitHeightProperty().divide(7));
-        ivConnectServer.fitHeightProperty().bind(gameTileImage.fitHeightProperty().divide(7));
+        ivRunGame.fitHeightProperty().bind(gameTileImage.fitHeightProperty().divide(7.5));
+        ivDownloadGame.fitHeightProperty().bind(gameTileImage.fitHeightProperty().divide(7.5));
+        ivOpenExplorer.fitHeightProperty().bind(gameTileImage.fitHeightProperty().divide(7.5));
+        ivStartServer.fitHeightProperty().bind(gameTileImage.fitHeightProperty().divide(7.5));
+        ivConnectServer.fitHeightProperty().bind(gameTileImage.fitHeightProperty().divide(7.5));
         /*
             All dynamic margin resizing and fontsize resizing.
          */
         gameTileImage.fitHeightProperty().addListener((observable, oldValue, newValue) -> {
             //Font resizing
-            double fontSize = newValue.doubleValue()/12.0;
+            double fontSize = newValue.doubleValue()/15.0;
             lblGamename.setFont(Font.font("System", FontWeight.BOLD, fontSize));
             lblVersion.setFont(Font.font("System", FontWeight.BOLD, fontSize));
             //Margin calculation with left space
             double leftSpace = newValue.doubleValue() - lblGamename.getFont().getSize() - lblVersion.getFont().getSize() - 5.75*ivRunGame.fitHeightProperty().get();
-            Insets margin = new Insets(leftSpace/6.0, newValue.doubleValue()/30.0, 0, newValue.doubleValue()/30.0);
+            Insets margin = new Insets(leftSpace/10.0, newValue.doubleValue()/30.0, 0, newValue.doubleValue()/30.0);
             //Setting margins
-            VBox.setMargin(lblGamename, new Insets(0, 0, 0, margin.getLeft()));
-            VBox.setMargin(lblVersion, new Insets(0, 0, 0, margin.getLeft()));
+            VBox.setMargin(lblGamename, margin);
+            VBox.setMargin(lblVersion, new Insets(0, margin.getRight(), 0, margin.getLeft()));
             VBox.setMargin(ivRunGame, margin);
-            VBox.setMargin(hbDownloadGame, margin);
+            VBox.setMargin(hbDownloadGame, new Insets(2*margin.getTop(), margin.getRight(), 0,  margin.getLeft()));
             VBox.setMargin(ivOpenExplorer, margin);
             VBox.setMargin(ivStartServer, margin);
             VBox.setMargin(ivConnectServer, new Insets(margin.getTop(), 0, margin.getTop(), margin.getLeft()));
@@ -194,7 +194,7 @@ class GameOverlayController {
         if((event.getTarget().equals(ivConnectServer) && game.isConnectDirect()) || (event.getTarget().equals(ivStartServer) && game.isOpenServer())
                 || event.getTarget().equals(ivRunGame) || event.getTarget().equals(ivDownloadGame) || event.getTarget().equals(ivOpenExplorer)) {
             ((ImageView) event.getTarget()).setStyle("-fx-effect: dropshadow(gaussian, gray, 10, 0.05, 0, 3);");
-            ((ImageView) event.getTarget()).fitHeightProperty().bind(gameTileImage.fitHeightProperty().divide(6.75));
+            ((ImageView) event.getTarget()).fitHeightProperty().bind(gameTileImage.fitHeightProperty().divide(7.25));
         }
     }
     /**
@@ -206,7 +206,7 @@ class GameOverlayController {
         if((event.getTarget().equals(ivConnectServer) && game.isConnectDirect()) || (event.getTarget().equals(ivStartServer) && game.isOpenServer())
                 || event.getTarget().equals(ivRunGame) || event.getTarget().equals(ivDownloadGame) || event.getTarget().equals(ivOpenExplorer)) {
             ((ImageView)event.getTarget()).setStyle("-fx-effect: null;");
-            ((ImageView)event.getTarget()).fitHeightProperty().bind(gameTileImage.fitHeightProperty().divide(7));
+            ((ImageView)event.getTarget()).fitHeightProperty().bind(gameTileImage.fitHeightProperty().divide(7.5));
         }
     }
 }
