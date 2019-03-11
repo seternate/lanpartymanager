@@ -16,10 +16,12 @@ import java.util.List;
 public class Client extends Thread {
     private FXDataClient client;
     private volatile ServerStatus status;
+    private volatile boolean fileStatus;
     private volatile User user;
     private volatile GameList games;
     private volatile GameStatusProperty gamestatus;
     private volatile Label lblStatus;
+    private volatile Label lblFileStatus;
     private volatile ObservableList<User> users;
     private volatile ObservableList<User> orders;
     private volatile UserList userlist;
@@ -36,6 +38,7 @@ public class Client extends Thread {
 
         status = null;
         lblStatus = null;
+        lblFileStatus = null;
         games = new GameList();
         gamestatus = new GameStatusProperty();
         users = FXCollections.observableArrayList();
@@ -98,6 +101,10 @@ public class Client extends Thread {
 
     public void setServerStatusLabel(Label lblStatus){
         this.lblStatus = lblStatus;
+    }
+
+    public void setFileStatusLabel(Label lblFileStatus){
+        this.lblFileStatus = lblFileStatus;
     }
 
     public ObservableList<User> getUsersList(){
@@ -199,6 +206,7 @@ public class Client extends Thread {
         updateUsers();
         updateGames();
         status = client.getStatus().execute().body();
+        fileStatus = client.getFileStatus().execute().body();
     }
 
     private void updateGames() throws IOException {
@@ -236,6 +244,15 @@ public class Client extends Thread {
                 lblStatus.setText("Connected to server: " + status.getServerIP());
             else
                 lblStatus.setText("Waiting for server connection.");
+        });
+
+        if(lblFileStatus == null)
+            return;
+        Platform.runLater(() -> {
+            if(fileStatus)
+                lblFileStatus.setText("(Receiving files ...");
+            else
+                lblFileStatus.setText("");
         });
     }
 

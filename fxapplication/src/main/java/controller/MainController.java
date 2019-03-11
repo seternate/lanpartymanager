@@ -26,7 +26,7 @@ public class MainController {
     @FXML
     private ScrollPane spMain;
     @FXML
-    private Label lblStatus;
+    private Label lblStatus, lblFileStatus;
     @FXML
     private ImageView ivUsers, ivSettings, ivOrder;
 
@@ -35,6 +35,7 @@ public class MainController {
         Tooltip.install(ivUsers, new Tooltip("Connected users"));
         Tooltip.install(ivSettings, new Tooltip("Open settings"));
         ApplicationManager.setServerStatusLabel(lblStatus);
+        ApplicationManager.setFileStatusLabel(lblFileStatus);
         spMain.setFitToWidth(true);
         updateGamePane();
         ivUsers.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {

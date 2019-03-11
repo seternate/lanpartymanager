@@ -286,4 +286,8 @@ public class ApplicationManager {
     static void sendFiles(User user, List<File> files){
         client.sendFiles(user, files);
     }
+
+    static void setFileStatusLabel(Label lblFileStatus){
+        client.setFileStatusLabel(lblFileStatus);
+    }
 }

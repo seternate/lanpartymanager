@@ -76,4 +76,9 @@ public class FXAppInterface {
     public Boolean sendFiles(@RequestBody User user, @RequestParam("files") List<File> files){
         return client.sendFiles(user, files);
     }
+
+    @RequestMapping(value = "/filestatus", method = RequestMethod.GET)
+    public Boolean getFileStatus(){
+        return client.getDropFileDownloadStatus();
+    }
 }

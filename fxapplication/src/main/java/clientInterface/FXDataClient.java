@@ -45,4 +45,7 @@ public interface FXDataClient {
     @POST("sendfiles")
     Call<Boolean> sendFiles(@Body User user, @Query("files") List<File> files);
 
+    @GET("filestatus")
+    Call<Boolean> getFileStatus();
+
 }
