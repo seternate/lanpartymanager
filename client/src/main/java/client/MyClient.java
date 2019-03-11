@@ -265,7 +265,6 @@ public final class MyClient extends com.esotericsoftware.kryonet.Client {
     }
 
     private boolean startProcess(Game game, String start) {
-        File file = new File(Objects.requireNonNull(GameFolderHelper.getAbsolutePath(game.getExeFileRelative())));
         try {
             ProcessBuilder process = new ProcessBuilder("cmd.exe", "/C", start);
             process.directory(new File(GameFolderHelper.getGameFolder(game.getExeFileRelative())));

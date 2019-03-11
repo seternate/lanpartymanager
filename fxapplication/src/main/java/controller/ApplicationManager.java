@@ -71,21 +71,30 @@ public class ApplicationManager {
      * Shows the user stage.
      */
     static void showUsers(){
-        usersStage.show();
+        if(usersStage.isShowing())
+            usersStage.requestFocus();
+        else
+            usersStage.show();
     }
 
     /**
      * Shows the settings stage.
      */
     static void showSettings(){
-        loginStage.show();
+        if(loginStage.isShowing())
+            loginStage.requestFocus();
+        else
+            loginStage.show();
     }
 
     /**
      * Shows the food ordering stage.
      */
     static void showOrder(){
-        orderStage.show();
+        if(orderStage.isShowing())
+            orderStage.requestFocus();
+        else
+            orderStage.show();
     }
 
     /**
