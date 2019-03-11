@@ -5,15 +5,28 @@
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.StackPane?>
 
 <StackPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="450.0" prefWidth="720.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MainController">
    <children>
-      <Label fx:id="lblStatus" alignment="CENTER" text="Waiting for server connection." StackPane.alignment="BOTTOM_LEFT">
+      <HBox alignment="BOTTOM_LEFT" StackPane.alignment="BOTTOM_LEFT">
          <StackPane.margin>
-            <Insets bottom="15.0" left="5.0" right="5.0" top="5.0" />
+            <Insets />
          </StackPane.margin>
-      </Label>
+         <children>
+            <Label fx:id="lblStatus" alignment="CENTER" text="Waiting for server connection.">
+               <HBox.margin>
+                  <Insets bottom="15.0" left="5.0" right="3.0" top="5.0" />
+               </HBox.margin>
+            </Label>
+            <Label text="(Receiving files ....)">
+               <HBox.margin>
+                  <Insets bottom="15.0" right="5.0" top="5.0" />
+               </HBox.margin>
+            </Label>
+         </children>
+      </HBox>
       <ImageView fx:id="ivSettings" fitHeight="150.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true" StackPane.alignment="BOTTOM_RIGHT">
          <image>
             <Image url="@config_icon.png" />

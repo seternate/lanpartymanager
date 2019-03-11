@@ -40,19 +40,13 @@ public class DragAndDropClient extends Thread {
                 int maxPackageSize = 10485760;
                 byte [] buffer = new byte [maxPackageSize];
                 FileInputStream fis = new FileInputStream(files.get(i));
-                //BufferedInputStream bis = new BufferedInputStream(fis);
-
-                //Sending file name and file size to the server
-                //bis.read(buffer, 0, buffer.length);
 
                 //Iterate over needed packages
                 int read;
                 while ((read=fis.read(buffer)) > 0) {
                     dos.write(buffer,0,read);
-                    //dos.flush();
                 }
 
-                //bis.close();
                 fis.close();
             }
 

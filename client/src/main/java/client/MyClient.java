@@ -24,6 +24,7 @@ public final class MyClient extends com.esotericsoftware.kryonet.Client {
     private User user;
     private ClientSettings settings;
     private ServerStatus serverStatus;
+    private DragAndDropServer dndserver;
 
 
     public MyClient(){
@@ -47,7 +48,7 @@ public final class MyClient extends com.esotericsoftware.kryonet.Client {
         super.start();
         new Thread(this).start();
         connect();
-        new DragAndDropServer();
+        dndserver = new DragAndDropServer(user.getGamepath());
     }
 
     private void connect(){
@@ -282,6 +283,10 @@ public final class MyClient extends com.esotericsoftware.kryonet.Client {
         System.out.println(files);
         DragAndDropClient ddclient = new DragAndDropClient(user, files);
         return false;
+    }
+
+    public boolean getDropFileDownloadStatus(){
+        return dndserver.isDownloading();
     }
 
 }

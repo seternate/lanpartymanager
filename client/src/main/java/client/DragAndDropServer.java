@@ -9,8 +9,12 @@ import java.util.List;
 public class DragAndDropServer extends Thread {
     private ServerSocket ss;
     private Socket socket;
+    private boolean downloading;
+    private String gamepath;
 
-    public DragAndDropServer(){
+    public DragAndDropServer(String gamepath){
+        downloading = false;
+        this.gamepath = gamepath;
         try {
             ss = new ServerSocket(1337);
             socket = new Socket();
@@ -30,8 +34,10 @@ public class DragAndDropServer extends Thread {
                     socket = new Socket();
                 } else {
                     sleep(10);
+                    downloading = false;
                 }
             } catch (Exception e) {
+                downloading = false;
                 e.printStackTrace();
             }
 
@@ -40,7 +46,8 @@ public class DragAndDropServer extends Thread {
     }
 
     private void saveFiles() throws IOException {
-        System.out.println("Saving ....");
+        downloading = true;
+
         DataInputStream data = new DataInputStream(socket.getInputStream());
         BufferedInputStream buffered = new BufferedInputStream(socket.getInputStream());
 
@@ -62,9 +69,8 @@ public class DragAndDropServer extends Thread {
 
         //Read files
         for(int i = 0; i < fileCount; i++){
-            FileOutputStream fos = new FileOutputStream("C:\\Users\\Levin\\Desktop\\" + files.get(i), false);
+            FileOutputStream fos = new FileOutputStream(gamepath + files.get(i), false);
             DataOutputStream dos = new DataOutputStream(fos);
-            //BufferedOutputStream bos = new BufferedOutputStream(fos);
             byte[] buffer = new byte[1048576];
             int filesize = filesizes.get(i);
 
@@ -72,22 +78,19 @@ public class DragAndDropServer extends Thread {
             while((read = data.read(buffer, 0, Math.min(buffer.length, filesize))) > 0){
                 filesize -= read;
                 fos.write(buffer, 0, read);
-                //fos.flush();
             }
 
-            //bos.close();
             dos.close();
             fos.close();
         }
 
-
-
-
-
-
-
-
         buffered.close();
         data.close();
+
+        downloading = false;
+    }
+
+    public boolean isDownloading(){
+        return downloading;
     }
 }
