@@ -250,7 +250,7 @@ public class Client extends Thread {
             return;
         Platform.runLater(() -> {
             if(fileStatus)
-                lblFileStatus.setText("(Receiving files ...");
+                lblFileStatus.setText("(Receiving files ...)");
             else
                 lblFileStatus.setText("");
         });
