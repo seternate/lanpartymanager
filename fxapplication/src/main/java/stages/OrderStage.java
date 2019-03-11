@@ -27,7 +27,7 @@ public class OrderStage extends Stage {
         setTitle("Food ordering");
         //MinHeight and MinWidth for the window
         setMinWidth(260);
-        setMinHeight(440);
+        setMinHeight(250);
     }
 
 }

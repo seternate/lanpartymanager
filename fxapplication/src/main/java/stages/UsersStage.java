@@ -28,8 +28,8 @@ public class UsersStage extends Stage {
             getIcons().add(new Image(icon));
         }
         setTitle("Users");
-        setMinWidth(240);
+        setMinWidth(220);
         setMaxWidth(400);
-        setMinHeight(360);
+        setMinHeight(250);
     }
 }

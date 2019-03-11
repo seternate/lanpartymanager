@@ -213,7 +213,6 @@ public class Client extends Thread {
         UserList list = client.getUserlist().execute().body();
         assert list != null;
         if(!list.equals(orderlist)){
-            System.out.println("Updating orderlist");
             UserList temp = new UserList(list);
             Platform.runLater(() -> orders.setAll(temp.toList()));
         }
@@ -221,7 +220,6 @@ public class Client extends Thread {
 
         list.remove(user);
         if(!list.equals(userlist)){
-            System.out.println("Updating userlist");
             UserList temp = new UserList(list);
             Platform.runLater(() -> users.setAll(temp.toList()));
         }

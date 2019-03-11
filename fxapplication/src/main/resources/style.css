@@ -127,8 +127,7 @@
 .table-view
 {
     -fx-background-color: #2E2E2E;
-
-    -fx-table-cell-border-color: transparent;
+    -fx-table-cell-border-color: #5E5E5E;
 }
 .table-view > .column-header-background
 {

@@ -8,19 +8,19 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onKeyPressed="#enter" stylesheets="@style.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.OrderController">
+<VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onKeyPressed="#enter" prefHeight="450.0" prefWidth="240.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.OrderController">
    <children>
       <TableView fx:id="tvOrdering" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="279.0" prefWidth="240.0" VBox.vgrow="ALWAYS">
         <columns>
           <TableColumn fx:id="tcUser" prefWidth="75.0" sortable="false" text="User" />
           <TableColumn fx:id="tcOrder" prefWidth="75.0" sortable="false" text="Order" />
         </columns>
-         <columnResizePolicy>
-            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
-         </columnResizePolicy>
          <VBox.margin>
             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
          </VBox.margin>
+         <columnResizePolicy>
+            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+         </columnResizePolicy>
       </TableView>
       <HBox alignment="CENTER_LEFT">
          <children>

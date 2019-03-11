@@ -35,8 +35,8 @@ public class MainStage extends Stage {
         setTitle("Lanpartymanager");
         controller = loader.getController();
         //MinHeight and MinWidth for the window
-        setMinWidth(640);
-        setMinHeight(480);
+        setMinWidth(600);
+        setMinHeight(400);
     }
     /**
      * Called if any new game received from the server and reloads the gametiles in the main window.
