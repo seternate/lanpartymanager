@@ -27,6 +27,7 @@ public class DragAndDropServer extends Thread {
                 if(!socket.isConnected()){
                     socket = ss.accept();
                     saveFiles();
+                    socket = new Socket();
                 } else {
                     sleep(10);
                 }
@@ -45,6 +46,7 @@ public class DragAndDropServer extends Thread {
 
         //Read number of files to be received
         int fileCount = data.readInt();
+        System.out.println(fileCount);
 
         //Read filenames and filesizes
         List<File> files = new ArrayList<>(fileCount);
@@ -55,9 +57,12 @@ public class DragAndDropServer extends Thread {
             filesizes.add(data.readInt());
         }
 
+        System.out.println(files);
+        System.out.println(filesizes);
+
         //Read files
         for(int i = 0; i < fileCount; i++){
-            FileOutputStream fos = new FileOutputStream(files.get(i), false);
+            FileOutputStream fos = new FileOutputStream("C:\\Users\\Levin\\Desktop\\" + files.get(i), false);
             DataOutputStream dos = new DataOutputStream(fos);
             //BufferedOutputStream bos = new BufferedOutputStream(fos);
             byte[] buffer = new byte[1048576];
