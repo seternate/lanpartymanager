@@ -28,7 +28,7 @@ public final class MyClient extends com.esotericsoftware.kryonet.Client {
 
 
     public MyClient(){
-        super();
+        super(1048576, 1048576);
         NetworkClassRegistrationHelper.registerClasses(this);
         registerListener();
 
