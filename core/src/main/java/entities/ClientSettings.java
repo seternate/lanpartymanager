@@ -20,6 +20,11 @@ public final class ClientSettings extends Settings {
                 setGamepath(newPath.toString());
             }
         }
+
+        if(checkGamepath){
+            if(!getGamepath().endsWith("/"))
+                setGamepath(getGamepath() + "/");
+        }
     }
 
     public String getUsername(){
