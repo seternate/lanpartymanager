@@ -3,7 +3,6 @@ package springboot;
 import client.MyClient;
 import entities.Game;
 import entities.User;
-import javafx.fxml.FXML;
 import main.LanClient;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -59,7 +59,7 @@ public final class Download extends Thread {
         byte[] buffer = new byte[1048576];
         FileOutputStream fos = new FileOutputStream(path, false);
 
-        System.out.println("Receiving " + game.getName());
+        System.out.println("DOWNLOAD: Started download of '" + game.getName() + "'.");
         for(int i = 0; i <= totalParts; i++){
             @SuppressWarnings("UnusedAssignment")
             int read = 0;
@@ -74,23 +74,23 @@ public final class Download extends Thread {
             }
             receivedParts = i;
             downloadProgress = (double)(receivedParts+1)/(double)(totalParts+1);
-            //System.out.println("Received " + (receivedParts+1) + "/" + (totalParts+1));
         }
         fos.close();
         dis.close();
-        System.out.println("Received " + game.getName());
+        System.out.println("DOWNLOAD: Ended download of '" + game.getName() + "'.");
 
 
-        System.out.println("Unzipping " + game.getName());
+        System.out.println("UNZIP: Started unzipping '" + game.getName() + "'.");
         try {
             new SevenZipHelper(path, gamepath, false, null, this).extract();
         } catch (SevenZipHelper.ExtractionException e) {
             e.printStackTrace();
         }
-        System.out.println("Unzipped " + game.getName());
+        System.out.println("UNZIP: Finished unzipping '" + game.getName() + "'.");
 
-        System.out.println("Deleted .7z file from " + game.getName());
+        System.out.println("UNZIP: Deleted 7-ZIP file of '" + game.getName() + "'.");
         File file = new File(path);
+        //noinspection ResultOfMethodCallIgnored
         file.delete();
 
         manager.remove(this);

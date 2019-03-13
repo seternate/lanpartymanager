@@ -36,7 +36,7 @@ public final class MyClient extends com.esotericsoftware.kryonet.Client {
             settings = new ClientSettings(true, true);
             user = new User(settings);
         } catch (IOException e) {
-            System.err.println("User creation was not possible.");
+            System.err.println("ERROR: User creation was not possible.");
             System.exit(-10);
         }
         downloadManager = new DownloadManager();
@@ -59,9 +59,10 @@ public final class MyClient extends com.esotericsoftware.kryonet.Client {
                     try {
                         connect(500, address, settings.getServerTcp(), settings.getServerUdp());
                     } catch (IOException e) {
-                        System.err.println("No server running.");
+                        System.err.println("ERROR: Cannot connect to server '" + address.getHostAddress() + "'.");
                     }
-                }
+                } else
+                    System.err.println("ERROR: No lan-server running.");
             }
         }).start();
     }
@@ -71,32 +72,31 @@ public final class MyClient extends com.esotericsoftware.kryonet.Client {
             @Override
             public void connected(Connection connection) {
                 sendTCP(new LoginMessage(user));
-                System.out.println("Logged in.");
+                System.out.println("LOGIN: Logged into lan-server.");
                 serverStatus.setServerIP(connection.getRemoteAddressTCP().getAddress().getHostAddress());
-                System.out.println();
                 serverStatus.connected();
             }
             @Override
             public void disconnected(Connection connection) {
                 serverStatus.disconnected();
                 connect();
-                System.err.println("Server connection lost.");
+                System.err.println("ERROR: Lan-server connection lost.");
             }
             @Override
             public void received (Connection connection, Object object) {
                 if(object instanceof GamelistMessage){
                     GamelistMessage message = (GamelistMessage)object;
                     games = message.games;
-                    System.out.println("Received games.");
+                    System.out.println("RECEIVED: Games");
                 }
                 if(object instanceof UserlistMessage){
                     UserlistMessage message = (UserlistMessage)object;
                     users = message.users;
-                    System.out.println("Received users.");
+                    System.out.println("RECEIVED: Users");
                 }
                 if(object instanceof ErrorMessage){
                     ErrorMessage message = (ErrorMessage)object;
-                    System.err.println(message.error);
+                    System.err.println("ERROR: " + message.error);
                 }
             }
         });
@@ -184,7 +184,7 @@ public final class MyClient extends com.esotericsoftware.kryonet.Client {
             return -2;
         int openport = getOpenPort();
         downloadManager.add(new Download(openport, game, game.getSizeServer(), user.getGamepath()));
-        System.out.println("Requested to download " + game.getName() + ".");
+        System.out.println("REQUEST: Download '" + game.getName() + "'.");
         sendTCP(new DownloadRequest(game, openport));
         return 0;
     }
@@ -279,7 +279,7 @@ public final class MyClient extends com.esotericsoftware.kryonet.Client {
     }
 
     public boolean sendFiles(User user, List<File> files){
-        DragAndDropClient ddclient = new DragAndDropClient(user, files);
+        new DragAndDropClient(user, files);
         return false;
     }
 

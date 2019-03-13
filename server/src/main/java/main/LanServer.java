@@ -3,6 +3,7 @@ package main;
 import com.esotericsoftware.minlog.Log;
 import entities.Game;
 import entities.User;
+import helper.NoKryoLogging;
 import server.MyServer;
 
 import java.util.Scanner;
