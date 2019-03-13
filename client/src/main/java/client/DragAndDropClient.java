@@ -10,7 +10,7 @@ public class DragAndDropClient extends Thread {
     private User user;
     private List<File> files;
 
-    public DragAndDropClient(User user, List<File> files){
+    DragAndDropClient(User user, List<File> files){
         this.user = user;
         this.files = files;
         start();
@@ -27,23 +27,23 @@ public class DragAndDropClient extends Thread {
             dos.writeInt(files.size());
 
             //Write all filenames and filesizes
-            for (int i = 0; i < files.size(); i++){
-                int filesize = (int)files.get(i).length();
-                dos.writeUTF(files.get(i).getName());
+            for (File file : files) {
+                int filesize = (int) file.length();
+                dos.writeUTF(file.getName());
                 dos.writeInt(filesize);
             }
 
             //Writing files
-            for (int i = 0; i < files.size(); i++){
+            for (File file : files) {
                 //10MByte
                 int maxPackageSize = 10485760;
-                byte [] buffer = new byte [maxPackageSize];
-                FileInputStream fis = new FileInputStream(files.get(i));
+                byte[] buffer = new byte[maxPackageSize];
+                FileInputStream fis = new FileInputStream(file);
 
                 //Iterate over needed packages
                 int read;
-                while ((read=fis.read(buffer)) > 0) {
-                    dos.write(buffer,0,read);
+                while ((read = fis.read(buffer)) > 0) {
+                    dos.write(buffer, 0, read);
                 }
 
                 fis.close();
