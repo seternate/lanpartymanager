@@ -12,7 +12,7 @@ public class DragAndDropServer extends Thread {
     private boolean downloading;
     private String gamepath;
 
-    public DragAndDropServer(String gamepath){
+    DragAndDropServer(String gamepath){
         downloading = false;
         this.gamepath = gamepath;
         try {
@@ -26,6 +26,7 @@ public class DragAndDropServer extends Thread {
 
     @Override
     public void run() {
+        //noinspection InfiniteLoopStatement
         while(true){
             try{
                 if(!socket.isConnected()){
@@ -70,7 +71,7 @@ public class DragAndDropServer extends Thread {
             byte[] buffer = new byte[1048576];
             int filesize = filesizes.get(i);
 
-            int read = 0;
+            int read;
             while((read = data.read(buffer, 0, Math.min(buffer.length, filesize))) > 0){
                 filesize -= read;
                 fos.write(buffer, 0, read);
@@ -86,7 +87,7 @@ public class DragAndDropServer extends Thread {
         downloading = false;
     }
 
-    public boolean isDownloading(){
+    boolean isDownloading(){
         return downloading;
     }
 }
