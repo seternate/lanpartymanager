@@ -12,7 +12,7 @@ public final class LanServer {
 
     public static void main(String[] args) {
         if(args.length != 1) {
-            System.out.println("USAGE: LanServer [gamepath]");
+            System.err.println("USAGE: LanServer [gamepath]");
             System.exit(-1);
         }
         String gamepath = args[0];
@@ -28,7 +28,7 @@ public final class LanServer {
         new Thread(() -> {
             Scanner scanner = new Scanner(System.in);
             while(true){
-                System.out.println("\nInput: [rebuildgames] [games] [game -#] [users] [user -#] [restart] [exit]");
+                System.out.println("\nINPUT: [rebuildgames] [games] [game -#] [users] [user -#] [restart] [exit]\n");
 
                 String[] inputs = scanner.nextLine().split("-");
 
@@ -51,7 +51,7 @@ public final class LanServer {
                         game = Integer.valueOf(inputs[1]) - 1;
                         printGamesDetails(game);
                     } catch (Exception e) {
-                        System.out.println("Wrong arguments provided!");
+                        System.err.println("ERROR: Wrong arguments provided! No such number!");
                     }
                 }
 
@@ -64,7 +64,7 @@ public final class LanServer {
                         user = Integer.valueOf(inputs[1]) - 1;
                         printUsersDetails(user);
                     } catch (Exception e) {
-                        System.out.println("Wrong arguments provided!");
+                        System.err.println("ERROR: Wrong arguments provided! No such number!");
                     }
                 }
 
@@ -81,7 +81,7 @@ public final class LanServer {
                 }
 
                 else
-                    System.out.println("Wrong argument provided!");
+                    System.err.println("ERROR: Wrong argument provided!");
             }
         }).start();
     }
@@ -89,17 +89,17 @@ public final class LanServer {
     private static void printGamesDetails(int gamenumber){
         Game game = server.getGames().get(gamenumber);
 
-        System.out.println("Name: " + game.getName());
-        System.out.println("Filename Server: " + game.getServerFileName());
-        System.out.println("Version: " + game.getVersionServer());
-        System.out.println("Parameter: " + game.getParam());
-        System.out.println("Connection Parameter: " + game.getConnectParam());
-        System.out.println("Server Parameter: " + game.getServerParam());
-        System.out.println("Exe: " + game.getExeFileRelative());
-        System.out.println("Server Exe: " + game.getExeServerRelative());
-        System.out.println("Direct connection: " + game.isConnectDirect());
-        System.out.println("Open server: " + game.isOpenServer());
-        System.out.println("Size: " + game.getSizeServer());
+        System.out.println("NAME: " + game.getName());
+        System.out.println("FILENAME ON SERVER: " + game.getServerFileName());
+        System.out.println("VERSION: " + game.getVersionServer());
+        System.out.println("COMMAND-LINE ARGUMENTS: " + game.getParam());
+        System.out.println("CONNECTION CL-ARGUMENTS: " + game.getConnectParam());
+        System.out.println("SERVER CL-ARGUMENTS: " + game.getServerParam());
+        System.out.println("EXE-FILENAME: " + game.getExeFileRelative());
+        System.out.println("SERVER EXE-FILENAME: " + game.getExeServerRelative());
+        System.out.println("DIRECT IP CONNECTION: " + game.isConnectDirect());
+        System.out.println("OPEN SERVER: " + game.isOpenServer());
+        System.out.println("SIZE [BYTE]: " + game.getSizeServer());
     }
 
     private static void printGames(){
@@ -111,13 +111,13 @@ public final class LanServer {
     private static void printUsersDetails(int usernumber){
         User user = server.getUsersAsList().get(usernumber);
 
-        System.out.println("Name: " + user.getUsername());
-        System.out.println("IP-Address: " + user.getIpAddress());
-        System.out.println("Gamepath: " + user.getGamepath());
+        System.out.println("USERNAME: " + user.getUsername());
+        System.out.println("IP-ADDRESS: " + user.getIpAddress());
+        System.out.println("GAMEPATH: " + user.getGamepath());
         if(user.getOrder() == null)
-            System.out.println("Order:");
+            System.out.println("ORDER:");
         else
-            System.out.println("Order: " + user.getOrder());
+            System.out.println("ORDER: " + user.getOrder());
     }
 
     private static void printUsers(){
