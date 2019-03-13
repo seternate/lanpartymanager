@@ -29,7 +29,7 @@ public final class GameFileSender extends Thread{
         try {
             sendFile(gameFile);
         } catch (IOException e) {
-            System.err.println("Error while sending " + gameName + ".");
+            System.err.println("ERROR: Sending '" + gameName + "'.\n");
             e.printStackTrace();
         }
     }
@@ -39,7 +39,7 @@ public final class GameFileSender extends Thread{
         FileInputStream fis = new FileInputStream(file);
         byte[] buffer = new byte[1048576];
 
-        System.out.println("Sending '" + gameName + "' to " + username + ".");
+        System.out.println("SENDING: '" + gameName + "' to " + username + ".\n");
         int read;
         while ((read=fis.read(buffer)) > 0) {
             dos.write(buffer,0,read);
@@ -47,6 +47,6 @@ public final class GameFileSender extends Thread{
         fis.close();
         dos.close();
         socket.close();
-        System.out.println("Sent '" + gameName + "' to " + username + ".");
+        System.out.println("SENT: '" + gameName + "' to " + username + ".\n");
     }
 }
