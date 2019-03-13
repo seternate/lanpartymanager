@@ -1,5 +1,6 @@
 package main;
 
+import com.esotericsoftware.minlog.Log;
 import entities.Game;
 import entities.User;
 import server.MyServer;
@@ -17,8 +18,10 @@ public final class LanServer {
         }
         String gamepath = args[0];
 
+        Log.setLogger(new NoKryoLogging());
         server = new MyServer(gamepath);
         server.start();
+        System.out.println("SERVER: Started.\n");
 
         printGames();
         userInput();
