@@ -1,7 +1,6 @@
 package deserializer;
 
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
@@ -21,7 +20,7 @@ public final class UserDeserializer extends StdDeserializer<User> {
     }
 
     @Override
-    public User deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException, JsonProcessingException {
+    public User deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
         JsonNode node = jp.getCodec().readTree(jp);
 
         String username = node.get("username").asText();

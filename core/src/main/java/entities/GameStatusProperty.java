@@ -7,7 +7,6 @@ public final class GameStatusProperty {
     public SimpleBooleanProperty playable, download, version, update, downloading, unzipping;
     public SimpleDoubleProperty downloadProgress, unzipProgress;
 
-
     public GameStatusProperty(){
         playable = new SimpleBooleanProperty(false);
         download = new SimpleBooleanProperty(false);

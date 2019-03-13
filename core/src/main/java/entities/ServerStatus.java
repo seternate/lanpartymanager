@@ -7,7 +7,6 @@ public final class ServerStatus {
     private boolean connected;
     private String serverIP;
 
-
     public ServerStatus(){
         connected = false;
         serverIP = null;

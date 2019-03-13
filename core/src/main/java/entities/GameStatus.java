@@ -4,7 +4,6 @@ public final class GameStatus {
     public boolean playable, download, version, update, downloading, unzipping;
     public double downloadProgress, unzipProgress;
 
-
     public GameStatus(){
         playable = false;
         download = false;
