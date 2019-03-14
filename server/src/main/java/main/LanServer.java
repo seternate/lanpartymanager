@@ -13,11 +13,9 @@ public final class LanServer {
 
 
     public static void main(String[] args) {
-        if(args.length != 1) {
-            System.err.println("USAGE: LanServer [gamepath]");
-            System.exit(-1);
-        }
-        String gamepath = args[0];
+        System.out.print("Please enter gamepath of the server: ");
+        Scanner scanner = new Scanner(System.in);
+        String gamepath = scanner.nextLine();
 
         Log.setLogger(new NoKryoLogging());
         server = new MyServer(gamepath);
