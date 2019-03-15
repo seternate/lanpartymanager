@@ -51,7 +51,7 @@
             <Insets bottom="7.0" right="90.0" />
          </StackPane.margin>
       </ImageView>
-      <ScrollPane fx:id="spMain" hbarPolicy="NEVER" vbarPolicy="NEVER">
+      <ScrollPane fx:id="spMain" hbarPolicy="NEVER">
          <StackPane.margin>
             <Insets bottom="45.0" left="10.0" right="10.0" top="15.0" />
          </StackPane.margin>
