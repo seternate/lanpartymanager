@@ -2,6 +2,7 @@ package entities;
 
 import java.io.*;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 
 public abstract class Settings extends Properties {
@@ -13,7 +14,7 @@ public abstract class Settings extends Properties {
         if(!loadSettings)
             return;
         URL url = ClassLoader.getSystemResource(SETTINGS);
-        File fileSetting = new File(url.getPath());
+        File fileSetting = new File(java.net.URLDecoder.decode(url.getPath(), StandardCharsets.UTF_8.name()));
         if(!fileSetting.isFile())
             throw new IOException();
 
