@@ -169,10 +169,10 @@ typings/
 # Output of 'npm pack'
 *.tgz
 
-# Yarn Integrity file
+# Yarn Integrity gameFile
 .yarn-integrity
 
-# dotenv environment variables file
+# dotenv environment variables gameFile
 .env
 
 
@@ -182,10 +182,10 @@ Thumbs.db
 ehthumbs.db
 ehthumbs_vista.db
 
-# Folder config file
+# Folder config gameFile
 Desktop.ini
 
-# Recycle Bin used on file shares
+# Recycle Bin used on gameFile shares
 $RECYCLE.BIN/
 
 # Windows Installer files
@@ -204,7 +204,7 @@ build/
 # Ignore Gradle GUI config
 gradle-app.setting
 
-# Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
+# Avoid ignoring Gradle wrapper jar gameFile (.jar files are usually ignored)
 !gradle-wrapper.jar
 
 # Cache of project

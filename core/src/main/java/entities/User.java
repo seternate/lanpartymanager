@@ -1,65 +1,81 @@
 package entities;
 
-import helper.PropertiesHelper;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import deserializer.UserDeserializer;
 
+import java.io.*;
 import java.net.InetAddress;
-import java.net.UnknownHostException;
 
+@JsonDeserialize(using = UserDeserializer.class)
 public final class User {
-    private String name;
-    private String gamepath;
-    private String ip;
+    private ClientSettings settings;
+    private String ipAddress;
+    private String order;
 
 
     public User(){ }
 
-    public User(boolean create){
-        if(!create)
-            return;
-        this.name = PropertiesHelper.getUsername();
-        this.gamepath = PropertiesHelper.getGamepath();
-        try {
-            ip = InetAddress.getLocalHost().getHostAddress();
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        }
+    public User(ClientSettings settings) throws IOException {
+        this.settings = settings;
+        ipAddress = InetAddress.getLocalHost().getHostAddress();
+        order = "";
     }
 
-    public User(String name, String gamepath){
-        this.name = name;
-        this.gamepath = gamepath;
+    public String getUsername(){
+        return settings.getUsername();
     }
 
-    public User(String name, String gamepath, String ip){
-        this(name, gamepath);
-        this.ip = ip;
-    }
-
-    public void print(){
-        System.out.println(name);
-    }
-
-    public String getName(){
-        return name;
-    }
-
-    public void setName(String name){
-        this.name = name;
+    public void setUsername(String username){
+        settings.setUsername(username);
     }
 
     public String getGamepath(){
-        return gamepath;
+        return settings.getGamepath();
     }
 
     public void setGamepath(String gamepath){
-        this.gamepath = gamepath;
+        settings.setGamepath(gamepath);
     }
 
-    public String getIp(){
-        return ip;
+    public String getIpAddress(){
+        return ipAddress;
+    }
+
+    public void setIpAddress(String ipAddress){
+        this.ipAddress = ipAddress;
+    }
+
+    public String getOrder(){
+        return order;
+    }
+
+    public void setOrder(String order){
+        this.order = order;
+    }
+
+    public boolean update(User user) throws IOException {
+        if(!this.equals(user)){
+            if(!user.getUsername().isEmpty())
+                setUsername(user.getUsername());
+            if(!user.getGamepath().isEmpty())
+                setGamepath(user.getGamepath());
+            if(!user.getIpAddress().isEmpty())
+                setIpAddress(user.getIpAddress());
+            setOrder(user.getOrder());
+        }else{
+            return false;
+        }
+        settings.save();
+        return true;
     }
 
     public boolean equals(User user){
-        return name.equals(user.getName()) && gamepath.equals(user.getGamepath());
+        return getUsername().equals(user.getUsername()) && getGamepath().equals(user.getGamepath()) && getIpAddress().equals(user.getIpAddress())
+                && getOrder().equals(user.getOrder());
+    }
+
+    @Override
+    public String toString(){
+        return getUsername();
     }
 }

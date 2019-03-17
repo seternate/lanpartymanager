@@ -1,11 +1,21 @@
 package helper;
 
+import entities.ClientSettings;
+
 import java.io.File;
+import java.io.IOException;
 import java.util.Objects;
 
 public abstract class GameFolderHelper {
     public static String getAbsolutePath(String path){
-        File root = new File(PropertiesHelper.getGamepath());
+        File root = null;
+        try {
+            root = new File(new ClientSettings(true, true).getGamepath());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if(root == null)
+            return null;
         if(!root.exists())
             //noinspection ResultOfMethodCallIgnored
             root.mkdirs();
@@ -15,5 +25,10 @@ public abstract class GameFolderHelper {
             if(child.exists()) return child.getAbsolutePath();
         }
         return null;
+    }
+
+    public static String getGameFolder(String path){
+        String absolutepath = getAbsolutePath(path);
+        return absolutepath.subSequence(0, absolutepath.length() - path.length()).toString();
     }
 }

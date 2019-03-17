@@ -1,17 +1,15 @@
 package message;
 
-import entities.Game;
-
-import java.util.List;
+import entities.GameList;
 
 public final class GamelistMessage {
-    public List<Game> games;
+    public GameList games;
 
 
     @SuppressWarnings("unused")
     public GamelistMessage(){ }
 
-    public GamelistMessage(List<Game> games){
+    public GamelistMessage(GameList games){
         this.games = games;
     }
 }

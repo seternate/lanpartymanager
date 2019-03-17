@@ -1,17 +1,15 @@
 package message;
 
-import entities.User;
-
-import java.util.Map;
+import entities.UserList;
 
 public final class UserlistMessage {
-    public Map<Integer, User> users;
+    public UserList users;
 
 
     @SuppressWarnings("unused")
     public UserlistMessage(){ }
 
-    public UserlistMessage(Map<Integer, User> users){
+    public UserlistMessage(UserList users){
         this.users = users;
     }
 }

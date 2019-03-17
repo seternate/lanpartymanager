@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+
+<StackPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="450.0" prefWidth="720.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MainController">
+   <children>
+      <HBox alignment="BOTTOM_LEFT" StackPane.alignment="BOTTOM_LEFT">
+         <StackPane.margin>
+            <Insets />
+         </StackPane.margin>
+         <children>
+            <Label fx:id="lblStatus" alignment="CENTER" text="Waiting for server connection.">
+               <HBox.margin>
+                  <Insets bottom="15.0" left="5.0" right="3.0" top="5.0" />
+               </HBox.margin>
+            </Label>
+            <Label fx:id="lblFileStatus" text="(Receiving files ....)">
+               <HBox.margin>
+                  <Insets bottom="15.0" right="5.0" top="5.0" />
+               </HBox.margin>
+            </Label>
+         </children>
+      </HBox>
+      <ImageView fx:id="ivSettings" fitHeight="150.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true" StackPane.alignment="BOTTOM_RIGHT">
+         <image>
+            <Image url="@config_icon.png" />
+         </image>
+         <StackPane.margin>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+         </StackPane.margin>
+      </ImageView>
+      <ImageView fx:id="ivUsers" fitHeight="150.0" fitWidth="44.0" pickOnBounds="true" preserveRatio="true" StackPane.alignment="BOTTOM_RIGHT">
+         <image>
+            <Image url="@user_icon.png" />
+         </image>
+         <StackPane.margin>
+            <Insets right="42.0" />
+         </StackPane.margin>
+      </ImageView>
+      <ImageView fx:id="ivOrder" fitHeight="150.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true" StackPane.alignment="BOTTOM_RIGHT">
+         <image>
+            <Image url="@food-icon-vector-27.jpg" />
+         </image>
+         <StackPane.margin>
+            <Insets bottom="7.0" right="90.0" />
+         </StackPane.margin>
+      </ImageView>
+      <ScrollPane fx:id="spMain" hbarPolicy="NEVER">
+         <StackPane.margin>
+            <Insets bottom="45.0" left="10.0" right="10.0" top="15.0" />
+         </StackPane.margin>
+      </ScrollPane>
+   </children>
+</StackPane>
