@@ -46,7 +46,7 @@ public final class LanServer {
             Scanner scanner = new Scanner(System.in);
             while(true){
                 //Input parameter list
-                System.out.println("\nINPUT: [rebuildgames] [games] [game #] [users] [user #] [restart] [exit]");
+                System.out.println("INPUT: [rebuildgames] [games] [game #] [users] [user #] [restart] [exit]");
 
                 //Get user input and split it for arguments with multiple input
                 String[] inputs = scanner.nextLine().trim().split(" ");
