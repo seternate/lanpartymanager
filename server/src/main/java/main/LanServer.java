@@ -175,7 +175,7 @@ public final class LanServer {
             gamepath = scanner.nextLine();
             gamedirectory = new File(gamepath);
             if(!gamedirectory.isDirectory())
-                log.error("'" + gamedirectory.getAbsolutePath() + "' is no directory.");
+                log.error("'" + gamedirectory.getAbsolutePath() + "' is no directory or doesn't exist.");
         }while(!gamedirectory.isDirectory());
 
         return gamedirectory;
