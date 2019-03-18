@@ -5,6 +5,7 @@ import com.esotericsoftware.kryonet.Listener;
 import entities.*;
 import helper.NetworkClassRegistrationHelper;
 import message.*;
+import org.apache.log4j.Logger;
 import requests.DownloadRequest;
 
 import java.io.File;
@@ -13,14 +14,20 @@ import java.net.BindException;
 import java.util.*;
 
 public final class MyServer extends com.esotericsoftware.kryonet.Server {
+    private static Logger log = Logger.getLogger(MyServer.class);
     private static final String PROPERTYDIR = "games";
 
     private GameList games;
     private UserList users;
-    private File gameDir;
+    private File gamedirectory;
 
+    @Override
+    public void start() {
+        super.start();
+        log.info("Server started.");
+    }
 
-    public MyServer(String gamepath){
+    public MyServer(File gamedirectory){
         super();
         NetworkClassRegistrationHelper.registerClasses(this);
         registerListener();
@@ -52,14 +59,14 @@ public final class MyServer extends com.esotericsoftware.kryonet.Server {
 
         users = new UserList();
 
-        gameDir = new File(gamepath);
-        if(!gameDir.isDirectory()) {
+        if(!gamedirectory.isDirectory()) {
             System.err.println("ERROR: Specified gamepath isn't a directory and/or doesn't exist.\n");
             System.exit(-12);
-        }
+        } else
+            this.gamedirectory = gamedirectory;
 
         games.forEach(game -> {
-            File gameFile = new File(gameDir, game.getServerFileName());
+            File gameFile = new File(gamedirectory, game.getServerFileName());
             if(!gameFile.isFile()) {
                 System.err.println("ERROR: No compressed 7-ZIP file found on the server for '" + game.getName() + "'.\n");
                 System.exit(-14);
@@ -69,7 +76,7 @@ public final class MyServer extends com.esotericsoftware.kryonet.Server {
 
     @SuppressWarnings("CopyConstructorMissesField")
     public MyServer(MyServer server){
-        this(server.gameDir.getAbsolutePath());
+        this(server.gamedirectory);
         this.start();
     }
 
@@ -174,7 +181,7 @@ public final class MyServer extends com.esotericsoftware.kryonet.Server {
                         return;
                     }
                     String ipAddress = connection.getRemoteAddressTCP().getAddress().getHostAddress();
-                    File gameFile = new File(gameDir , request.game.getServerFileName());
+                    File gameFile = new File(gamedirectory , request.game.getServerFileName());
                     new GameFileSender(ipAddress, request.port, gameFile, request.game.getName(),
                             users.get(connection.getID()).getUsername());
                 }
