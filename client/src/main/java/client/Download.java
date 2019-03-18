@@ -30,7 +30,7 @@ public final class Download extends Thread {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        totalParts = (int)(gamesize/packageSize);
+        //totalParts = (int)(gamesize/packageSize);
         receivedParts = 0;
         downloadProgress = 0;
         this.start();
@@ -53,11 +53,22 @@ public final class Download extends Thread {
     }
 
     private void saveFile(Socket clientSock) throws IOException {
-        DataInputStream dis = new DataInputStream(clientSock.getInputStream());
-        String path = gamepath + game.getServerFileName();
+        long gamesize;
 
+        //Get filename
+        String gamepath = this.gamepath + game.getServerFileName();
+
+        //Open inputstream
+        DataInputStream dis = new DataInputStream(clientSock.getInputStream());
+        //Open Fileoutputstream
+        FileOutputStream fos = new FileOutputStream(gamepath, false);
+
+        //Read filesize
+        gamesize = dis.readLong();
+        totalParts = (int)(gamesize/packageSize);
+
+        //Create buffer [1MByte]
         byte[] buffer = new byte[1048576];
-        FileOutputStream fos = new FileOutputStream(path, false);
 
         System.out.println("DOWNLOAD: Started download of '" + game.getName() + "'.");
         for(int i = 0; i <= totalParts; i++){
@@ -70,7 +81,7 @@ public final class Download extends Thread {
             }
             if(i==0) {
                 fos.close();
-                fos = new FileOutputStream(path, true);
+                fos = new FileOutputStream(gamepath, true);
             }
             receivedParts = i;
             downloadProgress = (double)(receivedParts+1)/(double)(totalParts+1);
@@ -82,14 +93,14 @@ public final class Download extends Thread {
 
         System.out.println("UNZIP: Started unzipping '" + game.getName() + "'.");
         try {
-            new SevenZipHelper(path, gamepath, false, null, this).extract();
+            new SevenZipHelper(gamepath, this.gamepath, false, null, this).extract();
         } catch (SevenZipHelper.ExtractionException e) {
             e.printStackTrace();
         }
         System.out.println("UNZIP: Finished unzipping '" + game.getName() + "'.");
 
         System.out.println("UNZIP: Deleted 7-ZIP file of '" + game.getName() + "'.");
-        File file = new File(path);
+        File file = new File(gamepath);
         //noinspection ResultOfMethodCallIgnored
         file.delete();
 
