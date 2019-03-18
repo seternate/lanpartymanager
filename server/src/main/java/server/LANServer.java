@@ -8,6 +8,8 @@ import helper.NetworkClassRegistrationHelper;
 import message.*;
 import org.apache.log4j.Logger;
 import requests.DownloadRequest;
+import server.upload.GameUpload;
+import server.upload.GameUploadManager;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,7 +17,7 @@ import java.net.BindException;
 import java.util.*;
 
 /**
- *
+ * TODO
  */
 public class LANServer extends Server {
     private static Logger log = Logger.getLogger(LANServer.class);
@@ -24,6 +26,7 @@ public class LANServer extends Server {
     private GameList games;
     private UserList users;
     private File gamedirectory;
+    private GameUploadManager gameUploadManager;
 
 
     /**
@@ -251,11 +254,11 @@ public class LANServer extends Server {
                         //Get ip-address from the user
                         String ipAddress = connection.getRemoteAddressTCP().getAddress().getHostAddress();
                         //Get 7zip file from the server
-                        File gameFile = new File(gamedirectory, request.game.getServerFileName());
+                        File gamefile = new File(gamedirectory, request.game.getServerFileName());
                         //Send game to the user and add the upload to the upload manager
                         //TODO: uploadmanager
-                        new GameFileSender(ipAddress, request.port, gameFile, request.game.getName(),
-                                users.get(connection.getID()).getUsername());
+                        gameUploadManager.add(new GameUpload(ipAddress, request.port, gamefile, request.game,
+                                users.get(connection.getID())));
                     }
                 }
             }
@@ -281,4 +284,6 @@ public class LANServer extends Server {
             }
         });
     }
+
+    //TODO: manager interface
 }
