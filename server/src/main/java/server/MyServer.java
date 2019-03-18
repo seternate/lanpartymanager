@@ -2,6 +2,7 @@ package server;
 
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
+import com.esotericsoftware.kryonet.Server;
 import entities.*;
 import helper.NetworkClassRegistrationHelper;
 import message.*;
@@ -16,7 +17,7 @@ import java.util.*;
 /**
  *
  */
-public final class MyServer extends com.esotericsoftware.kryonet.Server {
+public class MyServer extends Server {
     private static Logger log = Logger.getLogger(MyServer.class);
     private static final String GAMEPROPERTIES = "games";
 
@@ -97,51 +98,94 @@ public final class MyServer extends com.esotericsoftware.kryonet.Server {
     @Override
     public void start() {
         super.start();
-        log.info("Server started.");
+        log.info("Server started successfully.");
     }
 
+    /**
+     * @return List of all games on the server.
+     */
     public GameList getGames(){
         return games;
     }
 
-    public List<User> getUsersAsList(){
-        return users.toList();
-    }
-
-    public void updateGames(){
+    /**
+     * Reloads the gamelist and sends it to all connect users.
+     */
+    public void reloadGames(){
+        //Recreating the gamelist
         try {
             games = new GameList(GAMEPROPERTIES);
         } catch (IOException e) {
-            System.err.println(e.getMessage());
-            System.exit(-13);
+            log.fatal("Error while creating game list from property files.", e);
+            System.exit(-6);
         }
+        //Sending new gamelist to all logged in users
         sendToAllTCP(new GamelistMessage(games));
     }
 
-    private boolean loginPlayer(Connection connection, User user){
-        if(!users.containsKey(connection.getID())){
-            users.put(connection.getID(), user);
-            System.out.println("LOGIN: " + user + " logged in.\n");
-            return true;
-        }
-        return false;
+    /**
+     * @return List of all logged in users.
+     */
+    public List<User> getUsers(){
+        return users.toList();
     }
 
-    private boolean playerUpdate(Connection connection, User user){
+    /**
+     * Logs a user in the server, saves his informations and send him the gamelist and new userlist to all connected
+     * users.
+     *
+     * @param connection of the user who want's to get logged in.
+     * @param user requested a log in.
+     * @return true if a user could be logged in successfully, else false.
+     */
+    private void loginPlayer(Connection connection, User user){
+        //Check if user is logged in already
+        if(!users.containsKey(connection.getID())){
+            //Add user to the userlist
+            users.put(connection.getID(), user);
+            connection.sendTCP(new GamelistMessage(games));
+            sendToAllTCP(new UserlistMessage(users));
+            log.info("LOGIN: '" + user + "' logged in successfully.");
+        } else {
+            connection.sendTCP(new ErrorMessage(ErrorMessage.userAlreadyLoggedIn));
+            log.warn(user + " tried to log in, but already is logged in.");
+        }
+    }
+
+    /**
+     * Updates a users informations if anything changes and sends the updated userlist to all connected users.
+     *
+     * @param connection of the user who has send an user update.
+     * @param user user who sends the user update.
+     * @return true if any information of the user has changed, else false.
+     */
+    private void playerUpdate(Connection connection, User user){
         if(users.containsKey(connection.getID()) && !users.get(connection.getID()).equals(user)){
             User olduser = users.put(connection.getID(), user);
-            assert olduser != null;
+            if(olduser == null){
+                log.warn("No old informations of player '" + user + "' to update.");
+                return;
+            }
             if(!olduser.getUsername().equals(user.getUsername()))
-                System.out.println("PLAYER UPDATE: " + olduser + " changed his username to " + user + ".\n");
+                log.info("PLAYER UPDATE: '" + olduser + "' changed his username to '" + user + "'.");
             if(!olduser.getOrder().equals(user.getOrder()))
-                System.out.println("PLAYER UPDATE: " + user + " changed his order.\n");
+                log.info("PLAYER UPDATE: '" + user + "' changed his order to: " + user.getOrder());
             if(!olduser.getIpAddress().equals(user.getIpAddress()))
-                System.out.println("PLAYER UPDATE: " + user + " changed his IP-Address to '" + user.getIpAddress() + "'.\n");
-            return true;
+                log.info("PLAYER UPDATE: '" + user + "' changed his IP-Address from '" + olduser.getIpAddress()
+                        + "' to '" + user.getIpAddress() + "'.");
+            if(!olduser.getGamepath().equals(user.getGamepath()))
+                log.info("PLAYER UPDATE: '" + user + "' changed his gamepath from '" + olduser.getGamepath() + "' to '"
+                        + user.getGamepath() + "'.");
+            sendToAllTCP(new UserlistMessage(users));
+        } else {
+            connection.sendTCP(new ErrorMessage(ErrorMessage.userNotLoggedIn));
+            log.warn(user + " is not logged in and tried to update.");
         }
-        return false;
     }
 
+    /**
+     * Registers all needed listeners.
+     */
     private void registerListener(){
         registerLoginListener();
         registerUserupdateListener();
@@ -149,41 +193,39 @@ public final class MyServer extends com.esotericsoftware.kryonet.Server {
         registerDisconnectListener();
     }
 
+    /**
+     * Registers the listener for new login attempts.
+     */
     private void registerLoginListener(){
         addListener(new Listener() {
             @Override
             public void received(Connection connection, Object object) {
                 if(object instanceof LoginMessage) {
                     LoginMessage message = (LoginMessage)object;
-                    if(!loginPlayer(connection, message.user)) {
-                        connection.sendTCP(new ErrorMessage(ErrorMessage.userAlreadyLoggedIn));
-                        System.err.println("ERROR: " + message.user + " is already logged in.\n");
-                        return;
-                    }
-                    connection.sendTCP(new GamelistMessage(games));
-                    sendToAllTCP(new UserlistMessage(users));
+                    loginPlayer(connection, message.user);
                 }
             }
         });
     }
 
+    /**
+     * Registers the listener for user updates.
+     */
     private void registerUserupdateListener(){
         addListener(new Listener() {
             @Override
             public void received(Connection connection, Object object) {
                 if(object instanceof UserupdateMessage) {
                     UserupdateMessage message = (UserupdateMessage)object;
-                    if(!playerUpdate(connection, message.user)) {
-                        connection.sendTCP(new ErrorMessage(ErrorMessage.userNotLoggedIn));
-                        System.err.println("ERROR: " + message.user + " is not logged in.\n");
-                        return;
-                    }
-                    sendToAllTCP(new UserlistMessage(users));
+                    playerUpdate(connection, message.user);
                 }
             }
         });
     }
 
+    /**
+     * Registers the listener for download requests.
+     */
     private void registerDownloadListener(){
         addListener(new Listener() {
             @Override
@@ -209,6 +251,9 @@ public final class MyServer extends com.esotericsoftware.kryonet.Server {
         });
     }
 
+    /**
+     * Register the listener for disconnects.
+     */
     private void registerDisconnectListener(){
         addListener(new Listener() {
             @Override

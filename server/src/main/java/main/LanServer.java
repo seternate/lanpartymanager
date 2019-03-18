@@ -55,7 +55,7 @@ public final class LanServer {
 
                 //Choose right action to do for the provided main argument
                 if(argument.equals("rebuildgames")){
-                    server.updateGames();
+                    server.reloadGames();
                     printGames();
                 }
                 else if(argument.equals("games"))
@@ -135,11 +135,11 @@ public final class LanServer {
      * Prints all user names with a preceded number.
      */
     private static void printUsers(){
-        if(server.getUsersAsList().isEmpty()) {
+        if(server.getUsers().isEmpty()) {
             System.out.println("No users logged in.");
         }
-        for(int i = 0; i < server.getUsersAsList().size(); i++){
-            System.out.println("(" + (i+1) + ") " + server.getUsersAsList().get(i));
+        for(int i = 0; i < server.getUsers().size(); i++){
+            System.out.println("(" + (i+1) + ") " + server.getUsers().get(i));
         }
     }
 
@@ -149,7 +149,7 @@ public final class LanServer {
      * @param usernumber user that should be printed in detail.
      */
     private static void printUsersDetails(int usernumber){
-        User user = server.getUsersAsList().get(usernumber);
+        User user = server.getUsers().get(usernumber);
 
         System.out.println("USERNAME: " + user.getUsername());
         System.out.println("IP-ADDRESS: " + user.getIpAddress());
