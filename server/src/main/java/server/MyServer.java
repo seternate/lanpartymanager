@@ -13,71 +13,91 @@ import java.io.IOException;
 import java.net.BindException;
 import java.util.*;
 
+/**
+ *
+ */
 public final class MyServer extends com.esotericsoftware.kryonet.Server {
     private static Logger log = Logger.getLogger(MyServer.class);
-    private static final String PROPERTYDIR = "games";
+    private static final String GAMEPROPERTIES = "games";
 
     private GameList games;
     private UserList users;
     private File gamedirectory;
 
-    @Override
-    public void start() {
-        super.start();
-        log.info("Server started.");
-    }
 
+    /**
+     * Creates and setup the server. Registering all needed listeners and classes for KryoNet. Loading the server
+     * settings, binding server port, loading the gamelist, checks for a valid gamepath and if all 7zip files from the
+     * games are in the gamedirectory.
+     *
+     * @param gamedirectory directory, where all 7zip files from the games can be found.
+     */
     public MyServer(File gamedirectory){
         super();
+        users = new UserList();
+        //Register listener and classes to be send over KryoNet
         NetworkClassRegistrationHelper.registerClasses(this);
         registerListener();
 
+        //Load server settings
         Settings settings = null;
         try {
             settings = new ServerSettings();
         } catch (IOException e) {
-            System.err.println("ERROR: No settings file found.\n");
-            System.exit(-9);
+            log.fatal("Error while creating server settings.", e);
+            System.exit(-1);
         }
 
+        //Bind server port
         try {
             bind(settings.getServerTcp(), settings.getServerUdp());
         } catch (IOException e) {
             if(e instanceof BindException) {
-                System.err.println("ERROR: Address is already bound and/or server is already running.\n");
-                System.exit(-10);
+                log.fatal("Server address is already bound and/or server is already running. (UDP: " + settings.getServerUdp()
+                    + ", TCP: " + settings.getServerTcp() + ")", e);
+                System.exit(-2);
             }
         }
 
+        //Load game list
         try {
-            games = new GameList(PROPERTYDIR);
-
+            games = new GameList(GAMEPROPERTIES);
         } catch (IOException e) {
-            System.err.println(e.getMessage());
-            System.exit(-11);
+            log.fatal("Error while creating game list from property files.", e);
+            System.exit(-3);
         }
 
-        users = new UserList();
-
+        //Check gamedirectory to be an valid directory
         if(!gamedirectory.isDirectory()) {
-            System.err.println("ERROR: Specified gamepath isn't a directory and/or doesn't exist.\n");
-            System.exit(-12);
+            log.fatal("Entered gamepath '" + gamedirectory.getAbsolutePath() + "' isn't a directory or don't exist.");
+            System.exit(-4);
         } else
             this.gamedirectory = gamedirectory;
 
+        //Check gamedirectory for every 7zip file of all games
         games.forEach(game -> {
             File gameFile = new File(gamedirectory, game.getServerFileName());
             if(!gameFile.isFile()) {
-                System.err.println("ERROR: No compressed 7-ZIP file found on the server for '" + game.getName() + "'.\n");
-                System.exit(-14);
+                log.fatal("No 7zip file named '" + gameFile.getName() + "' found for '" + game + "' in '" + gamedirectory.getAbsolutePath() + "'.");
+                System.exit(-5);
             }
         });
     }
 
-    @SuppressWarnings("CopyConstructorMissesField")
+    /**
+     * Recreates the server with the same gamedirectory and starts it.
+     *
+     * @param server that should be recreated
+     */
     public MyServer(MyServer server){
         this(server.gamedirectory);
         this.start();
+    }
+
+    @Override
+    public void start() {
+        super.start();
+        log.info("Server started.");
     }
 
     public GameList getGames(){
@@ -90,7 +110,7 @@ public final class MyServer extends com.esotericsoftware.kryonet.Server {
 
     public void updateGames(){
         try {
-            games = new GameList(PROPERTYDIR);
+            games = new GameList(GAMEPROPERTIES);
         } catch (IOException e) {
             System.err.println(e.getMessage());
             System.exit(-13);
