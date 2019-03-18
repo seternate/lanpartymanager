@@ -5,7 +5,7 @@ import entities.Game;
 import entities.User;
 import helper.NoKryoLogging;
 import org.apache.log4j.Logger;
-import server.MyServer;
+import server.LANServer;
 
 import java.io.File;
 import java.util.Scanner;
@@ -15,7 +15,7 @@ import java.util.Scanner;
  */
 public final class LanServer {
     private static Logger log = Logger.getLogger(LanServer.class);
-    private static MyServer server;
+    private static LANServer server;
 
 
     /**
@@ -31,7 +31,7 @@ public final class LanServer {
         //Turn off KryoNet logging
         Log.setLogger(new NoKryoLogging());
         //Start Server
-        server = new MyServer(gamepath);
+        server = new LANServer(gamepath);
         server.start();
 
         printGames();
@@ -86,7 +86,7 @@ public final class LanServer {
                 else if(argument.equals("restart")){
                     server.stop();
                     server.close();
-                    server = new MyServer(server);
+                    server = new LANServer(server);
                 }
                 else if(argument.equals("exit")){
                     server.close();

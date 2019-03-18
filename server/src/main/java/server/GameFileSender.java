@@ -35,6 +35,8 @@ public class GameFileSender extends Thread{
     }
 
     private void sendFile(File file) throws IOException {
+        //TODO: send cover image first
+
         DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
         FileInputStream fis = new FileInputStream(file);
         byte[] buffer = new byte[1048576];

@@ -17,8 +17,8 @@ import java.util.*;
 /**
  *
  */
-public class MyServer extends Server {
-    private static Logger log = Logger.getLogger(MyServer.class);
+public class LANServer extends Server {
+    private static Logger log = Logger.getLogger(LANServer.class);
     private static final String GAMEPROPERTIES = "games";
 
     private GameList games;
@@ -33,7 +33,7 @@ public class MyServer extends Server {
      *
      * @param gamedirectory directory, where all 7zip files from the games can be found.
      */
-    public MyServer(File gamedirectory){
+    public LANServer(File gamedirectory){
         super();
         users = new UserList();
         //Register listener and classes to be send over KryoNet
@@ -90,7 +90,7 @@ public class MyServer extends Server {
      *
      * @param server that should be recreated
      */
-    public MyServer(MyServer server){
+    public LANServer(LANServer server){
         this(server.gamedirectory);
         this.start();
     }
@@ -143,12 +143,15 @@ public class MyServer extends Server {
         if(!users.containsKey(connection.getID())){
             //Add user to the userlist
             users.put(connection.getID(), user);
+            //Send user the gamelist
             connection.sendTCP(new GamelistMessage(games));
+            //Send all connected users the updated userlist
             sendToAllTCP(new UserlistMessage(users));
             log.info("LOGIN: '" + user + "' logged in successfully.");
         } else {
+            //Send user attempting to connect an error message
             connection.sendTCP(new ErrorMessage(ErrorMessage.userAlreadyLoggedIn));
-            log.warn(user + " tried to log in, but already is logged in.");
+            log.warn("Connection: " + connection.getID() + " - tried to log in, but already is logged in.");
         }
     }
 
@@ -179,7 +182,7 @@ public class MyServer extends Server {
             sendToAllTCP(new UserlistMessage(users));
         } else {
             connection.sendTCP(new ErrorMessage(ErrorMessage.userNotLoggedIn));
-            log.warn(user + " is not logged in and tried to update.");
+            log.warn("Connection: " + connection.getID() + " - is not logged in and tried to update.");
         }
     }
 
@@ -232,20 +235,28 @@ public class MyServer extends Server {
             public void received(Connection connection, Object object) {
                 if(object instanceof DownloadRequest) {
                     DownloadRequest request = (DownloadRequest)object;
+                    //Check if the user is logged in and the requested game is available, then send the game files to
+                    //the user
                     if(!users.containsKey(connection.getID())){
-                        System.err.println("ERROR: " + users.get(connection.getID()) + " is not logged in.\n");
+                        log.warn("Connection: " + connection.getID() + " - is not logged in and tried to " +
+                                "download a game.");
+                        //Send an error message to the user
                         connection.sendTCP(new ErrorMessage(ErrorMessage.userNotLoggedIn));
-                        return;
-                    }
-                    if(!games.contains(request.game)){
-                        System.err.println("ERROR: No game '" + request.game + "' found on the server.\n");
+                    } else if (!games.contains(request.game)){
+                        log.warn("'" + users.get(connection.getID()) + "' requested the game '" + request.game +
+                                "', which is not available.");
+                        //Send an error message to the user
                         connection.sendTCP(new ErrorMessage(ErrorMessage.gameNotOnServer + request.game));
-                        return;
+                    } else {
+                        //Get ip-address from the user
+                        String ipAddress = connection.getRemoteAddressTCP().getAddress().getHostAddress();
+                        //Get 7zip file from the server
+                        File gameFile = new File(gamedirectory, request.game.getServerFileName());
+                        //Send game to the user and add the upload to the upload manager
+                        //TODO: uploadmanager
+                        new GameFileSender(ipAddress, request.port, gameFile, request.game.getName(),
+                                users.get(connection.getID()).getUsername());
                     }
-                    String ipAddress = connection.getRemoteAddressTCP().getAddress().getHostAddress();
-                    File gameFile = new File(gamedirectory , request.game.getServerFileName());
-                    new GameFileSender(ipAddress, request.port, gameFile, request.game.getName(),
-                            users.get(connection.getID()).getUsername());
                 }
             }
         });
@@ -258,13 +269,15 @@ public class MyServer extends Server {
         addListener(new Listener() {
             @Override
             public void disconnected(Connection connection) {
+                //Remove disconnected user from the userlist
                 User user = users.remove(connection.getID());
+                //Check if the user was logged in and send updated userlist to all connected users
                 if(user == null){
-                    System.err.println("ERROR: Random Player logoff with ID '" + connection.getID() + "'.\n");
-                    return;
+                    log.warn("Random log off request from Connection-ID: " + connection.getID());
+                } else {
+                    log.info("LOGOFF: '" + user + "' logged off.");
+                    sendToAllTCP(new UserlistMessage(users));
                 }
-                System.out.println("LOGOFF: " + user + "\n");
-                sendToAllTCP(new UserlistMessage(users));
             }
         });
     }
