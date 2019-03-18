@@ -2,9 +2,7 @@ package helper;
 
 import com.esotericsoftware.minlog.Log;
 
-public class NoKryoLogging extends Log.Logger {
+public final class NoKryoLogging extends Log.Logger {
     @Override
-    protected void print(String message) {
-        //DO NOTHING
-    }
+    protected void print(String message) { }
 }
