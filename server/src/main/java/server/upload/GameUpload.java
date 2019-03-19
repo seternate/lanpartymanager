@@ -22,6 +22,8 @@ public class GameUpload extends Thread{
     private Game game;
     private User user;
     private GameUploadManager manager;
+    private volatile double progress;
+    private volatile long uploadspeed, averageUploadspeed;
 
 
     /**
@@ -38,6 +40,8 @@ public class GameUpload extends Thread{
         this.gamefile = gamefile;
         this.game = game;
         this.user = user;
+        progress = 0.;
+        uploadspeed = 0;
         //Try to create a socket
         try {
             socket = new Socket(ipaddress, port);
@@ -51,9 +55,8 @@ public class GameUpload extends Thread{
     @Override
     public void run() {
         try {
-            manager.add(this);
             sendFile(gamefile);
-        } catch (IOException e) {
+        } catch (Exception e) {
             log.error("Error while sending '" + game + "' to '" + user + "'("
                     + ipaddress + ".", e);
         } finally {
@@ -71,7 +74,9 @@ public class GameUpload extends Thread{
     }
 
     /**
-     * Sends the file to the user. First writes the gamefile size, then sends the game itself
+     * Sends the file to the user. First writes the gamefile size, then sends the game itself and updates the progress
+     * and speed information of the upload.
+     *
      * @param gamefile 7zip file of the game.
      * @throws IOException if any error while reading or writing occurs an exception is thrown.
      */
@@ -86,20 +91,62 @@ public class GameUpload extends Thread{
         //Send filesize
         dos.writeLong(gamefile.length());
 
-        //Create buffer [100MByte]
-        byte[] buffer = new byte[104857600];
+        //Create buffer [1MByte]
+        byte[] buffer = new byte[1048576];
 
         log.info("Sending '" + game + "' to '" + user + "'.");
         //Sending game
         int read;
+        long readSum = 0;
+        double durationSum = 0;
         while((read = fis.read(buffer)) > 0) {
+            //Start timer to provide speed information
+            long start = System.currentTimeMillis();
             //Write data
             dos.write(buffer,0,read);
+            //Calculate duration and set upload speed
+            long duration = (System.currentTimeMillis() - start == 0) ? 1 : System.currentTimeMillis() - start;
+            durationSum += (double)duration/1000.;
+            readSum += read;
+            //Set current speed in bytes/millis
+            uploadspeed = read/duration;
+            //Set average speed in bytes/second
+            averageUploadspeed = Math.round((double)readSum/durationSum);
+            //Set progress
+            progress += (double)read/(double)gamefile.length();
+
         }
         //Close all open streams
         fis.close();
         dos.close();
         socket.close();
         log.info("Sent '" + game + "' successfully to '" + user + "'.");
+    }
+
+    /**
+     * Returns the progress of the upload to the user with a precision of 4 as decimal.
+     *
+     * @return progress of the upload
+     */
+    public double getProgress(){
+        return (double)Math.round(progress*10000.)/10000.;
+    }
+
+    /**
+     * Returns the current upload speed after each send package. For average speed see {@link #getAverageUploadspeed()}.
+     *
+     * @return current upload speed [bytes/second].
+     */
+    public long getUploadspeed(){
+        return uploadspeed * 1000;
+    }
+
+    /**
+     * Returns the average upload speed. For current speed see {@link #getUploadspeed()}.
+     *
+     * @return average upload speed [bytes/second].
+     */
+    public long getAverageUploadspeed(){
+        return averageUploadspeed;
     }
 }

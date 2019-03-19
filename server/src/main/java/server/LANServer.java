@@ -39,6 +39,7 @@ public class LANServer extends Server {
     public LANServer(File gamedirectory){
         super();
         users = new UserList();
+        gameUploadManager = new GameUploadManager();
         //Register listener and classes to be send over KryoNet
         NetworkClassRegistrationHelper.registerClasses(this);
         registerListener();
