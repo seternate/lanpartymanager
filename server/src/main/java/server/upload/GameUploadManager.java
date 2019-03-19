@@ -2,6 +2,9 @@ package server.upload;
 
 import java.util.ArrayList;
 
+/**
+ * Manages all gameuploads of the LAN-servers.
+ */
 public class GameUploadManager extends ArrayList<GameUpload> {
 
     @Override

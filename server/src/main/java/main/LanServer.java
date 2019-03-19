@@ -7,7 +7,6 @@ import helper.NoKryoLogging;
 import org.apache.log4j.Logger;
 import server.LANServer;
 import server.upload.GameUpload;
-import server.upload.GameUploadManager;
 
 import java.io.File;
 import java.util.Scanner;
@@ -139,9 +138,9 @@ public final class LanServer {
      * Prints all user names with a preceded number.
      */
     private static void printUsers(){
-        if(server.getUsers().isEmpty()) {
+        if(server.getUsers().isEmpty())
             System.out.println("No users logged in.");
-        }
+
         for(int i = 0; i < server.getUsers().size(); i++){
             System.out.println("(" + (i+1) + ") " + server.getUsers().get(i));
         }
@@ -164,7 +163,13 @@ public final class LanServer {
             System.out.println("ORDER: " + user.getOrder());
     }
 
+    /**
+     * Prints running downloads. Printed are the user, game, upload progress, average upload speed in MByte/second.
+     */
     private static void printDownloads(){
+        if(server.getUploads().isEmpty())
+            System.out.println("No running uploads.");
+
         for(int i = 0; i < server.getUploads().size(); i++){
             GameUpload upload = server.getUploads().get(i);
             System.out.println("(" + (i+1) + ") " + upload.getUser() + " : " + upload.getGame() + " ("

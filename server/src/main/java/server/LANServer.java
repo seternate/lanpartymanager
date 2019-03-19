@@ -285,6 +285,9 @@ public class LANServer extends Server {
         });
     }
 
+    /**
+     * @return GameUploadManager of all running uploads.
+     */
     public GameUploadManager getUploads(){
         return gameUploadManager;
     }
