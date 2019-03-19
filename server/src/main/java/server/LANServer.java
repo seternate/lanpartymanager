@@ -254,10 +254,8 @@ public class LANServer extends Server {
                     } else {
                         //Get ip-address from the user
                         String ipAddress = connection.getRemoteAddressTCP().getAddress().getHostAddress();
-                        //Get 7zip file from the server
-                        File gamefile = new File(gamedirectory, request.game.getServerFileName());
                         //Send game to the user and add the upload to the upload manager
-                        gameUploadManager.add(new GameUpload(ipAddress, request.port, gamefile, request.game,
+                        gameUploadManager.add(new GameUpload(ipAddress, request.port, gamedirectory, request.game,
                                 users.get(connection.getID())));
                     }
                 }

@@ -18,7 +18,7 @@ public class GameUpload extends Thread{
 
     private Socket socket;
     private String ipaddress;
-    private File gamefile;
+    private File gamepath;
     private Game game;
     private User user;
     private GameUploadManager manager;
@@ -31,13 +31,13 @@ public class GameUpload extends Thread{
      *
      * @param ipaddress ip-address of the user.
      * @param port port, which is opened on the users machine for this download.
-     * @param gamefile 7zip file of the game.
+     * @param gamepath 7zip file of the game.
      * @param game game, which gets uploaded.
      * @param user user, which requested to download the game.
      */
-    public GameUpload(String ipaddress, int port, File gamefile, Game game, User user) {
+    public GameUpload(String ipaddress, int port, File gamepath, Game game, User user) {
         this.ipaddress = ipaddress;
-        this.gamefile = gamefile;
+        this.gamepath = gamepath;
         this.game = game;
         this.user = user;
         progress = 0.;
@@ -55,7 +55,7 @@ public class GameUpload extends Thread{
     @Override
     public void run() {
         try {
-            sendFile(gamefile);
+            sendGame();
         } catch (Exception e) {
             log.error("Error while sending '" + game + "' to '" + user + "'("
                     + ipaddress + ".", e);
@@ -77,22 +77,21 @@ public class GameUpload extends Thread{
      * Sends the file to the user. First writes the gamefile size, then sends the game itself and updates the progress
      * and speed information of the upload.
      *
-     * @param gamefile 7zip file of the game.
      * @throws IOException if any error while reading or writing occurs an exception is thrown.
      */
-    private void sendFile(File gamefile) throws IOException {
+    private void sendGame() throws IOException {
         //TODO: send cover image first
         //Open outputstream
         DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
-        //Open Fileinputstream
-        FileInputStream fis = new FileInputStream(gamefile);
-
-        //Send filesize
-        dos.writeLong(gamefile.length());
-
         //Create buffer [1MByte]
         byte[] buffer = new byte[1048576];
 
+        //Sending game file
+        File gamefile = new File(gamepath, game.getServerFileName());
+        //Open file stream
+        FileInputStream fis = new FileInputStream(gamefile);
+        //Send file size
+        dos.writeLong(gamefile.length());
         log.info("Sending '" + game + "' to '" + user + "'.");
         //Sending game
         int read;
@@ -102,7 +101,7 @@ public class GameUpload extends Thread{
             //Start timer to provide speed information
             long start = System.currentTimeMillis();
             //Write data
-            dos.write(buffer,0,read);
+            dos.write(buffer,0, read);
             //Calculate duration and set upload speed
             long duration = (System.currentTimeMillis() - start == 0) ? 1 : System.currentTimeMillis() - start;
             durationSum += (double)duration/1000.;
