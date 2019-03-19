@@ -6,6 +6,8 @@ import entities.User;
 import helper.NoKryoLogging;
 import org.apache.log4j.Logger;
 import server.LANServer;
+import server.upload.GameUpload;
+import server.upload.GameUploadManager;
 
 import java.io.File;
 import java.util.Scanner;
@@ -46,7 +48,7 @@ public final class LanServer {
             Scanner scanner = new Scanner(System.in);
             while(true){
                 //Input parameter list
-                System.out.println("INPUT: [rebuildgames] [games] [game #] [users] [user #] [restart] [exit]");
+                System.out.println("INPUT: [rebuildgames] [games] [game #] [users] [user #] [downloads] [restart] [exit]");
 
                 //Get user input and split it for arguments with multiple input
                 String[] inputs = scanner.nextLine().trim().split(" ");
@@ -83,6 +85,8 @@ public final class LanServer {
                         log.debug(e);
                     }
                 }
+                else if(argument.equals("downloads"))
+                    printDownloads();
                 else if(argument.equals("restart")){
                     server.stop();
                     server.close();
@@ -158,6 +162,14 @@ public final class LanServer {
             System.out.println("ORDER:");
         else
             System.out.println("ORDER: " + user.getOrder());
+    }
+
+    private static void printDownloads(){
+        for(int i = 0; i < server.getUploads().size(); i++){
+            GameUpload upload = server.getUploads().get(i);
+            System.out.println("(" + (i+1) + ") " + upload.getUser() + " : " + upload.getGame() + " ("
+                    + upload.getProgress()*100 + "%) - " + (double)Math.round((double)upload.getAverageUploadspeed()/10485.76)/100. + " MByte/sec");
+        }
     }
 
     /**
