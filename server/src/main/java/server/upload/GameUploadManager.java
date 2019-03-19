@@ -10,5 +10,4 @@ public class GameUploadManager extends ArrayList<GameUpload> {
         return super.add(gameUpload);
     }
 
-    //TODO
 }

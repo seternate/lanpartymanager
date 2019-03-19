@@ -17,7 +17,7 @@ import java.net.BindException;
 import java.util.*;
 
 /**
- * TODO
+ * Creates the LANServer required for lanpartymanager usage.
  */
 public class LANServer extends Server {
     private static Logger log = Logger.getLogger(LANServer.class);
@@ -257,7 +257,6 @@ public class LANServer extends Server {
                         //Get 7zip file from the server
                         File gamefile = new File(gamedirectory, request.game.getServerFileName());
                         //Send game to the user and add the upload to the upload manager
-                        //TODO: uploadmanager
                         gameUploadManager.add(new GameUpload(ipAddress, request.port, gamefile, request.game,
                                 users.get(connection.getID())));
                     }
@@ -286,5 +285,7 @@ public class LANServer extends Server {
         });
     }
 
-    //TODO: manager interface
+    public GameUploadManager getUploads(){
+        return gameUploadManager;
+    }
 }

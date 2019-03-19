@@ -112,14 +112,15 @@ public class GameUpload extends Thread{
             //Set average speed in bytes/second
             averageUploadspeed = Math.round((double)readSum/durationSum);
             //Set progress
-            progress += (double)read/(double)gamefile.length();
+            progress = (double)readSum/(double)gamefile.length();
 
         }
         //Close all open streams
         fis.close();
         dos.close();
         socket.close();
-        log.info("Sent '" + game + "' successfully to '" + user + "'.");
+        log.info("Sent '" + game + "' successfully to '" + user + "' - "
+                + (double)Math.round((double)getAverageUploadspeed()/10485.76)/100. + " MByte/sec.");
     }
 
     /**
@@ -147,5 +148,19 @@ public class GameUpload extends Thread{
      */
     public long getAverageUploadspeed(){
         return averageUploadspeed;
+    }
+
+    /**
+     * @return user who started the upload.
+     */
+    public User getUser(){
+        return user;
+    }
+
+    /**
+     * @return game which is uploaded.
+     */
+    public Game getGame(){
+        return game;
     }
 }
