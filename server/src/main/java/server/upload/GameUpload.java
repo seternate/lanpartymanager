@@ -82,7 +82,6 @@ public class GameUpload extends Thread{
      */
     private void sendFile(File gamefile) throws IOException {
         //TODO: send cover image first
-        //TODO: send progress
         //Open outputstream
         DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
         //Open Fileinputstream
