@@ -140,7 +140,6 @@ public class LANServer extends Server {
      *
      * @param connection of the user who want's to get logged in.
      * @param user requested a log in.
-     * @return true if a user could be logged in successfully, else false.
      */
     private void loginPlayer(Connection connection, User user){
         //Check if user is logged in already
@@ -164,7 +163,6 @@ public class LANServer extends Server {
      *
      * @param connection of the user who has send an user update.
      * @param user user who sends the user update.
-     * @return true if any information of the user has changed, else false.
      */
     private void playerUpdate(Connection connection, User user){
         if(users.containsKey(connection.getID()) && !users.get(connection.getID()).equals(user)){
