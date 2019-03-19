@@ -3,6 +3,7 @@ package client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import entities.*;
+import entities.settings.ClientSettings;
 import helper.GameFolderHelper;
 import helper.NetworkClassRegistrationHelper;
 import message.*;

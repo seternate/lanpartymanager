@@ -4,6 +4,7 @@ import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Server;
 import entities.*;
+import entities.settings.ClientSettings;
 import message.*;
 import requests.DownloadRequest;
 

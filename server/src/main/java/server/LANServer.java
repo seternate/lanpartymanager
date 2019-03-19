@@ -4,6 +4,8 @@ import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
 import entities.*;
+import entities.settings.ServerSettings;
+import entities.settings.Settings;
 import helper.NetworkClassRegistrationHelper;
 import message.*;
 import org.apache.log4j.Logger;

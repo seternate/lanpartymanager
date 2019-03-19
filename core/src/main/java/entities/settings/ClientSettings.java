@@ -1,4 +1,4 @@
-package entities;
+package entities.settings;
 
 import java.io.IOException;
 

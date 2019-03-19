@@ -2,6 +2,7 @@ package entities;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import deserializer.UserDeserializer;
+import entities.settings.ClientSettings;
 
 import java.io.*;
 import java.net.InetAddress;

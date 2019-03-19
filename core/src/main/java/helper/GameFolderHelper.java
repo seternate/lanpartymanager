@@ -1,6 +1,6 @@
 package helper;
 
-import entities.ClientSettings;
+import entities.settings.ClientSettings;
 
 import java.io.File;
 import java.io.IOException;

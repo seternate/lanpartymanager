@@ -2,6 +2,7 @@ package clientInterface;
 
 import controller.ApplicationManager;
 import entities.*;
+import entities.settings.ClientSettings;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
