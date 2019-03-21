@@ -1,7 +1,7 @@
 package server.upload;
 
-import entities.Game;
-import entities.User;
+import entities.game.Game;
+import entities.user.User;
 import org.apache.log4j.Logger;
 
 import java.io.DataOutputStream;

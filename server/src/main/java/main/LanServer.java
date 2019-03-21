@@ -1,9 +1,9 @@
 package main;
 
 import com.esotericsoftware.minlog.Log;
-import entities.Game;
-import entities.User;
-import helper.NoKryoLogging;
+import entities.game.Game;
+import entities.user.User;
+import helper.kryo.NoKryoLogging;
 import org.apache.log4j.Logger;
 import server.LANServer;
 import server.upload.GameUpload;
