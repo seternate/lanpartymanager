@@ -1,8 +1,13 @@
 package clientInterface;
 
 import controller.ApplicationManager;
-import entities.*;
+import entities.game.Game;
+import entities.game.GameList;
+import entities.game.GameStatus;
+import entities.server.ServerStatus;
 import entities.settings.ClientSettings;
+import entities.user.User;
+import entities.user.UserList;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -195,14 +200,14 @@ public class Client extends Thread {
         if(ApplicationManager.getFocusedGame() != null){
             GameStatus newStatus = client.getGameStatus(ApplicationManager.getFocusedGame()).execute().body();
             assert newStatus != null;
-            gamestatus.downloading.setValue(newStatus.downloading);
-            gamestatus.unzipping.setValue(newStatus.unzipping);
-            gamestatus.download.setValue(newStatus.download);
-            gamestatus.update.setValue(newStatus.update);
-            gamestatus.version.setValue(newStatus.version);
-            gamestatus.playable.setValue(newStatus.playable);
-            gamestatus.downloadProgress.setValue(newStatus.downloadProgress);
-            gamestatus.unzipProgress.setValue(newStatus.unzipProgress);
+            gamestatus.downloading.setValue(newStatus.isDownloading());
+            gamestatus.unzipping.setValue(newStatus.isUnzipping());
+            gamestatus.download.setValue(!newStatus.isLocal());
+            gamestatus.update.setValue(newStatus.isUpdate());
+            gamestatus.version.setValue(newStatus.isVersion());
+            gamestatus.playable.setValue(newStatus.isPlayable());
+            gamestatus.downloadProgress.setValue(newStatus.getDownloadProgress());
+            gamestatus.unzipProgress.setValue(newStatus.getUnzipProgress());
         }
         updateUsers();
         updateGames();

@@ -1,7 +1,7 @@
 package controller;
 
-import entities.Game;
-import entities.GameStatusProperty;
+import entities.game.Game;
+import clientInterface.GameStatusProperty;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;

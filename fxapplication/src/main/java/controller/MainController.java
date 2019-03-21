@@ -1,7 +1,7 @@
 package controller;
 
-import entities.Game;
-import entities.GameList;
+import entities.game.Game;
+import entities.game.GameList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.HPos;

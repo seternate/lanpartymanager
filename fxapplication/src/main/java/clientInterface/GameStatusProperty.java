@@ -1,4 +1,4 @@
-package entities;
+package clientInterface;
 
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;

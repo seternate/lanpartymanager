@@ -1,6 +1,11 @@
 package clientInterface;
 
-import entities.*;
+import entities.game.Game;
+import entities.game.GameList;
+import entities.game.GameStatus;
+import entities.server.ServerStatus;
+import entities.user.User;
+import entities.user.UserList;
 import retrofit2.Call;
 import retrofit2.http.*;
 

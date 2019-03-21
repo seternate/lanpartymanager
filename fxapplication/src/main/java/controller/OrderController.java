@@ -1,6 +1,6 @@
 package controller;
 
-import entities.User;
+import entities.user.User;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;

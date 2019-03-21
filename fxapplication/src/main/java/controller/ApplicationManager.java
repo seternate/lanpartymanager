@@ -1,10 +1,10 @@
 package controller;
 
 import clientInterface.Client;
-import entities.Game;
-import entities.GameList;
-import entities.GameStatusProperty;
-import entities.User;
+import entities.game.Game;
+import entities.game.GameList;
+import clientInterface.GameStatusProperty;
+import entities.user.User;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Label;
 import stages.*;
