@@ -1,4 +1,4 @@
-package client.FileDrop;
+package client.filedrop;
 
 import java.io.*;
 import java.net.ServerSocket;

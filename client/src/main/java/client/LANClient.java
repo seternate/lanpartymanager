@@ -1,7 +1,9 @@
 package client;
 
-import client.FileDrop.FileDropClient;
-import client.FileDrop.FileDropServer;
+import client.filedrop.FileDropClient;
+import client.filedrop.FileDropServer;
+import client.monitor.GameMonitor;
+import client.monitor.GameProcess;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
@@ -22,6 +24,8 @@ import requests.DownloadRequest;
 import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static java.lang.Thread.sleep;
@@ -39,6 +43,7 @@ public class LANClient extends Client {
     private volatile User user;
     private volatile UserList users;
     private volatile GameList games;
+    private GameMonitor gamemonitor;
 
 
     /**
@@ -48,6 +53,7 @@ public class LANClient extends Client {
     public LANClient(){
         super(1048576, 1048576);
         gameDownloadManager = new GameDownloadManager();
+        gamemonitor = new GameMonitor();
         serverStatus = new ServerStatus();
         //Register listener and classes to be send over KryoNet
         NetworkClassRegistrationHelper.registerClasses(this);
@@ -279,12 +285,6 @@ public class LANClient extends Client {
 
 
 
-
-
-
-
-
-
     public boolean startGame(Game game){
         if(game.isUptodate() != 0 && game.isUptodate() != -2){
             download(game);
@@ -300,13 +300,51 @@ public class LANClient extends Client {
             }).start();
             return false;
         }
-        String start;
-        if(game.getParam().equals(""))
-            start = "start " + "\"\" " + "\"" + game.getExeFileRelative().substring(1) + "\"";
-        else
-            start = "start " + "\"\" " + "\"" + game.getExeFileRelative().substring(1) + "\"" + " " + game.getParam();
-        return startProcess(game, start);
+
+        Process gameprocess;
+        try {
+            gameprocess = startProcess(game, GameFolderHelper.getGameFolder(game.getExeFileRelative()),
+                                                game.getExeFileRelative(), game.getParam());
+            gamemonitor.add(new GameProcess(game, gameprocess));
+        } catch (IOException e) {
+            log.error("Can not launch the game '" + game + "'.", e);
+            return false;
+        }
+        return true;
     }
+
+    /**
+     * Starts the specified game within the working directory of the folderpath with the exepath. Command-Line arguments
+     * for the started game can be passed through parameters.
+     *
+     * @param game which should the game or a server be started.
+     * @param folderpath path of the root game folder.
+     * @param exepath relative path within the game folder of the exe.
+     * @param parameters command-line arguments that should be passed to the game starting.
+     * @return the process, which represents the started game.
+     * @throws IOException if an error occurs while starting the game
+     */
+    private Process startProcess(Game game, String folderpath, String exepath, String... parameters) throws IOException {
+        //Build command list for ProcessBuilder
+        List<String> commands = new ArrayList<>();
+        commands.add(folderpath + exepath);
+        commands.addAll(Arrays.asList(parameters));
+        //Set up ProcessBuilder
+        ProcessBuilder process = new ProcessBuilder(commands);
+        process.directory(new File(GameFolderHelper.getGameFolder(game.getExeFileRelative())));
+        process.redirectErrorStream(true);
+        //Start process
+        return process.start();
+    }
+
+
+
+
+
+
+
+
+
 
     public int download(Game game){
         if(gameDownloadManager.getDownload(game) != null){
@@ -355,7 +393,7 @@ public class LANClient extends Client {
         else
             start = "start " + game.getExeFileRelative().substring(1) + " " + game.getParam();
         String parameterserver = game.getConnectParam().replace("?", ip);
-        return startProcess(game, start + " " + parameterserver);
+        return false;//startProcess(game, start + " " + parameterserver);
     }
 
     public boolean startServer(Game game, String param){
@@ -380,20 +418,10 @@ public class LANClient extends Client {
             start = "start " + "\"\" " + "\"" + game.getExeServerRelative().substring(1) + "\"";
         else
             start = "start " + "\"\" " + "\"" + game.getExeServerRelative().substring(1) + "\"" + " " + param;
-        return startProcess(game, start);
+        return false;//startProcess(game, start);
     }
 
-    private boolean startProcess(Game game, String start) {
-        try {
-            ProcessBuilder process = new ProcessBuilder("cmd.exe", "/C", start);
-            process.directory(new File(GameFolderHelper.getGameFolder(game.getExeFileRelative())));
-            process.start();
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        }
-        return true;
-    }
+
 
     public boolean sendFiles(User user, List<File> files){
         new FileDropClient(user, files);
