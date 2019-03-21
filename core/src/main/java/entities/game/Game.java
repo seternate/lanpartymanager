@@ -1,4 +1,4 @@
-package entities;
+package entities.game;
 
 import helper.GameFolderHelper;
 import helper.GameInfoHelper;

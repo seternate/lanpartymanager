@@ -1,6 +1,6 @@
 package message;
 
-import entities.User;
+import entities.user.User;
 
 public final class UserupdateMessage {
     public User user;

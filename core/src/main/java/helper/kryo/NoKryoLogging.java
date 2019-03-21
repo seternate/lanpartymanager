@@ -1,4 +1,4 @@
-package helper;
+package helper.kryo;
 
 import com.esotericsoftware.minlog.Log;
 

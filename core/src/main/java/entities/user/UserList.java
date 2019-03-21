@@ -1,4 +1,4 @@
-package entities;
+package entities.user;
 
 import java.util.ArrayList;
 import java.util.HashMap;

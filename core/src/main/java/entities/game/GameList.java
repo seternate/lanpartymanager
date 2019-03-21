@@ -1,4 +1,4 @@
-package entities;
+package entities.game;
 
 import java.io.File;
 import java.io.FileInputStream;

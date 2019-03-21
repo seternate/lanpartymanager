@@ -5,7 +5,7 @@ import java.io.IOException;
 /**
  * Serves the server settings.
  */
-public final class ServerSettings extends Settings {
+public class ServerSettings extends Settings {
     /**
      * Loads the server settings.
      *

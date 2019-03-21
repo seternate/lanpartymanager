@@ -5,7 +5,7 @@ import com.sun.jna.Pointer;
 import com.sun.jna.platform.win32.VerRsrc.VS_FIXEDFILEINFO;
 import com.sun.jna.ptr.IntByReference;
 import com.sun.jna.ptr.PointerByReference;
-import entities.Game;
+import entities.game.Game;
 
 import java.io.File;
 import java.io.FileNotFoundException;

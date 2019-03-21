@@ -1,6 +1,6 @@
 package message;
 
-import entities.GameList;
+import entities.game.GameList;
 
 public final class GamelistMessage {
     public GameList games;

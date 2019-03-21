@@ -10,7 +10,7 @@ public abstract class GameFolderHelper {
     public static String getAbsolutePath(String path){
         File root = null;
         try {
-            root = new File(new ClientSettings(true, true).getGamepath());
+            root = new File(new ClientSettings(true).getGamepath());
         } catch (IOException e) {
             e.printStackTrace();
         }

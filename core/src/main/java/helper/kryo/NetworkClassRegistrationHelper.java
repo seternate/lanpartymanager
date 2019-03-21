@@ -1,10 +1,13 @@
-package helper;
+package helper.kryo;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Server;
-import entities.*;
+import entities.game.Game;
+import entities.game.GameList;
 import entities.settings.ClientSettings;
+import entities.user.User;
+import entities.user.UserList;
 import message.*;
 import requests.DownloadRequest;
 

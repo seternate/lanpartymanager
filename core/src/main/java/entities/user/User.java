@@ -1,11 +1,12 @@
-package entities;
+package entities.user;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import deserializer.UserDeserializer;
+import deserialize.UserDeserializer;
 import entities.settings.ClientSettings;
 
 import java.io.*;
 import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 @JsonDeserialize(using = UserDeserializer.class)
 public final class User {
@@ -16,7 +17,7 @@ public final class User {
 
     public User(){ }
 
-    public User(ClientSettings settings) throws IOException {
+    public User(ClientSettings settings) throws UnknownHostException {
         this.settings = settings;
         ipAddress = InetAddress.getLocalHost().getHostAddress();
         order = "";
