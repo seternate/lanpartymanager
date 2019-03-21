@@ -11,7 +11,7 @@ public class GameProcess extends Thread{
 
     private Game game;
     private Process process;
-    private GameMonitor monitor;
+    private Monitor monitor;
 
 
     /**
@@ -32,24 +32,27 @@ public class GameProcess extends Thread{
      */
     @Override
     public void run() {
-        log.info(game + " has been started successfully.");
+        log.info("'" + game + "' has been started successfully.");
         try {
             process.waitFor();
         } catch (InterruptedException e) {
             log.warn("Listening on the game process of '" + game + "' was interrupted.", e);
         }
-        log.info(game + " has been closed with the exit value: " + process.exitValue());
-        monitor.remove(this);
+        log.info("'" + game + "' has been closed with the exit value: " + process.exitValue());
+        monitor.update(this);
     }
 
     /**
-     * @param monitor Monitor for this GameProcess
+     * @param monitor GameMonitor for this GameProcess
      */
-    void setManger(GameMonitor monitor){
+    void setManger(Monitor monitor){
         this.monitor = monitor;
     }
 
-    public boolean isOpen(){
+    /**
+     * @return true if the game process is alive, else false.
+     */
+    boolean isOpen(){
         return process.isAlive();
     }
 

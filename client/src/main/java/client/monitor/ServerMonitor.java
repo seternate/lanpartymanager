@@ -2,10 +2,11 @@ package client.monitor;
 
 import client.LANClient;
 
-public class GameMonitor extends Monitor {
+public class ServerMonitor extends Monitor{
     private LANClient client;
 
-    public GameMonitor(LANClient client){
+
+    public ServerMonitor(LANClient client){
         this.client = client;
     }
 
@@ -16,7 +17,8 @@ public class GameMonitor extends Monitor {
             removed = remove(gameprocess);
         }
         if(removed)
-            client.updateOpenGames();
+            client.updateOpenServers();
         return removed;
     }
+
 }

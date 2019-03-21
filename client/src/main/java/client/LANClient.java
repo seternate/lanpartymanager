@@ -4,6 +4,8 @@ import client.filedrop.FileDropClient;
 import client.filedrop.FileDropServer;
 import client.monitor.GameMonitor;
 import client.monitor.GameProcess;
+import client.monitor.Monitor;
+import client.monitor.ServerMonitor;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
@@ -43,7 +45,8 @@ public class LANClient extends Client {
     private volatile User user;
     private volatile UserList users;
     private volatile GameList games;
-    private GameMonitor gamemonitor;
+    private volatile Monitor gamemonitor;
+    private volatile Monitor servermonitor;
 
 
     /**
@@ -53,7 +56,8 @@ public class LANClient extends Client {
     public LANClient(){
         super(1048576, 1048576);
         gameDownloadManager = new GameDownloadManager();
-        gamemonitor = new GameMonitor();
+        gamemonitor = new GameMonitor(this);
+        servermonitor = new ServerMonitor(this);
         serverStatus = new ServerStatus();
         //Register listener and classes to be send over KryoNet
         NetworkClassRegistrationHelper.registerClasses(this);
@@ -281,26 +285,61 @@ public class LANClient extends Client {
         return false;
     }
 
+    /**
+     * Downloads a game if it is not downloading already and there is enough free space on the disk where the gamepath
+     * leeds to.
+     *
+     * @param game game that should be downloaded.
+     * @return -1 if the game is downloading already, -2 if there is not enough free space on the disk, 0 if the
+     * download started successfully.
+     */
+    public int download(Game game){
+        //Check if the game is downloading already
+        if(gameDownloadManager.getDownload(game) != null)
+            return -1;
+        //Check for enough free space on the disk
+        //TODO
+        File sFile = new File(user.getGamepath());
+        if(game.getSizeServer() > sFile.getFreeSpace())
+            return -2;
+        int openport = NetworkHelper.getOpenPort();
+        gameDownloadManager.add(new GameDownload(openport, game, game.getSizeServer(), user.getGamepath()));
+        System.out.println("REQUEST: Download '" + game.getName() + "'.");
+        sendTCP(new DownloadRequest(game, openport));
+        return 0;
+    }
 
 
 
 
+
+    /**
+     * Starts a game if it is locally available and up-to-date, else it is downloaded first. After the game is started
+     * it is passed to the GameMonitor to keep track of the game process status.
+     *
+     * @param game game that should be started.
+     * @return true if the game has been successfully started, else it returns false.
+     */
     public boolean startGame(Game game){
-        if(game.isUptodate() != 0 && game.isUptodate() != -2){
+        //Check if the game is up-to-date/locally available.
+        int uptodate = game.isUptodate();
+        if(uptodate != 0 && uptodate != -2){
+            switch(uptodate){
+                case -1: log.info("'" + game + "' can not be found in the gamepath '" + user.getGamepath() + "'.");
+                case -3: log.info("'" + game + "' is not up-to-date.");
+            }
+            //Update the game
             download(game);
+            //Wait until the game is downloaded and start it
             new Thread(() -> {
                 while(gameDownloadManager.getDownload(game) != null){
-                    try {
-                        sleep(10);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+                    try { sleep(10); } catch (InterruptedException e) { }
                 }
                 startGame(game);
             }).start();
             return false;
         }
-
+        //Start game and add it to the gamemonitor
         Process gameprocess;
         try {
             gameprocess = startProcess(game, GameFolderHelper.getGameFolder(game.getExeFileRelative()),
@@ -337,28 +376,23 @@ public class LANClient extends Client {
         return process.start();
     }
 
-
-
-
-
-
-
-
-
-
-    public int download(Game game){
-        if(gameDownloadManager.getDownload(game) != null){
-            return -1;
-        }
-        File sFile = new File(user.getGamepath());
-        if(game.getSizeServer() > sFile.getFreeSpace())
-            return -2;
-        int openport = NetworkHelper.getOpenPort();
-        gameDownloadManager.add(new GameDownload(openport, game, game.getSizeServer(), user.getGamepath()));
-        System.out.println("REQUEST: Download '" + game.getName() + "'.");
-        sendTCP(new DownloadRequest(game, openport));
-        return 0;
+    public void updateOpenGames(){
+        //TODO
     }
+
+    public void updateOpenServers(){
+        //TODO
+    }
+
+
+
+
+
+
+
+
+
+
 
     public boolean openExplorer(Game game){
         try {
