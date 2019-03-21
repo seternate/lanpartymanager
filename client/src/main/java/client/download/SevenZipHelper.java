@@ -1,4 +1,4 @@
-package client;
+package client.download;
 
 import net.sf.sevenzipjbinding.*;
 import net.sf.sevenzipjbinding.impl.RandomAccessFileInStream;
@@ -86,7 +86,7 @@ public final class SevenZipHelper {
                                 + file.getAbsolutePath());
                     }
                     unzipProgress = (double)index/(double)totalItems;
-                    gameDownload.unzipProgress = unzipProgress;
+                    gameDownload.setUnzipprogress(unzipProgress);
                     return data.length; // Return amount of consumed data
                 }
             };
