@@ -1,16 +1,16 @@
-package client;
+package client.FileDrop;
 
-import entities.User;
+import entities.user.User;
 
 import java.io.*;
 import java.net.Socket;
 import java.util.List;
 
-public class DragAndDropClient extends Thread {
+public class FileDropClient extends Thread {
     private User user;
     private List<File> files;
 
-    DragAndDropClient(User user, List<File> files){
+    public FileDropClient(User user, List<File> files){
         this.user = user;
         this.files = files;
         start();

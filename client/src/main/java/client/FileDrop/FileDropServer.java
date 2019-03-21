@@ -1,4 +1,4 @@
-package client;
+package client.FileDrop;
 
 import java.io.*;
 import java.net.ServerSocket;
@@ -6,13 +6,13 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DragAndDropServer extends Thread {
+public class FileDropServer extends Thread {
     private ServerSocket ss;
     private Socket socket;
     private boolean downloading;
     private String gamepath;
 
-    DragAndDropServer(String gamepath){
+    public FileDropServer(String gamepath){
         downloading = false;
         this.gamepath = gamepath;
         try {
@@ -87,7 +87,7 @@ public class DragAndDropServer extends Thread {
         downloading = false;
     }
 
-    boolean isDownloading(){
+    public boolean isDownloading(){
         return downloading;
     }
 }

@@ -1,8 +1,8 @@
 package springboot;
 
-import client.MyClient;
-import entities.Game;
-import entities.User;
+import client.LANClient;
+import entities.game.Game;
+import entities.user.User;
 import main.LanClient;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +14,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/fx")
 public class FXAppInterface {
-    private static final MyClient client = LanClient.client;
+    private static final LANClient client = LanClient.client;
 
     @RequestMapping(value = "/status", method = RequestMethod.GET)
     public ResponseEntity status(){

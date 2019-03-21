@@ -33,11 +33,11 @@ public final class SevenZipHelper {
         private boolean isFolder;
         public long totalItems;
         public double unzipProgress = 0;
-        private Download download;
+        private GameDownload gameDownload;
 
-        ExtractCallback(IInArchive inArchive, Download download) throws SevenZipException {
+        ExtractCallback(IInArchive inArchive, GameDownload gameDownload) throws SevenZipException {
             this.inArchive = inArchive;
-            this.download = download;
+            this.gameDownload = gameDownload;
             totalItems = inArchive.getNumberOfItems();
         }
 
@@ -86,7 +86,7 @@ public final class SevenZipHelper {
                                 + file.getAbsolutePath());
                     }
                     unzipProgress = (double)index/(double)totalItems;
-                    download.unzipProgress = unzipProgress;
+                    gameDownload.unzipProgress = unzipProgress;
                     return data.length; // Return amount of consumed data
                 }
             };
@@ -145,14 +145,14 @@ public final class SevenZipHelper {
     private File outputDirectoryFile;
     private boolean test;
     private String filterRegex;
-    private Download download;
+    private GameDownload gameDownload;
 
-    SevenZipHelper(String archive, String outputDirectory, boolean test, String filter, Download download) {
+    SevenZipHelper(String archive, String outputDirectory, boolean test, String filter, GameDownload gameDownload) {
         this.archive = archive;
         this.outputDirectory = outputDirectory;
         this.test = test;
         this.filterRegex = filterToRegex(filter);
-        this.download = download;
+        this.gameDownload = gameDownload;
     }
 
     void extract() throws ExtractionException {
@@ -227,7 +227,7 @@ public final class SevenZipHelper {
             if (filterRegex != null) {
                 ids = filterIds(inArchive, filterRegex);
             }
-            inArchive.extract(ids, test, new ExtractCallback(inArchive, download));
+            inArchive.extract(ids, test, new ExtractCallback(inArchive, gameDownload));
             ok = true;
         } catch (SevenZipException e) {
             StringBuilder stringBuilder = new StringBuilder();

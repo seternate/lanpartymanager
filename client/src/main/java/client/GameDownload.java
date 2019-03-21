@@ -1,7 +1,7 @@
 package client;
 
 
-import entities.Game;
+import entities.game.Game;
 
 import java.io.DataInputStream;
 import java.io.File;
@@ -10,19 +10,20 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-public final class Download extends Thread {
+//TODO
+public final class GameDownload extends Thread {
     Game game;
     int totalParts;
     int receivedParts;
     double downloadProgress;
     double unzipProgress;
-    private DownloadManager manager = null;
+    private GameDownloadManager manager = null;
     private int packageSize = 10485760;
     private ServerSocket ss;
     private String gamepath;
 
 
-    Download(int port, Game game, long gamesize, String gamepath) {
+    GameDownload(int port, Game game, long gamesize, String gamepath) {
         this.game = game;
         this.gamepath = gamepath;
         try {
@@ -48,7 +49,7 @@ public final class Download extends Thread {
         }
     }
 
-    void setManager(DownloadManager manager){
+    void setManager(GameDownloadManager manager){
         this.manager = manager;
     }
 
