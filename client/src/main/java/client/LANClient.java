@@ -1,5 +1,7 @@
 package client;
 
+import client.download.GameDownload;
+import client.download.GameDownloadManager;
 import client.filedrop.FileDropClient;
 import client.filedrop.FileDropServer;
 import client.monitor.GameMonitor;
@@ -253,15 +255,13 @@ public class LANClient extends Client {
             return gamestatus;
         }
         //Set download/unzip progress if downloading/unzipping
-        //TODO
-        if(gameDownload.receivedParts < gameDownload.totalParts){
+        if(gameDownload.getDownloadprogress() < 1.){
             gamestatus.setDownloading(true);
-            gamestatus.setDownloadProgress(gameDownload.downloadProgress);
+            gamestatus.setDownloadProgress(gameDownload.getDownloadprogress());
         }else{
             gamestatus.setUnzipping(true);
-            gamestatus.setUnzipProgress(gameDownload.unzipProgress);
+            gamestatus.setUnzipProgress(gameDownload.getUnzipprogress());
         }
-
         return gamestatus;
     }
 
@@ -302,10 +302,10 @@ public class LANClient extends Client {
         File sFile = new File(user.getGamepath());
         if(game.getSizeServer() > sFile.getFreeSpace())
             return -2;
-        int openport = NetworkHelper.getOpenPort();
-        gameDownloadManager.add(new GameDownload(openport, game, game.getSizeServer(), user.getGamepath()));
-        System.out.println("REQUEST: Download '" + game.getName() + "'.");
-        sendTCP(new DownloadRequest(game, openport));
+        GameDownload download = new GameDownload(game, user);
+        gameDownloadManager.add(download);
+        log.info("Requested download of the game '" + game + "'.");
+        sendTCP(new DownloadRequest(game, download.getPort()));
         return 0;
     }
 
