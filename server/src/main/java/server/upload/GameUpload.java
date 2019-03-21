@@ -80,7 +80,6 @@ public class GameUpload extends Thread{
      * @throws IOException if any error while reading or writing occurs an exception is thrown.
      */
     private void sendGame() throws IOException {
-        //TODO: send cover image first
         //Open outputstream
         DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
         //Create buffer [1MByte]
@@ -112,7 +111,6 @@ public class GameUpload extends Thread{
             averageUploadspeed = Math.round((double)readSum/durationSum);
             //Set progress
             progress = (double)readSum/(double)gamefile.length();
-
         }
         //Close all open streams
         fis.close();
@@ -125,7 +123,7 @@ public class GameUpload extends Thread{
     /**
      * Returns the progress of the upload to the user with a precision of 4 as decimal.
      *
-     * @return progress of the upload
+     * @return progress of the upload.
      */
     public double getProgress(){
         return (double)Math.round(progress*10000.)/10000.;
