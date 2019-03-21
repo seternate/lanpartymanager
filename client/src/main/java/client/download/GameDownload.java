@@ -17,7 +17,7 @@ import java.net.Socket;
  * Creates a new socket on an open port to listen for an incoming gamefile. Downloads the gamefile and extracts the
  * 7zip file after downloading. Also tracks the progress of the download and the extraction.
  */
-public final class GameDownload extends Thread {
+public class GameDownload extends Thread {
     private static Logger log = Logger.getLogger(GameDownload.class);
 
     private Game game;
@@ -75,8 +75,10 @@ public final class GameDownload extends Thread {
     }
 
     /**
-     * Receives the file from the LANServer. First stores the gamefile size, then the game itself and updates the progress
-     * and speed information of the download. Also handles the extraction of the 7zip gamefile downloaded.
+     * Receives the file from the LANServer. First stores the gamefile size and checks if enough free space is
+     * available on the disk specified by the gamepath, then downloads the game itself and updates the progress
+     * and speed information of the download. Also handles the extraction of the 7zip gamefile downloaded and deletes
+     * the 7zip file if the extraction was successful.
      *
      * @throws IOException if any error while reading or writing occurs an exception is thrown.
      */
@@ -92,6 +94,13 @@ public final class GameDownload extends Thread {
         //Read filesize
         gamesize = dis.readLong();
         remaining = gamesize;
+        //Check if enough space is available on the disk
+        File space = new File(gamepath);
+        if(manager.getSizeRemaining() > space.getFreeSpace()){
+            log.error("Not enough free space to download '" + game + "' with size of "
+                    + (double)Math.round((double)gamesize/10485.76)/100. + " MByte.");
+            return;
+        }
         //Read game data
         //Check if download got canceled
         if(stop)
@@ -137,16 +146,17 @@ public final class GameDownload extends Thread {
         try {
             new SevenZipHelper(gamepath, this.gamepath, false, null, this).extract();
             log.info("Unzipping of '" + game + "' finished successfully.");
+            //Delete 7zip file from the download
+            File file = new File(gamepath);
+            if(!file.delete())
+                log.error("Can not delete 7zip file of '" + game + "'.");
+            else {
+                log.info("Deleted 7zip file of '" + game + "'.");
+            }
         } catch (SevenZipHelper.ExtractionException e) {
             log.error("Unzipping of '" + game + "' to '" + gamepath + "' failed.", e);
         }
-        //Delete 7zip file from the download
-        File file = new File(gamepath);
-        if(!file.delete())
-            log.error("Can not delete 7zip file of '" + game + "'.");
-        else {
-            log.info("Deleted 7zip file of '" + game + "'.");
-        }
+
     }
 
     /**
@@ -170,6 +180,13 @@ public final class GameDownload extends Thread {
      */
     public int getPort(){
         return port;
+    }
+
+    /**
+     * Stops the download or extraction of the gamefile.
+     */
+    public void stopDownload(){
+        stop = true;
     }
 
     /**

@@ -250,11 +250,10 @@ public class LANClient extends Client {
                     gamestatus.setLocal(true);
         }
         //Check if game is downloaded, else send games status
-        GameDownload gameDownload = gameDownloadManager.getDownload(game);
-        if(gameDownload == null) {
+        if(!gameDownloadManager.isDownloading(game))
             return gamestatus;
-        }
         //Set download/unzip progress if downloading/unzipping
+        GameDownload gameDownload = gameDownloadManager.getDownload(game);
         if(gameDownload.getDownloadprogress() < 1.){
             gamestatus.setDownloading(true);
             gamestatus.setDownloadProgress(gameDownload.getDownloadprogress());
@@ -290,28 +289,24 @@ public class LANClient extends Client {
      * leeds to.
      *
      * @param game game that should be downloaded.
-     * @return -1 if the game is downloading already, -2 if there is not enough free space on the disk, 0 if the
+     * @return -1 if the game is downloading already, -2 if the client is not connected to the server, 0 if the
      * download started successfully.
      */
     public int download(Game game){
         //Check if the game is downloading already
-        if(gameDownloadManager.getDownload(game) != null)
+        if(gameDownloadManager.isDownloading(game))
             return -1;
-        //Check for enough free space on the disk
-        //TODO
-        File sFile = new File(user.getGamepath());
-        if(game.getSizeServer() > sFile.getFreeSpace())
+        //Check if the client has a connection to the server
+        if(!serverStatus.isConnected())
             return -2;
+        //TODO: Feedback for no free space on disk.
+        //Download game
         GameDownload download = new GameDownload(game, user);
         gameDownloadManager.add(download);
         log.info("Requested download of the game '" + game + "'.");
         sendTCP(new DownloadRequest(game, download.getPort()));
         return 0;
     }
-
-
-
-
 
     /**
      * Starts a game if it is locally available and up-to-date, else it is downloaded first. After the game is started
@@ -332,7 +327,7 @@ public class LANClient extends Client {
             download(game);
             //Wait until the game is downloaded and start it
             new Thread(() -> {
-                while(gameDownloadManager.getDownload(game) != null){
+                while(gameDownloadManager.isDownloading(game)){
                     try { sleep(10); } catch (InterruptedException e) { }
                 }
                 startGame(game);
@@ -384,21 +379,17 @@ public class LANClient extends Client {
         //TODO
     }
 
-
-
-
-
-
-
-
-
-
-
+    /**
+     * Opens the exe file from the game at the explorer.
+     *
+     * @param game game that should be opened in the explorer.
+     * @return true if the explorer could be opened, else false.
+     */
     public boolean openExplorer(Game game){
         try {
             Runtime.getRuntime().exec("explorer.exe /select," + GameFolderHelper.getAbsolutePath(game.getExeFileRelative()));
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("Can not open 'explorer.exe'.", e);
             return false;
         }
         return true;
@@ -410,7 +401,7 @@ public class LANClient extends Client {
         if(game.isUptodate() != 0 && game.isUptodate() != -2) {
             download(game);
             new Thread(() -> {
-                while(gameDownloadManager.getDownload(game) != null){
+                while(gameDownloadManager.isDownloading(game)){
                     try {
                         sleep(10);
                     } catch (InterruptedException e) {
@@ -436,7 +427,7 @@ public class LANClient extends Client {
         if(game.isUptodate() != 0 && game.isUptodate() != -2) {
             download(game);
             new Thread(() -> {
-                while(gameDownloadManager.getDownload(game) != null){
+                while(gameDownloadManager.isDownloading(game)){
                     try {
                         sleep(10);
                     } catch (InterruptedException e) {
