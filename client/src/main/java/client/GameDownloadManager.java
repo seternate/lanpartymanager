@@ -21,4 +21,5 @@ final class GameDownloadManager extends ArrayList<GameDownload>{
         return null;
     }
 
+    //TODO: boolean method for game download check
 }
