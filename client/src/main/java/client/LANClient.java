@@ -395,56 +395,91 @@ public class LANClient extends Client {
         return true;
     }
 
+    /**
+     * Starts a game and connects it direct to the server with the given ip address, if the game is capable of direct
+     * connect through console-line arguments.
+     *
+     * @param game game that should be started and connected to the server with the given ip.
+     * @param ip ip address of the server the game should connect to.
+     * @return true if the game STARTED properly, else false.
+     */
     public boolean connectServer(Game game, String ip){
+        //Check if the game is up-to-date/locally available.
         if(!game.isConnectDirect())
             return false;
-        if(game.isUptodate() != 0 && game.isUptodate() != -2) {
+        int uptodate = game.isUptodate();
+        if(uptodate != 0 && uptodate != -2){
+            switch(uptodate){
+                case -1: log.info("'" + game + "' can not be found in the gamepath '" + user.getGamepath() + "'.");
+                case -3: log.info("'" + game + "' is not up-to-date.");
+            }
+            //Update the game
             download(game);
+            //Wait until the game is downloaded and start it
             new Thread(() -> {
                 while(gameDownloadManager.isDownloading(game)){
-                    try {
-                        sleep(10);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+                    try { sleep(10); } catch (InterruptedException e) { }
                 }
                 connectServer(game, ip);
             }).start();
             return false;
         }
-        String start;
-        if(game.getParam().equals(""))
-            start = "start " + game.getExeFileRelative().substring(1);
-        else
-            start = "start " + game.getExeFileRelative().substring(1) + " " + game.getParam();
-        String parameterserver = game.getConnectParam().replace("?", ip);
-        return false;//startProcess(game, start + " " + parameterserver);
+        //Start game and add it to the gamemonitor
+        Process gameprocess;
+        try {
+            String connectparameter = game.getConnectParam().replace("?", ip);
+            gameprocess = startProcess(game, GameFolderHelper.getGameFolder(game.getExeFileRelative()),
+                    game.getExeFileRelative(), game.getParam(), connectparameter);
+            gamemonitor.add(new GameProcess(game, gameprocess));
+        } catch (IOException e) {
+            log.error("Can not connect the game '" + game + "' to '" + ip + "'.", e);
+            return false;
+        }
+        return true;
     }
 
+    /**
+     * Starts the server for a game. If possible a dedicated server is created, else an in-game server is started.
+     * The server gets started with the parameters provided from the user, who creates it.
+     *
+     * @param game game to start a server from.
+     * @param param server command-line arguments.
+     * @return true if the server STARTED properly, else false.
+     */
     public boolean startServer(Game game, String param){
         if(!game.isOpenServer())
             return false;
-        if(game.isUptodate() != 0 && game.isUptodate() != -2) {
+        int uptodate = game.isUptodate();
+        if(uptodate != 0 && uptodate != -2){
+            switch(uptodate){
+                case -1: log.info("'" + game + "' can not be found in the gamepath '" + user.getGamepath() + "'.");
+                case -3: log.info("'" + game + "' is not up-to-date.");
+            }
+            //Update the game
             download(game);
+            //Wait until the game is downloaded and start it
             new Thread(() -> {
                 while(gameDownloadManager.isDownloading(game)){
-                    try {
-                        sleep(10);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+                    try { sleep(10); } catch (InterruptedException e) { }
                 }
                 startServer(game, param);
             }).start();
             return false;
         }
-        String start;
-        if(param.equals(""))
-            start = "start " + "\"\" " + "\"" + game.getExeServerRelative().substring(1) + "\"";
-        else
-            start = "start " + "\"\" " + "\"" + game.getExeServerRelative().substring(1) + "\"" + " " + param;
-        return false;//startProcess(game, start);
+        //Start game and add it to the gamemonitor
+        Process gameprocess;
+        try {
+            gameprocess = startProcess(game, GameFolderHelper.getGameFolder(game.getExeFileRelative()),
+                    game.getExeFileRelative(), param);
+            servermonitor.add(new GameProcess(game, gameprocess));
+        } catch (IOException e) {
+            log.error("Can not start the server of the game '" + game + "'.", e);
+            return false;
+        }
+        return true;
     }
+
+
 
 
 
