@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import deserialize.UserDeserializer;
 import entities.game.Game;
 import entities.settings.ClientSettings;
+import helper.NetworkHelper;
 
 import java.io.*;
 import java.net.InetAddress;
@@ -20,7 +21,7 @@ public final class User {
 
     public User(ClientSettings settings) throws UnknownHostException {
         this.settings = settings;
-        ipAddress = InetAddress.getLocalHost().getHostAddress();
+        ipAddress = NetworkHelper.getIPAddress();
         order = "";
     }
 

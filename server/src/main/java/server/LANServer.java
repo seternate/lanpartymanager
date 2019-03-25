@@ -310,7 +310,6 @@ public class LANServer extends Server {
      * Register the listener for disconnects.
      */
     private void registerDisconnectListener(){
-        //TODO: opengames und servers update
         addListener(new Listener() {
             @Override
             public void disconnected(Connection connection) {

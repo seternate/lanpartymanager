@@ -3,7 +3,9 @@ package helper;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
-import java.net.ServerSocket;
+import java.net.*;
+import java.util.Collections;
+import java.util.Enumeration;
 
 /**
  * Helper class to find any free port on the system.
@@ -36,9 +38,22 @@ public abstract class NetworkHelper {
         return port;
     }
 
-    public static String getIPAddress(){
-        //TODO
-        return null;
+    public static String getIPAddress() throws UnknownHostException {
+        try {
+            Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
+            for (NetworkInterface netint : Collections.list(interfaces)) {
+                if(!netint.isLoopback() && netint.isUp() && !netint.isVirtual()){
+                    Enumeration<InetAddress> inetAddresses = netint.getInetAddresses();
+                    for (InetAddress inetAddress : Collections.list(inetAddresses)) {
+                        if(inetAddress.getHostAddress().contains("192.168.0."))
+                            return inetAddress.getHostAddress();
+                    }
+                }
+            }
+        } catch (SocketException e) {
+            log.error("I/O error while detecting ip address of the host system", e);
+        }
+        return InetAddress.getLocalHost().getHostAddress();
     }
 
 }
