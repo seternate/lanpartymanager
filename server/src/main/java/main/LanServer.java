@@ -135,19 +135,21 @@ public final class LanServer {
     }
 
     /**
-     * Prints all user names with a preceded number.
+     * Prints all user names with a preceded number and the amount of open games and servers.
      */
     private static void printUsers(){
         if(server.getUsers().isEmpty())
             System.out.println("No users logged in.");
 
         for(int i = 0; i < server.getUsers().size(); i++){
-            System.out.println("(" + (i+1) + ") " + server.getUsers().get(i));
+            User user = server.getUsers().get(i);
+            System.out.println("(" + (i+1) + ") " + user + " : Games open - "
+                    + server.getOpenGamesSize(user) + " : Servers open - " + server.getOpenServersSize(user));
         }
     }
 
     /**
-     * Prints details of a user. Printed are the name, ip-address, gamepath, order.
+     * Prints details of a user. Printed are the name, ip-address, gamepath, order, open games, open servers.
      *
      * @param usernumber user that should be printed in detail.
      */
@@ -161,6 +163,22 @@ public final class LanServer {
             System.out.println("ORDER:");
         else
             System.out.println("ORDER: " + user.getOrder());
+
+        StringBuilder opengames = new StringBuilder();
+        for(int i = 0; i < server.getOpenGamesSize(user) - 1; i++){
+            opengames.append(server.getOpenGames(user).get(i) + ", ");
+        }
+        if(server.getOpenGamesSize(user) != 0)
+            opengames.append(server.getOpenGames(user).get(server.getOpenGamesSize(user) - 1));
+        System.out.println("OPEN GAMES: " + opengames.toString());
+
+        StringBuilder openservers = new StringBuilder();
+        for(int i = 0; i < server.getOpenServersSize(user) - 1; i++){
+            openservers.append(server.getOpenServers(user).get(i) + ", ");
+        }
+        if(server.getOpenServersSize(user) != 0)
+            openservers.append(server.getOpenServers(user).get(server.getOpenServersSize(user) - 1));
+        System.out.println("OPEN SERVERS: " + openservers.toString());
     }
 
     /**

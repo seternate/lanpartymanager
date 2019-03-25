@@ -18,6 +18,8 @@ import entities.server.ServerStatus;
 import entities.settings.ClientSettings;
 import entities.user.User;
 import entities.user.UserList;
+import entities.user.UserRunGamesList;
+import entities.user.UserRunServerList;
 import helper.GameFolderHelper;
 import helper.NetworkHelper;
 import helper.kryo.NetworkClassRegistrationHelper;
@@ -49,6 +51,8 @@ public class LANClient extends Client {
     private volatile GameList games;
     private volatile Monitor gamemonitor;
     private volatile Monitor servermonitor;
+    private volatile UserRunGamesList rungameslist;
+    private volatile UserRunServerList runserverlist;
 
 
     /**
@@ -118,16 +122,20 @@ public class LANClient extends Client {
         registerGamelistListener();
         registerUserlistListener();
         registerErrorListener();
+        registerUserRunGamesListener();
+        registerUserRunServersListener();
     }
 
     /**
-     * Register listener for login.
+     * Register listener for login and sends first informations to the server.
      */
     private void registerLoginListener(){
         addListener(new Listener() {
             @Override
             public void connected(Connection connection) {
                 sendTCP(new LoginMessage(user));
+                sendTCP(new UserRunGameMessage(user, gamemonitor.getRunningProcesses()));
+                sendTCP(new UserRunServerMessage(user, servermonitor.getRunningProcesses()));
                 serverStatus.setServerIP(connection.getRemoteAddressTCP().getAddress().getHostAddress());
                 serverStatus.connected();
                 log.info("Successfully logged into the LANServer '" + serverStatus.getServerIP() + "'.");
@@ -190,7 +198,39 @@ public class LANClient extends Client {
             public void received(Connection connection, Object object) {
                 if(object instanceof ErrorMessage){
                     ErrorMessage message = (ErrorMessage)object;
-                    log.info("message.error");
+                    log.error("message.error");
+                }
+            }
+        });
+    }
+
+    /**
+     * Register listener for the list of running games of the users.
+     */
+    private void registerUserRunGamesListener(){
+        addListener(new Listener() {
+            @Override
+            public void received(Connection connection, Object object) {
+                if(object instanceof UserRunGamesList){
+                    UserRunGamesList runGamesList = (UserRunGamesList)object;
+                    rungameslist = runGamesList;
+                    log.info("Received userrungameslist from the server '" + serverStatus.getServerIP() + "'.");
+                }
+            }
+        });
+    }
+
+    /**
+     * Register listener for the list of running servers of the users.
+     */
+    private void registerUserRunServersListener(){
+        addListener(new Listener() {
+            @Override
+            public void received(Connection connection, Object object) {
+                if(object instanceof UserRunServerList){
+                    UserRunServerList runServerList = (UserRunServerList)object;
+                    runserverlist = runServerList;
+                    log.info("Received userrunserverlist from the server '" + serverStatus.getServerIP() + "'.");
                 }
             }
         });
@@ -359,6 +399,7 @@ public class LANClient extends Client {
      * @throws IOException if an error occurs while starting the game
      */
     private Process startProcess(Game game, String folderpath, String exepath, String... parameters) throws IOException {
+        //TODO: cs1.6 server startet nicht korrekt & teeworlds schmiert ab
         //Build command list for ProcessBuilder
         List<String> commands = new ArrayList<>();
         commands.add(folderpath + exepath);
@@ -371,12 +412,18 @@ public class LANClient extends Client {
         return process.start();
     }
 
+    /**
+     * Sends the running games to the LANServer.
+     */
     public void updateOpenGames(){
-        //TODO
+        sendTCP(new UserRunGameMessage(user, gamemonitor.getRunningProcesses()));
     }
 
+    /**
+     * Sends the running servers to the LANServer.
+     */
     public void updateOpenServers(){
-        //TODO
+        sendTCP(new UserRunServerMessage(user, servermonitor.getRunningProcesses()));
     }
 
     /**

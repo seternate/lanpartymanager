@@ -3,11 +3,16 @@ package client.monitor;
 import client.LANClient;
 
 public class ServerMonitor extends Monitor{
-    private LANClient client;
-
 
     public ServerMonitor(LANClient client){
         this.client = client;
+    }
+
+    @Override
+    public boolean add(GameProcess gameprocess){
+        boolean returnValue = super.add(gameprocess);
+        client.updateOpenServers();
+        return returnValue;
     }
 
     @Override

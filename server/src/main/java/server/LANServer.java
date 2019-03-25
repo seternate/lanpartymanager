@@ -3,11 +3,14 @@ package server;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
+import entities.game.Game;
 import entities.game.GameList;
 import entities.settings.ServerSettings;
 import entities.settings.Settings;
 import entities.user.User;
 import entities.user.UserList;
+import entities.user.UserRunGamesList;
+import entities.user.UserRunServerList;
 import helper.kryo.NetworkClassRegistrationHelper;
 import message.*;
 import org.apache.log4j.Logger;
@@ -27,10 +30,12 @@ public class LANServer extends Server {
     private static Logger log = Logger.getLogger(LANServer.class);
     private static final String GAMEPROPERTIES = "games";
 
-    private GameList games;
-    private UserList users;
+    private volatile GameList games;
+    private volatile UserList users;
+    private volatile UserRunGamesList userrungames;
+    private volatile UserRunServerList userrunservers;
     private File gamedirectory;
-    private GameUploadManager gameUploadManager;
+    private volatile GameUploadManager gameUploadManager;
 
 
     /**
@@ -44,6 +49,8 @@ public class LANServer extends Server {
         super();
         users = new UserList();
         gameUploadManager = new GameUploadManager();
+        userrungames = new UserRunGamesList();
+        userrunservers = new UserRunServerList();
         //Register listener and classes to be send over KryoNet
         NetworkClassRegistrationHelper.registerClasses(this);
         registerListener();
@@ -139,6 +146,38 @@ public class LANServer extends Server {
     }
 
     /**
+     * @param user the user to determine the open games.
+     * @return number of open games from the user.
+     */
+    public int getOpenGamesSize(User user){
+        return userrungames.get(user).size();
+    }
+
+    /**
+     * @param user the user to determine the open servers.
+     * @return number of open servers from the user.
+     */
+    public int getOpenServersSize(User user){
+        return userrunservers.get(user).size();
+    }
+
+    /**
+     * @param user the user to get the open games from
+     * @return list with all open games from the user
+     */
+    public List<Game> getOpenGames(User user){
+        return userrungames.get(user);
+    }
+
+    /**
+     * @param user the user to get the open servers from
+     * @return list with all open servers from the user
+     */
+    public List<Game> getOpenServers(User user){
+        return userrunservers.get(user);
+    }
+
+    /**
      * Logs a user in the server, saves his informations and send him the gamelist and new userlist to all connected
      * users.
      *
@@ -200,6 +239,8 @@ public class LANServer extends Server {
         registerUserupdateListener();
         registerDownloadListener();
         registerDisconnectListener();
+        registerUserRunGameListener();
+        registerUserRunServerListener();
     }
 
     /**
@@ -269,6 +310,7 @@ public class LANServer extends Server {
      * Register the listener for disconnects.
      */
     private void registerDisconnectListener(){
+        //TODO: opengames und servers update
         addListener(new Listener() {
             @Override
             public void disconnected(Connection connection) {
@@ -278,8 +320,66 @@ public class LANServer extends Server {
                 if(user == null){
                     log.warn("Random log off request from Connection-ID: " + connection.getID());
                 } else {
+                    userrungames.remove(user);
+                    userrunservers.remove(user);
                     log.info("LOGOFF: '" + user + "' logged off.");
                     sendToAllTCP(new UserlistMessage(users));
+                    sendToAllTCP(userrungames);
+                    sendToAllTCP(userrunservers);
+                }
+            }
+        });
+    }
+
+    /**
+     * Registers the listener for change on users open games.
+     */
+    private void registerUserRunGameListener(){
+        addListener(new Listener() {
+            @Override
+            public void received(Connection connection, Object object) {
+                if(object instanceof UserRunGameMessage){
+                    UserRunGameMessage message = (UserRunGameMessage)object;
+                    if(!users.containsKey(connection.getID())){
+                        log.warn("Connection: " + connection.getID() + " - is not logged in and tried to update his " +
+                                "running games.");
+                        connection.sendTCP(new ErrorMessage(ErrorMessage.userNotLoggedIn));
+                    }
+                    userrungames.put(message.user, message.games);
+                    StringBuilder opengames = new StringBuilder();
+                    message.games.forEach(game -> opengames.append("'" + game + "' "));
+                    if(message.games.isEmpty())
+                        log.info("'" + message.user + "' has closed all open games.");
+                    else
+                        log.info("'" + message.user + "' has opened a game. Open games: " + opengames);
+                    sendToAllTCP(userrungames);
+                }
+            }
+        });
+    }
+
+    /**
+     * Registers the listener for change on users open servers.
+     */
+    private void registerUserRunServerListener(){
+        addListener(new Listener() {
+            @Override
+            public void received(Connection connection, Object object) {
+                if(object instanceof UserRunServerMessage){
+                    UserRunServerMessage message = (UserRunServerMessage)object;
+                    if(!users.containsKey(connection.getID())){
+                        log.warn("Connection: " + connection.getID() + " - is not logged in and tried to update his " +
+                                "running servers.");
+                        connection.sendTCP(new ErrorMessage(ErrorMessage.userNotLoggedIn));
+                    }
+                    userrunservers.put(message.user, message.servers);
+                    StringBuilder openservers = new StringBuilder();
+                    message.servers.forEach(server -> openservers.append("'" + server + "' "));
+                    if(message.servers.isEmpty())
+                        log.info("'" + message.user + "' has closed all open servers.");
+                    else
+                        log.info("'" + message.user + "' has opened a server. Open servers: " + openservers);
+                    sendToAllTCP(userrunservers);
                 }
             }
         });
@@ -291,4 +391,5 @@ public class LANServer extends Server {
     public GameUploadManager getUploads(){
         return gameUploadManager;
     }
+
 }

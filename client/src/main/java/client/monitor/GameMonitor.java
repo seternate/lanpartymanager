@@ -3,10 +3,16 @@ package client.monitor;
 import client.LANClient;
 
 public class GameMonitor extends Monitor {
-    private LANClient client;
 
     public GameMonitor(LANClient client){
         this.client = client;
+    }
+
+    @Override
+    public boolean add(GameProcess gameprocess){
+        boolean returnValue = super.add(gameprocess);
+        client.updateOpenGames();
+        return returnValue;
     }
 
     @Override
@@ -19,4 +25,5 @@ public class GameMonitor extends Monitor {
             client.updateOpenGames();
         return removed;
     }
+
 }

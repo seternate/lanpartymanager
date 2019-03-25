@@ -56,4 +56,8 @@ public class GameProcess extends Thread{
         return process.isAlive();
     }
 
+    public Game getGame(){
+        return game;
+    }
+
 }

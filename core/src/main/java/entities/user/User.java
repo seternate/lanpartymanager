@@ -2,6 +2,7 @@ package entities.user;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import deserialize.UserDeserializer;
+import entities.game.Game;
 import entities.settings.ClientSettings;
 
 import java.io.*;
@@ -72,8 +73,21 @@ public final class User {
     }
 
     public boolean equals(User user){
-        return getUsername().equals(user.getUsername()) && getGamepath().equals(user.getGamepath()) && getIpAddress().equals(user.getIpAddress())
+        return getUsername().equals(user.getUsername()) && getGamepath().equals(user.getGamepath())
+                && getIpAddress().equals(user.getIpAddress())
                 && getOrder().equals(user.getOrder());
+    }
+
+    @Override
+    public boolean equals(Object o){
+        if(o instanceof User)
+            return equals((User)o);
+        return super.equals(o);
+    }
+
+    @Override
+    public int hashCode(){
+        return getUsername().hashCode() + getGamepath().hashCode() + getIpAddress().hashCode() + getOrder().hashCode();
     }
 
     @Override

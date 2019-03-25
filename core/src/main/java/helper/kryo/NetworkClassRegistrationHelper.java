@@ -8,8 +8,12 @@ import entities.game.GameList;
 import entities.settings.ClientSettings;
 import entities.user.User;
 import entities.user.UserList;
+import entities.user.UserRunGamesList;
+import entities.user.UserRunServerList;
 import message.*;
 import requests.DownloadRequest;
+
+import java.util.ArrayList;
 
 public abstract class NetworkClassRegistrationHelper {
 
@@ -27,6 +31,10 @@ public abstract class NetworkClassRegistrationHelper {
         kryo.register(GameList.class);
         kryo.register(User.class);
         kryo.register(UserList.class);
+        kryo.register(UserRunGameMessage.class);
+        kryo.register(UserRunGamesList.class);
+        kryo.register(UserRunServerMessage.class);
+        kryo.register(UserRunServerList.class);
         kryo.register(ClientSettings.class);
         kryo.register(DownloadRequest.class);
         kryo.register(LoginMessage.class);
@@ -34,6 +42,7 @@ public abstract class NetworkClassRegistrationHelper {
         kryo.register(GamelistMessage.class);
         kryo.register(UserlistMessage.class);
         kryo.register(UserupdateMessage.class);
+        kryo.register(ArrayList.class);
     }
 
 }
