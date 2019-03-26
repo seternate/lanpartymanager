@@ -400,15 +400,17 @@ public class LANClient extends Client {
      * @throws IOException if an error occurs while starting the game
      */
     private Process startProcess(Game game, String folderpath, String exepath, String... parameters) throws IOException {
-        //TODO: teeworlds schmiert ab
+        //TODO
         //Build command list for ProcessBuilder
         List<String> commands = new ArrayList<>();
         commands.add(folderpath + exepath);
-        commands.addAll(Arrays.asList(parameters));
+        for(String arg : parameters){
+            if(!arg.trim().isEmpty())
+                commands.add(arg);
+        }
         //Set up ProcessBuilder
-        ProcessBuilder process = new ProcessBuilder(commands);
+        ProcessBuilder process = new ProcessBuilder(commands).inheritIO();
         process.directory(new File(GameFolderHelper.getGameFolder(game.getExeFileRelative())));
-        process.redirectErrorStream(true);
         //Start process
         return process.start();
     }
