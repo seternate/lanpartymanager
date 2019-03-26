@@ -33,6 +33,7 @@ import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import static java.lang.Thread.sleep;
 
@@ -399,7 +400,7 @@ public class LANClient extends Client {
      * @throws IOException if an error occurs while starting the game
      */
     private Process startProcess(Game game, String folderpath, String exepath, String... parameters) throws IOException {
-        //TODO: cs1.6 server startet nicht korrekt & teeworlds schmiert ab
+        //TODO: teeworlds schmiert ab
         //Build command list for ProcessBuilder
         List<String> commands = new ArrayList<>();
         commands.add(folderpath + exepath);
@@ -517,7 +518,7 @@ public class LANClient extends Client {
         Process gameprocess;
         try {
             gameprocess = startProcess(game, GameFolderHelper.getGameFolder(game.getExeFileRelative()),
-                    game.getExeFileRelative(), param);
+                    game.getExeServerRelative(), param);
             servermonitor.add(new GameProcess(game, gameprocess));
         } catch (IOException e) {
             log.error("Can not start the server of the game '" + game + "'.", e);
@@ -529,6 +530,7 @@ public class LANClient extends Client {
 
 
 
+    //TODO
 
     public boolean sendFiles(User user, List<File> files){
         new FileDropClient(user, files);

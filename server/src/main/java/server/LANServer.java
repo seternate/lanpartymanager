@@ -307,7 +307,7 @@ public class LANServer extends Server {
     }
 
     /**
-     * Register the listener for disconnects.
+     * Register the listener for disconnects and updating all lists of connected users on disconnect.
      */
     private void registerDisconnectListener(){
         addListener(new Listener() {
