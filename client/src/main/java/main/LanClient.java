@@ -12,6 +12,12 @@ import org.springframework.context.annotation.ComponentScan;
 public class LanClient {
     public static LANClient client;
 
+
+    /**
+     * Main-method of the LANClient app. Starts the LANClient and the Springbot-webapp.
+     *
+     * @param args command-line arguments.
+     */
     public static void main(String[] args) {
         Log.setLogger(new NoKryoLogging());
         client = new LANClient();

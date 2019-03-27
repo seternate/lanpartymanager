@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.*;
 import java.io.File;
 import java.util.List;
 
+/**
+ * Class for Springboot communication with the FXApp GUI.
+ */
 @RestController
 @RequestMapping("/fx")
 public class FXAppInterface {
@@ -80,4 +83,5 @@ public class FXAppInterface {
     public Boolean getFileStatus(){
         return client.getDropFileDownloadStatus();
     }
+
 }
