@@ -29,6 +29,8 @@ import requests.DownloadRequest;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -400,14 +402,10 @@ public class LANClient extends Client {
      * @throws IOException if an error occurs while starting the game
      */
     private Process startProcess(Game game, String folderpath, String exepath, String... parameters) throws IOException {
-        //TODO
         //Build command list for ProcessBuilder
         List<String> commands = new ArrayList<>();
         commands.add(folderpath + exepath);
-        for(String arg : parameters){
-            if(!arg.trim().isEmpty())
-                commands.add(arg);
-        }
+        commands.addAll(parseParameter(parameters));
         //Set up ProcessBuilder
         ProcessBuilder process = new ProcessBuilder(commands).inheritIO();
         process.directory(new File(GameFolderHelper.getGameFolder(game.getExeFileRelative())));
@@ -527,6 +525,35 @@ public class LANClient extends Client {
             return false;
         }
         return true;
+    }
+
+    /**
+     * Parses the parameters passed to {@link #startProcess(Game, String, String, String...)} to solve server start
+     * bug of any game with server parameters starting without '-' or '+'.
+     *
+     * @param args parameters to be parsed.
+     * @return parsed paramters.
+     */
+    private List<String> parseParameter(String... args){
+        List<String> arguments = new ArrayList<>();
+        for(String arg : args){
+            List<Integer> pos = new ArrayList<>();
+
+            if(arg.trim().isEmpty())
+                continue;
+
+            //Space added cause of 'Call of Duty 4' bug can't finding the maps.
+            if(arg.startsWith("+") ||arg.startsWith("-")) {
+                arguments.add(arg + " ");
+                continue;
+            }
+
+            int first = arg.indexOf(" ");
+            arguments.add(arg.substring(0, first).trim());
+            arguments.add(arg.substring(first, arg.length() - 1).trim());
+
+        }
+        return arguments;
     }
 
 
