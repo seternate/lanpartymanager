@@ -12,6 +12,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.UnknownHostException;
 
 /**
  * Creates a new socket on an open port to listen for an incoming gamefile. Downloads the gamefile and extracts the
@@ -32,7 +33,7 @@ public class GameDownload extends Thread {
 
 
     /**
-     * Creates and starts the socket on a free port to listen for incoming gamefiles.
+     * Creates the socket on a free port to listen for incoming gamefiles.
      *
      * @param game game to be downloaded.
      * @param user user downloading the game.
@@ -55,23 +56,52 @@ public class GameDownload extends Thread {
         } catch (IOException e) {
             log.error("Can not open the server socket on port: " + port, e);
         }
-        //Start the server socket to listen for incoming data
-        start();
+    }
+
+    /**
+     * {@inheritDoc}
+     * <br><br>
+     * {@link #getFileSizeAndConnect()} MUST be called first or {@link #run()} won't be called.
+     */
+    @Override
+    public void start(){
+        if(gamesize == 0) {
+            log.error("Client-socket is not connected. Call 'getFileSizeAndConnect()' first.");
+            return;
+        }
+        super.start();
     }
 
     @Override
     public void run() {
-        //Wait for incoming connection and save incoming file if a connection was made
-        while (!clientsocket.isConnected()) {
+        //Save incoming file and remove this GameDownload after finished
             try {
-                clientsocket = serversocket.accept();
                 saveFile();
             } catch (IOException e) {
-                e.printStackTrace();
+                log.error("Error while saving/extracting the gamefile.", e);
             } finally {
                 manager.remove(this);
             }
+    }
+
+    /**
+     * This method MUST be called before saving the file. This is needed, because the client socket won't be connected
+     * to the server.
+     *
+     * @return the size of the downloaded gamefile [bytes].
+     */
+    public long getFileSizeAndConnect(){
+        while (!clientsocket.isConnected()) {
+            try {
+                clientsocket = serversocket.accept();
+                DataInputStream dis = new DataInputStream(clientsocket.getInputStream());
+                gamesize = dis.readLong();
+                remaining = gamesize;
+            } catch (IOException e) {
+                log.error("Error while reading the gamesize.", e);
+            }
         }
+        return gamesize;
     }
 
     /**
@@ -91,16 +121,6 @@ public class GameDownload extends Thread {
         byte[] buffer = new byte[1048576];
         //Open Fileoutputstream
         FileOutputStream fos = new FileOutputStream(gamepath, false);
-        //Read filesize
-        gamesize = dis.readLong();
-        remaining = gamesize;
-        //Check if enough space is available on the disk
-        File space = new File(gamepath);
-        if(manager.getSizeRemaining() > space.getFreeSpace()){
-            log.error("Not enough free space to download '" + game + "' with size of "
-                    + (double)Math.round((double)gamesize/10485.76)/100. + " MByte.");
-            return;
-        }
         //Read game data
         //Check if download got canceled
         if(stop)

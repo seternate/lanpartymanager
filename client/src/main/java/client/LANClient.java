@@ -21,7 +21,6 @@ import entities.user.UserList;
 import entities.user.UserRunGamesList;
 import entities.user.UserRunServerList;
 import helper.GameFolderHelper;
-import helper.NetworkHelper;
 import helper.kryo.NetworkClassRegistrationHelper;
 import message.*;
 import org.apache.log4j.Logger;
@@ -29,13 +28,9 @@ import requests.DownloadRequest;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.InetAddress;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 import static java.lang.Thread.sleep;
 
@@ -332,8 +327,8 @@ public class LANClient extends Client {
      * leeds to.
      *
      * @param game game that should be downloaded.
-     * @return -1 if the game is downloading already, -2 if the client is not connected to the server, 0 if the
-     * download started successfully.
+     * @return -1 if the game is downloading already, -2 if the client is not connected to the server, -3 if there is
+     * not enough free space on the disk, 0 if the download started successfully.
      */
     public int download(Game game){
         //Check if the game is downloading already
@@ -342,12 +337,24 @@ public class LANClient extends Client {
         //Check if the client has a connection to the server
         if(!serverStatus.isConnected())
             return -2;
-        //TODO: Feedback for no free space on disk.
         //Download game
         GameDownload download = new GameDownload(game, user);
         gameDownloadManager.add(download);
-        log.info("Requested download of the game '" + game + "'.");
+        //Send download request
         sendTCP(new DownloadRequest(game, download.getPort()));
+        log.info("Requested download of the game '" + game + "'.");
+        //Get the gamesize
+        long gamesize = download.getFileSizeAndConnect();
+        //Check for enough free space on the disk
+        File space = new File(user.getGamepath());
+        if(gameDownloadManager.getSizeRemaining() > space.getFreeSpace()){
+            log.error("Not enough free space to download '" + game + "' with size of "
+                    + (double)Math.round((double)gamesize/10485.76)/100. + " MByte.");
+            gameDownloadManager.remove(download);
+            return -3;
+        }
+        //Start the download and extraction of the gamefile
+        download.start();
         return 0;
     }
 
