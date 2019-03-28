@@ -14,7 +14,9 @@ import entities.user.UserRunServerList;
 import helper.kryo.NetworkClassRegistrationHelper;
 import message.*;
 import org.apache.log4j.Logger;
+import requests.CoverDownloadRequest;
 import requests.DownloadRequest;
+import server.upload.CoverUpload;
 import server.upload.GameUpload;
 import server.upload.GameUploadManager;
 
@@ -241,6 +243,7 @@ public class LANServer extends Server {
         registerDisconnectListener();
         registerUserRunGameListener();
         registerUserRunServerListener();
+        registerCoverDownloadListener();
     }
 
     /**
@@ -295,10 +298,8 @@ public class LANServer extends Server {
                         //Send an error message to the user
                         connection.sendTCP(new ErrorMessage(ErrorMessage.gameNotOnServer + request.game));
                     } else {
-                        //Get ip-address from the user
-                        String ipAddress = connection.getRemoteAddressTCP().getAddress().getHostAddress();
                         //Send game to the user and add the upload to the upload manager
-                        gameUploadManager.add(new GameUpload(ipAddress, request.port, gamedirectory, request.game,
+                        gameUploadManager.add(new GameUpload(request.port, gamedirectory, request.game,
                                 users.get(connection.getID())));
                     }
                 }
@@ -379,6 +380,31 @@ public class LANServer extends Server {
                     else
                         log.info("'" + message.user + "' has opened a server. Open servers: " + openservers);
                     sendToAllTCP(userrunservers);
+                }
+            }
+        });
+    }
+
+    /**
+     * Registers the listener for cover downloads.
+     */
+    private void registerCoverDownloadListener(){
+        addListener(new Listener() {
+            @Override
+            public void received(Connection connection, Object object) {
+                if(object instanceof CoverDownloadRequest){
+                    CoverDownloadRequest request = (CoverDownloadRequest)object;
+                    //Check if the user is logged in and sends the game files to the user
+                    if(!users.containsKey(connection.getID())) {
+                        log.warn("Connection: " + connection.getID() + " - is not logged in and tried to " +
+                                "download all game covers.");
+                        //Send an error message to the user
+                        connection.sendTCP(new ErrorMessage(ErrorMessage.userNotLoggedIn));
+                    } else {
+                        //Send covers to the user
+                        new CoverUpload(request.port, users.get(connection.getID()), new File(gamedirectory, "cover"));
+                    }
+
                 }
             }
         });

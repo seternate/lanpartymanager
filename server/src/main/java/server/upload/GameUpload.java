@@ -29,14 +29,13 @@ public class GameUpload extends Thread{
     /**
      * Creates a socket for the gamefile and starts sending the gamefile to the user.
      *
-     * @param ipaddress ip-address of the user.
      * @param port port, which is opened on the users machine for this download.
      * @param gamepath 7zip file of the game.
      * @param game game, which gets uploaded.
      * @param user user, which requested to download the game.
      */
-    public GameUpload(String ipaddress, int port, File gamepath, Game game, User user) {
-        this.ipaddress = ipaddress;
+    public GameUpload(int port, File gamepath, Game game, User user) {
+        this.ipaddress = user.getIpAddress();
         this.gamepath = gamepath;
         this.game = game;
         this.user = user;

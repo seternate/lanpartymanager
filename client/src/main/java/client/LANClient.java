@@ -1,5 +1,6 @@
 package client;
 
+import client.download.CoverDownload;
 import client.download.GameDownload;
 import client.download.GameDownloadManager;
 import client.filedrop.FileDropClient;
@@ -24,6 +25,7 @@ import helper.GameFolderHelper;
 import helper.kryo.NetworkClassRegistrationHelper;
 import message.*;
 import org.apache.log4j.Logger;
+import requests.CoverDownloadRequest;
 import requests.DownloadRequest;
 
 import java.io.File;
@@ -134,6 +136,8 @@ public class LANClient extends Client {
                 sendTCP(new LoginMessage(user));
                 sendTCP(new UserRunGameMessage(user, gamemonitor.getRunningProcesses()));
                 sendTCP(new UserRunServerMessage(user, servermonitor.getRunningProcesses()));
+                CoverDownload coverdownload = new CoverDownload(user);
+                sendTCP(new CoverDownloadRequest(user, coverdownload.getPort()));
                 serverStatus.setServerIP(connection.getRemoteAddressTCP().getAddress().getHostAddress());
                 serverStatus.connected();
                 log.info("Successfully logged into the LANServer '" + serverStatus.getServerIP() + "'.");
@@ -303,7 +307,7 @@ public class LANClient extends Client {
     }
 
     /**
-     * Updates the user information and send it to the server.
+     * Updates the user information and send it to the server and downloads all covers again.
      *
      * @param user user with new information, that should be changed
      * @return true if any changes detected and successfully saved, false anything goes wrong.
@@ -313,6 +317,8 @@ public class LANClient extends Client {
             //Update user information
             if(this.user.update(user)) {
                 //Send new user to the server
+                CoverDownload coverdownload = new CoverDownload(user);
+                sendTCP(new CoverDownloadRequest(user, coverdownload.getPort()));
                 sendTCP(new UserupdateMessage(user));
                 return true;
             }
