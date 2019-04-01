@@ -29,6 +29,6 @@ public class PreloaderStage extends Stage {
         }
         initStyle(StageStyle.UNDECORATED);
         setResizable(false);
-        setTitle("Lanpartymanager - Loading...");
+        setTitle("Lanpartymanager - Splash");
     }
 }

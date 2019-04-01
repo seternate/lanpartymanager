@@ -12,6 +12,7 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Label;
+import org.apache.log4j.Logger;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
@@ -20,6 +21,9 @@ import java.io.IOException;
 import java.util.List;
 
 public class Client extends Thread {
+    private static Logger log = Logger.getLogger(Client.class);
+
+
     private FXDataClient client;
     private volatile ServerStatus status;
     private volatile boolean fileStatus;
@@ -69,8 +73,7 @@ public class Client extends Thread {
         while(status == null && ApplicationManager.isRunning()) {
             try {
                 update();
-                Platform.runLater(ApplicationManager::openLoginStage);
-                sleep(50);
+                sleep(100);
             } catch (Exception e) {
                 e.printStackTrace();
                 System.err.println("No client-application found.");
@@ -82,12 +85,12 @@ public class Client extends Thread {
             try {
                 updateStatusLabel();
                 update();
-                sleep(50);
+                sleep(100);
             } catch (Exception e) {
                 e.printStackTrace();
                 System.err.println("Client-application connection problems.");
                 if(e instanceof IOException){
-                    status.disconnected();
+                    status = null;
                 }
             }
         }

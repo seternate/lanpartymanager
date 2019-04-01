@@ -65,6 +65,8 @@ public class LANClient extends Client {
         gamemonitor = new GameMonitor(this);
         servermonitor = new ServerMonitor(this);
         serverStatus = new ServerStatus();
+        users = new UserList();
+        games = new GameList();
         //Register listener and classes to be send over KryoNet
         NetworkClassRegistrationHelper.registerClasses(this);
         registerListener();

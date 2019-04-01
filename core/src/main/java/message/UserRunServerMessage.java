@@ -6,7 +6,7 @@ import entities.user.UserRunServerList;
 
 import java.util.List;
 
-public class UserRunServerMessage {
+public final class UserRunServerMessage {
     public User user;
     public List<Game> servers;
     public UserRunServerList userrunservers;

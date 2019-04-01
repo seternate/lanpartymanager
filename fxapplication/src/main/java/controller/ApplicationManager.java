@@ -4,6 +4,7 @@ import clientInterface.Client;
 import entities.game.Game;
 import entities.game.GameList;
 import clientInterface.GameStatusProperty;
+import entities.server.ServerStatus;
 import entities.user.User;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Label;
@@ -33,6 +34,7 @@ public class ApplicationManager {
         preloaderStage.show();
         client = new Client();
     }
+
     /**
      * Called after client connected once to the client-application and opens the login stage.
      */
@@ -40,6 +42,10 @@ public class ApplicationManager {
         loginStage = new LoginStage();
         loginStage.show();
         preloaderStage.hide();
+    }
+
+    public static ServerStatus getServerStatus(){
+        return client.getServerStatus();
     }
 
     /**
@@ -270,6 +276,9 @@ public class ApplicationManager {
         client.connectServer(game, ip);
         serverconnectstage.hide();
     }
+
+
+
 
     static User getUser(){
         return client.getUser();

@@ -14,6 +14,7 @@ import java.io.InputStream;
  * LoginStage class for the login window at the start and for the settings window accessed by the main stage.
  */
 public class LoginStage extends Stage {
+
     public LoginStage(){
         super();
         FXMLLoader loader = new FXMLLoader(ClassLoader.getSystemResource("login.fxml"));
@@ -37,4 +38,5 @@ public class LoginStage extends Stage {
             setTitle("Settings");
         setResizable(false);
     }
+
 }

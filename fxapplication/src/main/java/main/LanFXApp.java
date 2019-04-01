@@ -17,4 +17,5 @@ public class LanFXApp extends Application {
     public void start(Stage primaryStage) {
         ApplicationManager.start();
     }
+
 }

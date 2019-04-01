@@ -6,7 +6,7 @@ import entities.user.UserRunGamesList;
 
 import java.util.List;
 
-public class UserRunGameMessage {
+public final class UserRunGameMessage {
     public User user;
     public List<Game> games;
     public UserRunGamesList userrungames;

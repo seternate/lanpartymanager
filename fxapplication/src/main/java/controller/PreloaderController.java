@@ -23,12 +23,19 @@ public class PreloaderController {
             }
             protected void interpolate(double frac) {
                 int n = Math.round(3 * (float)frac);
-                label.setText("Waiting for client-application " + "...".substring(0, n));
+                if(ApplicationManager.getServerStatus() == null)
+                    label.setText("Waiting for client " + "...".substring(0, n));
+                else if(!ApplicationManager.getServerStatus().isConnected())
+                    label.setText("Waiting for server " + "...".substring(0, n));
             }
         };
         animation.setOnFinished((ActionEvent event) -> {
             if(ApplicationManager.isPreloader())
                 animation.play();
+            if(ApplicationManager.getServerStatus().isConnected()) {
+                ApplicationManager.openLoginStage();
+                animation.stop();
+            }
         });
         animation.play();
     }

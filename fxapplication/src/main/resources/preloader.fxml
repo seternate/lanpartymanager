@@ -17,12 +17,12 @@
       </ImageView>
       <BorderPane prefHeight="200.0" prefWidth="200.0">
          <bottom>
-            <Label fx:id="lblStatus" text="Waiting for client-application ..." BorderPane.alignment="CENTER_LEFT">
+            <Label fx:id="lblStatus" alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Waiting for client ..." BorderPane.alignment="CENTER">
                <font>
                   <Font size="18.0" />
                </font>
                <BorderPane.margin>
-                  <Insets bottom="30.0" left="30.0" />
+                  <Insets bottom="30.0" />
                </BorderPane.margin>
             </Label>
          </bottom>
