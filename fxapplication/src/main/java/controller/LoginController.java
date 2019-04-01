@@ -22,10 +22,9 @@ public class LoginController {
     private void initialize(){
         txtfieldUsername.setText(ApplicationManager.getUsername());
         txtfieldGamepath.setText(ApplicationManager.getGamepath());
-        if(!ApplicationManager.isMainstage()){
+        if(!ApplicationManager.isMainstage())
             ApplicationManager.setServerStatusLabel(lblStatus);
-
-        } else {
+        else {
             lblStatus.setText("");
             btnFinish.setText("Save");
         }
@@ -33,11 +32,12 @@ public class LoginController {
 
     @FXML
     private void openMainStage(){
-        if(ApplicationManager.isConnected() && !ApplicationManager.isMainstage()){
+        if(ApplicationManager.getServerStatus() != null && ApplicationManager.isConnected()
+                && !ApplicationManager.isMainstage())
             ApplicationManager.openMainStage(txtfieldUsername.getText().trim(), txtfieldGamepath.getText().trim());
-        }else if(ApplicationManager.isMainstage()){
+        else if(ApplicationManager.getServerStatus() != null && ApplicationManager.isConnected()
+                && ApplicationManager.isMainstage())
             ApplicationManager.saveSettings(txtfieldUsername.getText().trim(), txtfieldGamepath.getText().trim());
-        }
     }
 
     @FXML
@@ -45,4 +45,5 @@ public class LoginController {
         if(event.getCode() == KeyCode.ENTER)
             openMainStage();
     }
+
 }

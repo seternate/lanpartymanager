@@ -29,8 +29,8 @@ public class LoginStage extends Stage {
             getIcons().add(new Image(icon));
         }
         /*
-            Changing stage title based on the opening.
-            If entered from startup the login window opened, entered from main stage the settings window opened.
+          Changing stage title based on the opening.
+          If entered from startup the login window opened, entered from main stage the settings window opened.
          */
         if(!ApplicationManager.isMainstage())
             setTitle("Lanpartymanager - Login");

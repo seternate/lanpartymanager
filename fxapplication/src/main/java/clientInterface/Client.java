@@ -19,8 +19,12 @@ import retrofit2.converter.jackson.JacksonConverterFactory;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
-public class Client extends Thread {
+public class Client implements Runnable {
     private static Logger log = Logger.getLogger(Client.class);
 
 
@@ -36,6 +40,7 @@ public class Client extends Thread {
     private volatile ObservableList<User> orders;
     private volatile UserList userlist;
     private volatile UserList orderlist;
+    private ScheduledExecutorService executor;
 
 
     public Client(){
@@ -45,7 +50,6 @@ public class Client extends Thread {
                 .addConverterFactory(JacksonConverterFactory.create())
                 .build();
         client = retrofit.create(FXDataClient.class);
-
         status = null;
         lblStatus = null;
         lblFileStatus = null;
@@ -56,43 +60,24 @@ public class Client extends Thread {
         userlist = new UserList();
         orderlist = new UserList();
         user = new User();
-
-        start();
+        //ExecutorService for the client updating
+        executor = Executors.newSingleThreadScheduledExecutor();
+        executor.scheduleAtFixedRate(this, 0, 500, TimeUnit.MILLISECONDS);
     }
 
     @Override
     public void run() {
-        //Ensure the preloader is shown at least 1.5 seconds.
-        try {
-            sleep(1500);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        //Close PreloaderStage after one successful connection to the Client-Application.
-        while(status == null && ApplicationManager.isRunning()) {
+        if(ApplicationManager.isRunning()){
+            updateStatusLabel();
             try {
                 update();
-                sleep(100);
-            } catch (Exception e) {
-                e.printStackTrace();
-                System.err.println("No client-application found.");
-            }
-        }
-
-        //Update all fields while any stage is open.
-        while(ApplicationManager.isRunning()){
-            try {
-                updateStatusLabel();
-                update();
-                sleep(100);
-            } catch (Exception e) {
+            } catch (IOException e) {
                 e.printStackTrace();
                 System.err.println("Client-application connection problems.");
-                if(e instanceof IOException){
-                    status = null;
-                }
+                status = null;
             }
+        } else {
+            executor.shutdown();
         }
     }
 

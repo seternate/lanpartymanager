@@ -44,13 +44,9 @@ public class ApplicationManager {
         preloaderStage.hide();
     }
 
-    public static ServerStatus getServerStatus(){
-        return client.getServerStatus();
-    }
-
     /**
-     * Called after login stage and sends username and gamepath to the client. Opens the main stage and build the user
-     * and settings stage.
+     * Called after login stage and sends username and gamepath to the client. Opens the main stage and build the user,
+     * order and setting stage.
      *
      * @param username username from the login stage.
      * @param gamepath gampath from the login stage.
@@ -63,17 +59,6 @@ public class ApplicationManager {
         mainStage.show();
         loginStage.hide();
         loginStage = new LoginStage();
-    }
-
-    /**
-     * Called from the settings stage to save username and gamepath.
-     *
-     * @param username username from the login stage.
-     * @param gamepath gampath from the login stage.
-     */
-    static void saveSettings(String username, String gamepath){
-        client.sendUserData(username, gamepath, getUser().getOrder());
-        loginStage.hide();
     }
 
     /**
@@ -114,6 +99,104 @@ public class ApplicationManager {
         loginStage.hide();
         orderStage.hide();
     }
+
+    /**
+     * Called from the client-thread to check if the application is running.
+     *
+     * @return true if the application is running, else false.
+     */
+    public static boolean isRunning(){
+        return preloaderStage.isShowing() || loginStage.isShowing() || mainStage.isShowing();
+    }
+
+    /**
+     * Determine PreloaderStage showing status.
+     *
+     * @return true if preloaderStage is showing, else false.
+     */
+    static boolean isPreloader(){
+        return preloaderStage.isShowing();
+    }
+
+    /**
+     * Determine if main stage is opened.
+     *
+     * @return true if mainstage is open, else false.
+     */
+    public static boolean isMainstage(){
+        return mainStage != null;
+    }
+
+    /**
+     * @return the status of the LANServer.
+     */
+    public static ServerStatus getServerStatus(){
+        return client.getServerStatus();
+    }
+
+    /**
+     * @return true if connected to the server, else false.
+     */
+    static boolean isConnected(){
+        return client.getServerStatus().isConnected();
+    }
+
+    /**
+     * @return username of the user.
+     */
+    static String getUsername(){
+        return client.getUser().getUsername();
+    }
+
+    /**
+     * @return gamepath of the user.
+     */
+    static String getGamepath(){
+        return client.getUser().getGamepath();
+    }
+
+    /**
+     * Setting the serverStatus label, which is updated based on the server connection status.
+     *
+     * @param lblStatus label to be updated.
+     */
+    static void setServerStatusLabel(Label lblStatus){
+        client.setServerStatusLabel(lblStatus);
+    }
+
+    /**
+     * Called from the settings stage to save username and gamepath.
+     *
+     * @param username username from the login stage.
+     * @param gamepath gampath from the login stage.
+     */
+    static void saveSettings(String username, String gamepath){
+        client.sendUserData(username, gamepath, getUser().getOrder());
+        loginStage.hide();
+    }
+
+    /**
+     * Saves the order from the user.
+     *
+     * @param order placed order from the user.
+     */
+    static void setOrder(String order){
+        client.sendUserData(getUsername(), getGamepath(), order);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     /**
      * Starts a game.
@@ -162,47 +245,6 @@ public class ApplicationManager {
     }
 
     /**
-     * Called from the client-thread to check if the application is running.
-     *
-     * @return true if the application is running, else false.
-     */
-    public static boolean isRunning(){
-        return preloaderStage.isShowing() || loginStage.isShowing() || mainStage.isShowing();
-    }
-
-    /**
-     * Determine PreloaderStage showing status.
-     *
-     * @return true if preloaderStage is showing, else false.
-     */
-    static boolean isPreloader(){
-        return preloaderStage.isShowing();
-    }
-
-    /**
-     * Determine if main stage is opened.
-     *
-     * @return true if mainstage is open, else false.
-     */
-    public static boolean isMainstage(){
-        return mainStage != null;
-    }
-
-    /**
-     * @return username of the user.
-     */
-    static String getUsername(){
-        return client.getUser().getUsername();
-    }
-
-    /**
-     * @return gamepath of the user.
-     */
-    static String getGamepath(){
-        return client.getUser().getGamepath();
-    }
-
-    /**
      * @return games available on the server.
      */
     static GameList getGames(){
@@ -210,26 +252,10 @@ public class ApplicationManager {
     }
 
     /**
-     * Setting the serverStatus label, which is updated based on the server connection status.
-     *
-     * @param lblStatus label to be updated.
-     */
-    static void setServerStatusLabel(Label lblStatus){
-        client.setServerStatusLabel(lblStatus);
-    }
-
-    /**
      * @return users logged in the server.
      */
     static ObservableList<User> getUserslist(){
         return client.getUsersList();
-    }
-
-    /**
-     * @return true if connected to the server, else false.
-     */
-    static boolean isConnected(){
-        return client.getServerStatus().isConnected();
     }
 
     /**
@@ -284,9 +310,7 @@ public class ApplicationManager {
         return client.getUser();
     }
 
-    static void setOrder(String order){
-        client.sendUserData(getUsername(), getGamepath(), order);
-    }
+
 
     static ObservableList<User> getOrderList(){
         return client.getOrderList();
