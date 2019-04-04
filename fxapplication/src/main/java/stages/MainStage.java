@@ -9,6 +9,7 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import org.apache.log4j.Logger;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,28 +19,38 @@ import java.util.prefs.Preferences;
  * MainStage class for the main window of the application.
  */
 public class MainStage extends Stage {
+    private static Logger log = Logger.getLogger(MainStage.class);
+
     private MainController controller;
 
 
+    /**
+     * Constructs the MainStage.
+     */
     public MainStage(){
         super();
+        //Loading FXML
         FXMLLoader loader = new FXMLLoader(ClassLoader.getSystemResource("main.fxml"));
         try {
             Parent rootNode = loader.load();
             setScene(new Scene(rootNode));
         } catch (IOException e) {
-            e.printStackTrace();
+            log.fatal("Problem loading main.fxml.", e);
+            System.exit(-1);
         }
+        //Loading icon
         InputStream icon = ClassLoader.getSystemResourceAsStream("icon.png");
         if (icon != null) {
             getIcons().add(new Image(icon));
         }
+        //Set title
         setTitle("Lanpartymanager");
         controller = loader.getController();
         //MinHeight and MinWidth for the window
         setMinWidth(600);
         setMinHeight(400);
 
+        //Windowsize recognition
         Preferences pref = Preferences.userRoot().node("MainStage");
         double x = pref.getDouble("win_pos_x", (Screen.getPrimary().getVisualBounds().getWidth() - getWidth()) / 2);
         double y = pref.getDouble("win_pos_y", (Screen.getPrimary().getVisualBounds().getHeight() - getHeight()) / 2);
@@ -68,7 +79,6 @@ public class MainStage extends Stage {
     }
 
     /**
-     *
      * @return Game of the gametile, which is currently focused in the main window.
      */
     public Game getFocusedGame(){
