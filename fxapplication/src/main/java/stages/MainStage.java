@@ -18,8 +18,8 @@ import java.util.prefs.Preferences;
  * MainStage class for the main window of the application.
  */
 public class MainStage extends Stage {
-    //Controller class of the MainStage
     private MainController controller;
+
 
     public MainStage(){
         super();
@@ -58,6 +58,7 @@ public class MainStage extends Stage {
             preferences.putDouble("win_height", getHeight());
         });
     }
+
     /**
      * Called if any new game received from the server and reloads the gametiles in the main window.
      */
@@ -65,6 +66,7 @@ public class MainStage extends Stage {
         controller.updateGamePane();
         setWidth(getWidth()+1);
     }
+
     /**
      *
      * @return Game of the gametile, which is currently focused in the main window.
@@ -72,6 +74,7 @@ public class MainStage extends Stage {
     public Game getFocusedGame(){
         return controller.focusedGame;
     }
+
     /**
      * Hides all windows if main stage is closed, so the application terminates correctly.
      */
@@ -80,4 +83,5 @@ public class MainStage extends Stage {
         super.hide();
         ApplicationManager.closeAllMainStages();
     }
+
 }
