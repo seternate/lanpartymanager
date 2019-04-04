@@ -417,4 +417,11 @@ public class LANServer extends Server {
         return gameUploadManager;
     }
 
+    /**
+     * @return the gamedirectory, where all zipped gamefiles are.
+     */
+    public File getGamedirectory(){
+        return gamedirectory;
+    }
+
 }

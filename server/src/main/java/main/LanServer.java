@@ -131,7 +131,7 @@ public final class LanServer {
         System.out.println("SERVER EXE-FILENAME: " + game.getExeServerRelative());
         System.out.println("DIRECT IP CONNECTION: " + game.isConnectDirect());
         System.out.println("OPEN SERVER: " + game.isOpenServer());
-        System.out.println("SIZE [BYTE]: " + game.getSizeServer());
+        System.out.println("SIZE [BYTE]: " + new File(server.getGamedirectory(), game.getServerFileName()).length());
     }
 
     /**
