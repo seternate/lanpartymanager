@@ -36,7 +36,7 @@ public class MainStage extends Stage {
             setScene(new Scene(rootNode));
         } catch (IOException e) {
             log.fatal("Problem loading main.fxml.", e);
-            System.exit(-1);
+            System.exit(-3);
         }
         //Loading icon
         InputStream icon = ClassLoader.getSystemResourceAsStream("icon.png");
@@ -67,6 +67,7 @@ public class MainStage extends Stage {
             preferences.putDouble("win_pos_y", getY());
             preferences.putDouble("win_width", getWidth());
             preferences.putDouble("win_height", getHeight());
+            log.info("Saved window size and position");
         });
     }
 
@@ -74,7 +75,10 @@ public class MainStage extends Stage {
      * Called if any new game received from the server and reloads the gametiles in the main window.
      */
     public void updateRoot(){
+        log.info("Update gamepane.");
         controller.updateGamePane();
+        //Needed for correct resizing of the labels.
+        //TODO: entfernen und label größe der gametitels regeln
         setWidth(getWidth()+1);
     }
 
@@ -90,6 +94,7 @@ public class MainStage extends Stage {
      */
     @Override
     public void hide() {
+        log.info("Application closing.");
         super.hide();
         ApplicationManager.closeAllMainStages();
     }

@@ -17,15 +17,18 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import org.apache.log4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
 
+/**
+ * Controller class of the MainStage.
+ */
 public class MainController {
-    public volatile Game focusedGame;
+    private static Logger log = Logger.getLogger(MainController.class);
 
+    public volatile Game focusedGame;
     @FXML
     private ScrollPane spMain;
     @FXML
@@ -33,59 +36,99 @@ public class MainController {
     @FXML
     private ImageView ivUsers, ivSettings, ivOrder;
 
+
+    /**
+     * Initializing the MainController.
+     */
     @FXML
     private void initialize(){
-        Tooltip.install(ivUsers, new Tooltip("Connected users"));
-        Tooltip.install(ivSettings, new Tooltip("Open settings"));
+        log.info("Initializing.");
+        //Set the labels for the client to update
         ApplicationManager.setServerStatusLabel(lblStatus);
         ApplicationManager.setFileStatusLabel(lblFileStatus);
-        spMain.setFitToWidth(true);
-        updateGamePane();
+        //Create the tooltips for the buttons
+        Tooltip.install(ivUsers, new Tooltip("Connected users"));
+        Tooltip.install(ivSettings, new Tooltip("Open settings"));
+        Tooltip.install(ivOrder, new Tooltip("Open ordering table"));
+        //Add all handlers to the buttons
         addButtonHandler();
-
+        //Settings for the Scrollpane
+        spMain.setFitToWidth(true);
+        //Create the gamepane
+        updateGamePane();
     }
 
+    /**
+     * Add handler for all buttons on the MainStage.
+     */
     private void addButtonHandler(){
+        //Show UserStage with all connected users
         ivUsers.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
             if(event.getButton() == MouseButton.PRIMARY)
                 ApplicationManager.showUsers();
         });
+        //Show LoginStage in SettingStage mode
         ivSettings.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
             if(event.getButton() == MouseButton.PRIMARY)
                 ApplicationManager.showSettings();
         });
+        //Show the food order table
         ivOrder.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
             if(event.getButton() == MouseButton.PRIMARY)
                 ApplicationManager.showOrder();
         });
+        log.info("Added all button listener.");
     }
 
+    /**
+     * Updates the gametilepane of the MainStage.
+     */
     public void updateGamePane(){
+        //Get all games
         GameList games = ApplicationManager.getGames();
+        //Pane for gametiles
         GridPane tilePane = new GridPane();
+        //Setting the gaps between the gametiles
         tilePane.setHgap(20);
         tilePane.setVgap(30);
+        //Create for every game a gametile
         for(int i = 0; i < games.size(); i++){
             Node gameTile = gameTile(games.get(i));
+            /*
+                Order the gametiles in rows of 3
+                Add some settings for the gametiles on the tilepane
+             */
             tilePane.addRow(i/3, gameTile);
-            tilePane.setHgrow(gameTile, Priority.ALWAYS);
-            tilePane.setHalignment(gameTile, HPos.CENTER);
+            GridPane.setHgrow(gameTile, Priority.ALWAYS);
+            GridPane.setHalignment(gameTile, HPos.CENTER);
         }
+        //Add the gametilepane with all gametile to the scrollpane of the MainStage
         spMain.setContent(tilePane);
+        log.info("Updated the gametilepane.");
     }
 
+    /**
+     * Builds the gametile-Node for the tilepane.
+     *
+     * @param game game that should be represented by the gametile.
+     * @return the gametile as a node.
+     */
     private Node gameTile(Game game){
+        //Create background imageview of the gametile
         ImageView gameTileImage = new ImageView(getGameCover(game));
         gameTileImage.setPreserveRatio(false);
+        //Imageview resizing
         gameTileImage.fitWidthProperty().bind(spMain.widthProperty().divide(3.5));
         gameTileImage.fitHeightProperty().bind(spMain.widthProperty().multiply(0.4));
-
+        //Creates the gametileoverlay with the imageview as background of the game
         VBox gameTileOverlay = gameTileOverlay(gameTileImage, game);
         gameTileOverlay.prefHeightProperty().bind(gameTileImage.fitHeightProperty());
         gameTileOverlay.prefWidthProperty().bind(gameTileImage.fitWidthProperty());
+        //Hide the gametile overlay until mouse over event occurs
         gameTileOverlay.setVisible(false);
-
+        //Create the Stackpane holding the gametileimage and the overlay
         StackPane gameTile = new StackPane(gameTileImage, gameTileOverlay);
+        //Add the eventhandlers for showing and updating the gametile information
         gameTile.addEventHandler(MouseEvent.MOUSE_ENTERED, event -> {
             focusedGame = game;
             gameTile.getChildren().get(1).setVisible(true);
@@ -95,30 +138,52 @@ public class MainController {
             gameTile.getChildren().get(1).setVisible(false);
             event.consume();
         });
+        log.info("Created the gametile of '" + game + "'");
         return gameTile;
     }
 
+    /**
+     * Determine the image used for the gametileimage. If a local gamecover is available it is used, else the web
+     * gamecover is used. If no web game cover is specified a dummy cover is used as gamecoverimage for the gametile.
+     *
+     * @param game the game which cover should be returned
+     * @return the image used for the gametileimage
+     */
     private Image getGameCover(Game game) {
         File coverpath = new File(ApplicationManager.getGamepath() + "/cover");
-        if(!game.getCoverUrl().isEmpty())
-            return new Image(game.getCoverUrl(), true);
-        for(File cover : coverpath.listFiles()){
-            int index = cover.getName().lastIndexOf(".");
-            if(cover.getName().substring(0, index).equals(game.getName())) {
-                return new Image("file:" + cover.getAbsolutePath(), true);
+        if(coverpath.listFiles() != null){
+            for(File cover : coverpath.listFiles()){
+                int index = cover.getName().lastIndexOf(".");
+                if(cover.getName().substring(0, index).equals(game.getName())) {
+                    log.info("Local cover of '" + game + "found.");
+                    return new Image("file:" + cover.getAbsolutePath(), true);
+                }
             }
         }
+        if(!game.getCoverUrl().isEmpty()) {
+            log.info("Web cover used, because there is no local cover for '" + game + "'.");
+            return new Image(game.getCoverUrl(), true);
+        }
+        log.error("No local or web cover found for '" + game + "'. Using dummy cover.");
         return new Image(ClassLoader.getSystemResource("dummycover.jpg").toString(),true);
     }
 
+    /**
+     * Loading the FXML of the gametileoverlay.
+     *
+     * @param gameTileImage ImageView with the image of the gametile.
+     * @param game the game of which the gametile is created.
+     * @return A VBox with the loaded FXML of the gameoverlay or null if an error occurs.
+     */
     private VBox gameTileOverlay(ImageView gameTileImage, Game game){
+        //Loading FXML
         FXMLLoader loader = new FXMLLoader(ClassLoader.getSystemResource("gameoverlay.fxml"));
+        //Setting the controller of the gametileoverlay
         loader.setController(new GameOverlayController(gameTileImage, game));
         try {
-            VBox rootNode = loader.load();
-            return rootNode;
+            return loader.load();
         } catch (IOException e) {
-            e.printStackTrace();
+            log.fatal("Problem loading gameoverlay.fxml.", e);
         }
         return null;
     }

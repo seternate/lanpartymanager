@@ -7,7 +7,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import org.apache.log4j.Logger;
-import stages.MainStage;
 
 /**
  * Controller class of the login and settings stage.
@@ -49,12 +48,15 @@ public class LoginController {
     private void openMainStage(){
         //Opens MainStage if Stage is as LoginStage open
         if(ApplicationManager.getServerStatus() != null && ApplicationManager.isConnected()
-                && !ApplicationManager.isMainstage())
+                && !ApplicationManager.isMainstage()) {
+            log.info("Open MainStage.");
             ApplicationManager.openMainStage(txtfieldUsername.getText().trim(), txtfieldGamepath.getText().trim());
-        //Saves the settings if the Stage is as SettingsStage open
-        else if(ApplicationManager.getServerStatus() != null && ApplicationManager.isConnected()
-                && ApplicationManager.isMainstage())
+            //Saves the settings if the Stage is as SettingsStage open
+        } else if(ApplicationManager.getServerStatus() != null && ApplicationManager.isConnected()
+                && ApplicationManager.isMainstage()) {
+            log.info("Save settings.");
             ApplicationManager.saveSettings(txtfieldUsername.getText().trim(), txtfieldGamepath.getText().trim());
+        }
     }
 
     /**
@@ -64,8 +66,10 @@ public class LoginController {
      */
     @FXML
     private void enter(KeyEvent event){
-        if(event.getCode() == KeyCode.ENTER)
+        if(event.getCode() == KeyCode.ENTER) {
+            log.info("'Enter' was pressed.");
             openMainStage();
+        }
     }
 
 }
