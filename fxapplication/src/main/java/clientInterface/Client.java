@@ -196,6 +196,7 @@ public class Client implements Runnable {
             gamestatus.playable.setValue(newStatus.isPlayable());
             gamestatus.downloadProgress.setValue(newStatus.getDownloadProgress());
             gamestatus.unzipProgress.setValue(newStatus.getUnzipProgress());
+            gamestatus.downloadSpeed.setValue(newStatus.getDownloadSpeed());
         }
         updateUsers();
         updateGames();

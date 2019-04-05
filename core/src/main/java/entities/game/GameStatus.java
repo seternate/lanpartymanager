@@ -6,6 +6,7 @@ package entities.game;
 public final class GameStatus {
     private boolean playable, local, version, update, downloading, unzipping;
     private double downloadProgress, unzipProgress;
+    private String downloadSpeed;
 
 
     /**
@@ -20,6 +21,7 @@ public final class GameStatus {
         unzipping = false;
         downloadProgress = 0.;
         unzipProgress = 0.;
+        downloadSpeed = "";
     }
 
     public boolean isPlayable() {
@@ -84,6 +86,14 @@ public final class GameStatus {
 
     public void setUnzipProgress(double unzipProgress) {
         this.unzipProgress = unzipProgress;
+    }
+
+    public String getDownloadSpeed(){
+        return downloadSpeed;
+    }
+
+    public void setDownloadSpeed(String downloadSpeed){
+        this.downloadSpeed = downloadSpeed;
     }
 
 }
