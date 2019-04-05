@@ -235,7 +235,9 @@ public class Client implements Runnable {
         if(lblStatus == null)
             return;
         Platform.runLater(() -> {
-            if(status.isConnected())
+            if(status == null)
+                lblStatus.setText("Waiting for client application.");
+            else if(status.isConnected())
                 lblStatus.setText("Connected to server: " + status.getServerIP());
             else
                 lblStatus.setText("Waiting for server connection.");
