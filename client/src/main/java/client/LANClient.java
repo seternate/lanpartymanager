@@ -301,6 +301,7 @@ public class LANClient extends Client {
         if(gameDownload.getDownloadprogress() < 1.){
             gamestatus.setDownloading(true);
             gamestatus.setDownloadProgress(gameDownload.getDownloadprogress());
+            gamestatus.setDownloadSpeed(gameDownload.getAverageDownloadspeed()/1048576 + " MB/sec");
         }else{
             gamestatus.setUnzipping(true);
             gamestatus.setUnzipProgress(gameDownload.getUnzipprogress());
@@ -570,6 +571,20 @@ public class LANClient extends Client {
         }
         return arguments;
     }
+
+    /**
+     * Stops the download or extraction of the specified game and notifies the LANServer.
+     *
+     * @param game game to stop downloading or extracting.
+     * @return true
+     */
+    public boolean stopDownloadUnzip(Game game){
+        gameDownloadManager.getDownload(game).stopDownloadUnzip();
+        sendTCP(new DownloadStopMessage(user, game));
+        return true;
+    }
+
+
 
 
 

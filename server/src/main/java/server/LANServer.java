@@ -303,6 +303,21 @@ public class LANServer extends Server {
                                 users.get(connection.getID())));
                     }
                 }
+                if(object instanceof DownloadStopMessage) {
+                    DownloadStopMessage message = (DownloadStopMessage)object;
+                    if(!users.containsKey(connection.getID())) {
+                        log.warn("Connection: " + connection.getID() + " - is not logged in and tried to " +
+                                "download a game.");
+                        //Send an error message to the user
+                        connection.sendTCP(new ErrorMessage(ErrorMessage.userNotLoggedIn));
+                        return;
+                    }
+                    GameUpload upload = gameUploadManager.get(message.user, message.game);
+                    if(upload == null)
+                        connection.sendTCP(new ErrorMessage(message.game + ErrorMessage.noGameUpload + message.user));
+                    else
+                        upload.stopUpload();
+                }
             }
         });
     }

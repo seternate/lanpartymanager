@@ -84,4 +84,9 @@ public class FXAppInterface {
         return client.getDropFileDownloadStatus();
     }
 
+    @RequestMapping(value = "/stopdownloadunzip", method = RequestMethod.POST)
+    public Boolean stopDownloadUnzip(@RequestBody Game game){
+        return client.stopDownloadUnzip(game);
+    }
+
 }

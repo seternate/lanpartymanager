@@ -24,6 +24,7 @@ public class GameUpload extends Thread{
     private GameUploadManager manager;
     private volatile double progress;
     private volatile long uploadspeed, averageUploadspeed;
+    private volatile boolean stop;
 
 
     /**
@@ -41,6 +42,7 @@ public class GameUpload extends Thread{
         this.user = user;
         progress = 0.;
         uploadspeed = 0;
+        stop = false;
         //Try to create a socket
         try {
             socket = new Socket(ipaddress, port);
@@ -56,8 +58,12 @@ public class GameUpload extends Thread{
         try {
             sendGame();
         } catch (Exception e) {
+            if(stop) {
+                log.info("'" + user + "' stopped downloading '" + game + "'.");
+                return;
+            }
             log.error("Error while sending '" + game + "' to '" + user + "'("
-                    + ipaddress + ".", e);
+                    + ipaddress + ").", e);
         } finally {
             manager.remove(this);
         }
@@ -95,7 +101,7 @@ public class GameUpload extends Thread{
         int read;
         long readSum = 0;
         double durationSum = 0;
-        while((read = fis.read(buffer)) > 0) {
+        while((read = fis.read(buffer)) > 0 && !stop) {
             //Start timer to provide speed information
             long start = System.currentTimeMillis();
             //Write data
@@ -115,7 +121,9 @@ public class GameUpload extends Thread{
         fis.close();
         dos.close();
         socket.close();
-        log.info("Sent '" + game + "' successfully to '" + user + "' - "
+        if(stop)
+            log.info("'" + user + "' stopped downloading '" + game + "'.");
+        else log.info("Sent '" + game + "' successfully to '" + user + "' - "
                 + (double)Math.round((double)getAverageUploadspeed()/10485.76)/100. + " MByte/sec.");
     }
 
@@ -158,5 +166,12 @@ public class GameUpload extends Thread{
      */
     public Game getGame(){
         return game;
+    }
+
+    /**
+     * Stop the upload.
+     */
+    public void stopUpload(){
+        stop = true;
     }
 }

@@ -38,6 +38,7 @@ public abstract class NetworkClassRegistrationHelper {
         kryo.register(UserRunServerList.class);
         kryo.register(ClientSettings.class);
         kryo.register(DownloadRequest.class);
+        kryo.register(DownloadStopMessage.class);
         kryo.register(CoverDownloadRequest.class);
         kryo.register(LoginMessage.class);
         kryo.register(ErrorMessage.class);

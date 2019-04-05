@@ -67,7 +67,6 @@ public class CoverUpload extends Thread {
 
         //Sending game file
         File[] coverfiles = coverpath.listFiles();
-        System.out.println(coverfiles + coverpath.getAbsolutePath());
         //Send cover amount
         dos.writeInt(coverfiles.length);
         for(File coverfile : coverfiles){

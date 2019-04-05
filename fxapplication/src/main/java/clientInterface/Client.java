@@ -190,7 +190,7 @@ public class Client implements Runnable {
             assert newStatus != null;
             gamestatus.downloading.setValue(newStatus.isDownloading());
             gamestatus.unzipping.setValue(newStatus.isUnzipping());
-            gamestatus.download.setValue(!newStatus.isLocal());
+            gamestatus.local.setValue(newStatus.isLocal());
             gamestatus.update.setValue(newStatus.isUpdate());
             gamestatus.version.setValue(newStatus.isVersion());
             gamestatus.playable.setValue(newStatus.isPlayable());
@@ -254,6 +254,16 @@ public class Client implements Runnable {
         new Thread(() -> {
             try {
                 client.sendFiles(user, files).execute();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }).start();
+    }
+
+    public void stopDownloadUnzip(Game game){
+        new Thread(() -> {
+            try {
+                client.stopDownloadUnzip(game).execute();
             } catch (IOException e) {
                 e.printStackTrace();
             }

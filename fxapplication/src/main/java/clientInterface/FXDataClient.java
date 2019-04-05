@@ -53,4 +53,7 @@ public interface FXDataClient {
     @GET("filestatus")
     Call<Boolean> getFileStatus();
 
+    @POST("stopdownloadunzip")
+    Call<Boolean> stopDownloadUnzip(@Body Game game);
+
 }

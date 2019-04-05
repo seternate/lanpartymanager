@@ -12,7 +12,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.UnknownHostException;
 
 /**
  * Creates a new socket on an open port to listen for an incoming gamefile. Downloads the gamefile and extracts the
@@ -132,7 +131,7 @@ public class GameDownload extends Thread {
         while((read = dis.read(buffer, 0, (int)Math.min(buffer.length, remaining))) > 0) {
             //Check if download got canceled
             if(stop)
-                return;
+                break;
             //Calculate remaining
             remaining -= read;
             //Start timer to provide speed information
@@ -155,13 +154,14 @@ public class GameDownload extends Thread {
         dis.close();
         clientsocket.close();
         serversocket.close();
+        if(stop) {
+            log.info("Download of '" + game + "' was stopped by the user.");
+            return;
+        }
         log.info("Download of '" + game + "' ended successfully - "
                 + (double)Math.round((double)getAverageDownloadspeed()/10485.76)/100. + " MByte/sec.");
 
         //Unzip downloaded game
-        //Check if unzip got canceled
-        if(stop)
-            return;
         log.info("Start unzipping '" + game + "'.");
         try {
             new SevenZipHelper(gamepath, this.gamepath, false, null, this).extract();
@@ -205,8 +205,15 @@ public class GameDownload extends Thread {
     /**
      * Stops the download or extraction of the gamefile.
      */
-    public void stopDownload(){
+    public void stopDownloadUnzip(){
         stop = true;
+    }
+
+    /**
+     * @return true if the download and unzip thread should be stopped, else false.
+     */
+    public boolean isStopped(){
+        return stop;
     }
 
     /**

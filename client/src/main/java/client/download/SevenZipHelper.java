@@ -129,6 +129,8 @@ public final class SevenZipHelper {
                     case EXTRACT:
                         //System.out.println("Unzipped: " + ((double)Math.round(unzipProgress*1000))/10. + "% from " + download.game.getName());
                         //System.out.println("Extracted " + path);
+                        if(gameDownload.isStopped())
+                            throw new SevenZipException("STOPPED BY USER!");
                         break;
                     case TEST:
                         System.out.println("Tested " + path);
