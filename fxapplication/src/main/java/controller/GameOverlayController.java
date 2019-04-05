@@ -159,8 +159,11 @@ class GameOverlayController {
         //Hiding downloadbar and downloadspeedlabel
         spDownloadGame.setVisible(false);
         lblDownloadSpeed.setVisible(false);
-        //Setting the progressbarlabel fontsize
-        pbDownload.heightProperty().addListener((observable, oldValue, newValue) -> lblDownloadbar.setFont(Font.font("System", FontWeight.NORMAL, newValue.doubleValue()*0.5)));
+        //Setting the progressbarlabel & downloadspeedlabel fontsize
+        gpGameTile.heightProperty().addListener((observable, oldValue, newValue) -> {
+            lblDownloadbar.setFont(Font.font("System", FontWeight.NORMAL, newValue.doubleValue()*0.5/5));
+            lblDownloadSpeed.setFont(Font.font("System", FontWeight.NORMAL, newValue.doubleValue()*0.25/5));
+        });
         //Set the button sizing
         ivRunGame.fitHeightProperty().bind(gpGameTile.heightProperty().divide(5));
         ivDownloadGame.fitHeightProperty().bind(gpGameTile.heightProperty().divide(5));
