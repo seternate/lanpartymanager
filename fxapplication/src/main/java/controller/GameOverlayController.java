@@ -3,19 +3,25 @@ package controller;
 import entities.game.Game;
 import clientInterface.GameStatusProperty;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.Tooltip;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
+import org.apache.log4j.Logger;
 
 import java.util.Locale;
 
@@ -23,126 +29,66 @@ import java.util.Locale;
  * Controller class for the GameOverlay/Gametile of the games in the main stage.
  */
 class GameOverlayController {
-    /**
-     * FXML GUI-Elements
-     */
+    private static Logger log = Logger.getLogger(GameOverlayController.class);
+
+    private ImageView gameTileImage;
+    private Game game;
     @FXML
     private ImageView ivRunGame, ivDownloadGame, ivOpenExplorer, ivConnectServer, ivStartServer;
     @FXML
-    private HBox hbDownloadGame;
-    @FXML
-    private Label lblGamename, lblVersion, lblDownloadbar;
+    private Label lblGamename, lblVersion, lblDownloadbar, lblDownloadSpeed;
     @FXML
     private ProgressBar pbDownload;
     @FXML
     private StackPane spDownloadGame;
-    /**
-     * GameOverlay background data
-     */
-    private ImageView gameTileImage;
-    private Game game;
+    @FXML
+    private GridPane gpGameTile;
+
+
     /**
      * Constructs the GameOverlayController.
      *
      * @param gameTileImage - Cover image of the game shown in the gametile.
      * @param game - Game which is represented by the gametile.
      */
-    GameOverlayController(ImageView gameTileImage, Game game){
+    public GameOverlayController(ImageView gameTileImage, Game game){
         this.game = game;
         this.gameTileImage = gameTileImage;
     }
+
     /**
      * Initialization of the GameOverlay.
      */
     @FXML
     private void initialize(){
-        //Hiding the downloadbar
-        spDownloadGame.setVisible(false);
-        lblGamename.setText(game.getName());
-        lblVersion.setText(game.getVersionServer());
-        //Setting progressbar label fontstyle
-        lblDownloadbar.setFont(Font.font("System", FontWeight.NORMAL, pbDownload.getHeight()*0.5));
-
+        log.info("Initializing gametileoverlay for '" + game + "'.");
         //Getting the gamestatus variable to listen to for listener implementation for downloading and unzipping.
         GameStatusProperty gameStatus = ApplicationManager.getGamestatusProperty();
-        //Dynamically setting progressbar margin to the download image top and bottom
-        hbDownloadGame.heightProperty().addListener((observable, oldValue, newValue) -> VBox.setMargin(spDownloadGame, new Insets(newValue.doubleValue()*0.1, 0, newValue.doubleValue()*0.1, newValue.doubleValue()*0.25)));
-        //Dynamically updating progressbar label fontsize
-        pbDownload.heightProperty().addListener((observable, oldValue, newValue) -> lblDownloadbar.setFont(Font.font("System", FontWeight.NORMAL, newValue.doubleValue()*0.5)));
-        /*
-            Game downloading status listener to show/hide the progressbar and to show the download progress.
-         */
-        gameStatus.downloading.addListener((observable, oldValue, newValue) -> setDownloadbarVisibility(newValue));
-        gameStatus.downloadProgress.addListener((observable, oldValue, newValue) -> {
-            if(ApplicationManager.getFocusedGame().equals(game) && newValue.doubleValue() > 0) {
-                spDownloadGame.setVisible(true);
-                Platform.runLater(() -> {
-                    pbDownload.setProgress(newValue.doubleValue());
-                    lblDownloadbar.setText(String.format(Locale.ENGLISH,"%.02f %%", newValue.doubleValue() * 100));
-                });
-            }
-        });
-        /*
-            Game downloading status listener to show/hide the progressbar and to show the download progress.
-         */
-        gameStatus.unzipping.addListener((observable, oldValue, newValue) -> setDownloadbarVisibility(newValue));
-        gameStatus.unzipProgress.addListener((observable, oldValue, newValue) -> {
-            if(ApplicationManager.getFocusedGame().equals(game) && newValue.doubleValue() > 0) {
-                spDownloadGame.setVisible(true);
-                Platform.runLater(() -> {
-                    pbDownload.setProgress(newValue.doubleValue());
-                    lblDownloadbar.setText(String.format(Locale.ENGLISH, "Unzip: %.02f %%", newValue.doubleValue() * 100));
-                });
-            }
-        });
-        /*
-            Add all required tooltips to the buttons.
-         */
-        Tooltip.install(lblVersion, new Tooltip("Version"));
-        Tooltip.install(ivRunGame, new Tooltip("Run game"));
+        //Set the gamename and gameversion label
+        lblGamename.setText(game.getName());
+        lblVersion.setText(game.getVersionServer());
+        //Install all tooltips
+        Tooltip.install(lblGamename, new Tooltip(lblGamename.getText()));
+        if(!lblVersion.getText().isEmpty())
+            Tooltip.install(lblVersion, new Tooltip("Gameversion on the server"));
+        Tooltip.install(ivRunGame, new Tooltip("Start game"));
         Tooltip.install(ivDownloadGame, new Tooltip("Download game"));
-        Tooltip.install(ivOpenExplorer, new Tooltip("Open game folder in explorer"));
+        Tooltip.install(ivOpenExplorer, new Tooltip("Open game folder"));
         Tooltip.install(ivConnectServer, new Tooltip("Connect to an open server"));
         Tooltip.install(ivStartServer, new Tooltip("Start a new server"));
-        /*
-            Dynamically resizing image buttons to the gametile image.
-         */
-        ivRunGame.fitHeightProperty().bind(gameTileImage.fitHeightProperty().divide(7.5));
-        ivDownloadGame.fitHeightProperty().bind(gameTileImage.fitHeightProperty().divide(7.5));
-        ivOpenExplorer.fitHeightProperty().bind(gameTileImage.fitHeightProperty().divide(7.5));
-        ivStartServer.fitHeightProperty().bind(gameTileImage.fitHeightProperty().divide(7.5));
-        ivConnectServer.fitHeightProperty().bind(gameTileImage.fitHeightProperty().divide(7.5));
-        /*
-            All dynamic margin resizing and fontsize resizing.
-         */
-        gameTileImage.fitHeightProperty().addListener((observable, oldValue, newValue) -> {
-            //Font resizing
-            double fontSize = newValue.doubleValue()/15.0;
-            lblGamename.setFont(Font.font("System", FontWeight.BOLD, fontSize));
-            lblVersion.setFont(Font.font("System", FontWeight.BOLD, fontSize));
-            //Margin calculation with left space
-            double leftSpace = newValue.doubleValue() - lblGamename.getFont().getSize() - lblVersion.getFont().getSize() - 5.75*ivRunGame.fitHeightProperty().get();
-            Insets margin = new Insets(leftSpace/10.0, newValue.doubleValue()/30.0, 0, newValue.doubleValue()/30.0);
-            //Setting margins
-            VBox.setMargin(lblGamename, margin);
-            VBox.setMargin(lblVersion, new Insets(0, margin.getRight(), 0, margin.getLeft()));
-            VBox.setMargin(ivRunGame, margin);
-            VBox.setMargin(hbDownloadGame, new Insets(2*margin.getTop(), margin.getRight(), 0,  margin.getLeft()));
-            VBox.setMargin(ivOpenExplorer, margin);
-            VBox.setMargin(ivStartServer, margin);
-            VBox.setMargin(ivConnectServer, new Insets(margin.getTop(), 0, margin.getTop(), margin.getLeft()));
-        });
-        /*
-            MouseClick event handler for the image buttons
-         */
+        //EventHandler for the buttons
         ivRunGame.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
             if(event.getButton() == MouseButton.PRIMARY)
                 ApplicationManager.startGame(game);
             event.consume();
         });
         ivDownloadGame.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-            if(event.getButton() == MouseButton.PRIMARY)
-                ApplicationManager.downloadGame(game);
+            if(event.getButton() == MouseButton.PRIMARY) {
+                if (!gameStatus.downloading.getValue() && !gameStatus.unzipping.getValue())
+                    ApplicationManager.downloadGame(game);
+                else
+                    ApplicationManager.stopDownloadUnzip(game);
+            }
             event.consume();
         });
         ivOpenExplorer.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
@@ -160,9 +106,73 @@ class GameOverlayController {
                 ApplicationManager.openServerStartup(game);
             event.consume();
         });
-        /*
-            Mouse hover animation for the image buttons. If the button has functionality then it is animated.
-         */
+        //Download listener
+        gameStatus.downloading.addListener((observable, oldValue, newValue) -> setDownloadbarVisibility(newValue));
+        gameStatus.downloadProgress.addListener((observable, oldValue, newValue) -> {
+            if(ApplicationManager.getFocusedGame().equals(game) && newValue.doubleValue() > 0) {
+                spDownloadGame.setVisible(true);
+                lblDownloadSpeed.setVisible(true);
+                Platform.runLater(() -> {
+                    pbDownload.setProgress(newValue.doubleValue());
+                    lblDownloadbar.setText(String.format(Locale.ENGLISH,"%.01f %%", newValue.doubleValue() * 100));
+                });
+            }
+        });
+        //Unzip listener
+        gameStatus.unzipping.addListener((observable, oldValue, newValue) -> setDownloadbarVisibility(newValue));
+        gameStatus.unzipProgress.addListener((observable, oldValue, newValue) -> {
+            if(ApplicationManager.getFocusedGame().equals(game) && newValue.doubleValue() > 0) {
+                spDownloadGame.setVisible(true);
+                Platform.runLater(() -> {
+                    pbDownload.setProgress(newValue.doubleValue());
+                    lblDownloadbar.setText(String.format(Locale.ENGLISH, "Unzip: %.01f %%", newValue.doubleValue() * 100));
+                });
+            }
+        });
+        //Local availability listener
+        gameStatus.local.addListener(new ChangeListener<Boolean>() {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                if(!newValue) {
+                    Platform.runLater(() -> lblGamename.setTextFill(Paint.valueOf("dimgray")));
+                    Platform.runLater(() -> lblVersion.setTextFill(Paint.valueOf("dimgray")));
+                } else {
+                    Platform.runLater(() -> lblGamename.setTextFill(Paint.valueOf("black")));
+                    Platform.runLater(() -> lblVersion.setTextFill(Paint.valueOf("black")));
+                }
+            }
+        });
+        //DownloadSpeedListener
+        gameStatus.downloadSpeed.addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                Platform.runLater(() -> lblDownloadSpeed.setText(newValue));
+            }
+        });
+        //Label fontsizing
+        gameTileImage.fitHeightProperty().addListener((observable, oldValue, newValue) -> {
+            //Font resizing
+            double fontSize = newValue.doubleValue()/17.0;
+            lblGamename.setFont(Font.font("System", FontWeight.BOLD, fontSize));
+            lblVersion.setFont(Font.font("System", FontWeight.BOLD, fontSize));
+        });
+        //Hiding downloadbar and downloadspeedlabel
+        spDownloadGame.setVisible(false);
+        lblDownloadSpeed.setVisible(false);
+        //Setting the progressbarlabel fontsize
+        pbDownload.heightProperty().addListener((observable, oldValue, newValue) -> lblDownloadbar.setFont(Font.font("System", FontWeight.NORMAL, newValue.doubleValue()*0.5)));
+        //Set the button sizing
+        ivRunGame.fitHeightProperty().bind(gpGameTile.heightProperty().divide(5));
+        ivDownloadGame.fitHeightProperty().bind(gpGameTile.heightProperty().divide(5));
+        ivOpenExplorer.fitHeightProperty().bind(gpGameTile.heightProperty().divide(5));
+        ivStartServer.fitHeightProperty().bind(gpGameTile.heightProperty().divide(5));
+        ivConnectServer.fitHeightProperty().bind(gpGameTile.heightProperty().divide(5));
+        ivRunGame.fitWidthProperty().bind(gpGameTile.heightProperty().divide(5));
+        ivDownloadGame.fitWidthProperty().bind(gpGameTile.heightProperty().divide(5));
+        ivOpenExplorer.fitWidthProperty().bind(gpGameTile.heightProperty().divide(5));
+        ivStartServer.fitWidthProperty().bind(gpGameTile.heightProperty().divide(5));
+        ivConnectServer.fitWidthProperty().bind(gpGameTile.heightProperty().divide(5));
+        //Mouse over effect for buttons
         ivRunGame.addEventHandler(MouseEvent.MOUSE_ENTERED, this::mouseEntered);
         ivStartServer.addEventHandler(MouseEvent.MOUSE_ENTERED, this::mouseEntered);
         ivConnectServer.addEventHandler(MouseEvent.MOUSE_ENTERED, this::mouseEntered);
@@ -173,18 +183,24 @@ class GameOverlayController {
         ivOpenExplorer.addEventHandler(MouseEvent.MOUSE_EXITED, this::mouseExited);
         ivConnectServer.addEventHandler(MouseEvent.MOUSE_EXITED, this::mouseExited);
         ivStartServer.addEventHandler(MouseEvent.MOUSE_EXITED, this::mouseExited);
-
     }
+
     /**
-     * Hiding progressbar visibility if download or unzip status changing to false.
+     * Hiding progressbar and downloadspeedlabel visibility if download or unzip status changing to false.
+     * Also changing the image of the download button.
      *
      * @param newValue - download or unzip status
      */
     private void setDownloadbarVisibility(Boolean newValue) {
         if(!newValue){
             spDownloadGame.setVisible(false);
+            lblDownloadSpeed.setVisible(false);
+            ivDownloadGame.setImage(new Image(ClassLoader.getSystemResource("download_game.png").toString(), true));
+        } else {
+            ivDownloadGame.setImage(new Image(ClassLoader.getSystemResource("close.png").toString(), true));
         }
     }
+
     /**
      * Starting image button animation.
      *
@@ -193,10 +209,12 @@ class GameOverlayController {
     private void mouseEntered(MouseEvent event){
         if((event.getTarget().equals(ivConnectServer) && game.isConnectDirect()) || (event.getTarget().equals(ivStartServer) && game.isOpenServer())
                 || event.getTarget().equals(ivRunGame) || event.getTarget().equals(ivDownloadGame) || event.getTarget().equals(ivOpenExplorer)) {
-            ((ImageView) event.getTarget()).setStyle("-fx-effect: dropshadow(gaussian, gray, 10, 0.05, 0, 3);");
-            ((ImageView) event.getTarget()).fitHeightProperty().bind(gameTileImage.fitHeightProperty().divide(7.25));
+            ((ImageView) event.getTarget()).setStyle("-fx-effect: dropshadow(gaussian, gray, 12.5, 0.15, 0, 0);");
+            ((ImageView) event.getTarget()).fitHeightProperty().bind(gpGameTile.heightProperty().divide(4.9));
+            ((ImageView) event.getTarget()).fitWidthProperty().bind(gpGameTile.heightProperty().divide(4.9));
         }
     }
+
     /**
      * Ending image button animation.
      *
@@ -206,7 +224,9 @@ class GameOverlayController {
         if((event.getTarget().equals(ivConnectServer) && game.isConnectDirect()) || (event.getTarget().equals(ivStartServer) && game.isOpenServer())
                 || event.getTarget().equals(ivRunGame) || event.getTarget().equals(ivDownloadGame) || event.getTarget().equals(ivOpenExplorer)) {
             ((ImageView)event.getTarget()).setStyle("-fx-effect: null;");
-            ((ImageView)event.getTarget()).fitHeightProperty().bind(gameTileImage.fitHeightProperty().divide(7.5));
+            ((ImageView)event.getTarget()).fitHeightProperty().bind(gpGameTile.heightProperty().divide(5));
+            ((ImageView) event.getTarget()).fitWidthProperty().bind(gpGameTile.heightProperty().divide(5));
         }
     }
+
 }

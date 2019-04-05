@@ -43,8 +43,8 @@ public class MainStage extends Stage {
         if (icon != null) {
             getIcons().add(new Image(icon));
         }
-        //Set title
-        setTitle("Lanpartymanager");
+        //Set title with users ip-address
+        setTitle("Lanpartymanager" + " (" + ApplicationManager.getUser().getIpAddress() + ")");
         controller = loader.getController();
         //MinHeight and MinWidth for the window
         setMinWidth(600);
@@ -78,8 +78,8 @@ public class MainStage extends Stage {
         log.info("Update gamepane.");
         controller.updateGamePane();
         //Needed for correct resizing of the labels.
-        //TODO: entfernen und label größe der gametitels regeln
         setWidth(getWidth()+1);
+        setWidth(getWidth()-1);
     }
 
     /**

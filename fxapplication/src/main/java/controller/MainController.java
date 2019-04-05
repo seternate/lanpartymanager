@@ -155,7 +155,7 @@ public class MainController {
             for(File cover : coverpath.listFiles()){
                 int index = cover.getName().lastIndexOf(".");
                 if(cover.getName().substring(0, index).equals(game.getName())) {
-                    log.info("Local cover of '" + game + "found.");
+                    log.info("Local cover of '" + game + "' found.");
                     return new Image("file:" + cover.getAbsolutePath(), true);
                 }
             }
