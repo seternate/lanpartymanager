@@ -34,4 +34,5 @@ public final class UserList extends HashMap<Integer, User> {
     public void remove(User user){
         this.keySet().removeIf(e -> get(e).equals(user));
     }
+
 }

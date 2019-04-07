@@ -1,6 +1,6 @@
 .root
 {
-    -fx-base: rgba(60, 63, 65, 255);
+    -fx-base: #2E2E2E;
 }
 .close, .minimize
 {
@@ -12,7 +12,7 @@
 */
 .pane, .hbox, .vbox, .content, .text-area
 {
-    -fx-background-color: #3D3D3D;
+    -fx-background-color: #2E2E2E;
     -fx-background-radius: 0;
 }
 .pane > .label, .text-area, .hbox > .label, .vbox > .label

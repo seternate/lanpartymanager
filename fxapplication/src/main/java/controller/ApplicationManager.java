@@ -321,7 +321,7 @@ public class ApplicationManager {
 
 
     public static ObservableList<User> getOrderList(){
-        return client.getOrderList();
+        return client.getUsersList();
     }
 
     public static void sendFiles(User user, List<File> files){

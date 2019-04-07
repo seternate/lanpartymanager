@@ -1,5 +1,6 @@
 package controller;
 
+import clientInterface.Client;
 import entities.user.User;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -10,8 +11,10 @@ import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
 import javafx.scene.input.*;
+import org.apache.log4j.Logger;
 
 public class UsersController {
+
     private class UserCell extends ListCell<User> {
 
         UserCell(){
@@ -37,11 +40,21 @@ public class UsersController {
             }
         }
     }
+
+
+    private static Logger log = Logger.getLogger(UsersController.class);
+
     @FXML
     private ListView<User> lvUsers;
 
+
+    /**
+     * Initializing UserController.
+     */
     @FXML
     private void initialize(){
+        log.info("Initializing.");
+        //Bind ObservableList from client to show users
         lvUsers.setItems(ApplicationManager.getUserslist());
         lvUsers.setCellFactory(c -> new UserCell());
 

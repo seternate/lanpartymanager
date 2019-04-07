@@ -19,7 +19,6 @@ import retrofit2.converter.jackson.JacksonConverterFactory;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
-import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -37,9 +36,7 @@ public class Client implements Runnable {
     private volatile Label lblStatus;
     private volatile Label lblFileStatus;
     private volatile ObservableList<User> users;
-    private volatile ObservableList<User> orders;
     private volatile UserList userlist;
-    private volatile UserList orderlist;
     private ScheduledExecutorService executor;
 
 
@@ -56,9 +53,9 @@ public class Client implements Runnable {
         games = new GameList();
         gamestatus = new GameStatusProperty();
         users = FXCollections.observableArrayList();
-        orders = FXCollections.observableArrayList();
+        users = FXCollections.observableArrayList();
         userlist = new UserList();
-        orderlist = new UserList();
+        userlist = new UserList();
         user = new User();
         //ExecutorService for the client updating
         executor = Executors.newSingleThreadScheduledExecutor();
@@ -103,10 +100,6 @@ public class Client implements Runnable {
 
     public ObservableList<User> getUsersList(){
         return this.users;
-    }
-
-    public ObservableList<User> getOrderList(){
-        return this.orders;
     }
 
     public void sendUserData(String username, String gamepath, String order){
@@ -217,16 +210,13 @@ public class Client implements Runnable {
     private void updateUsers() throws IOException {
         UserList list = client.getUserlist().execute().body();
         assert list != null;
-        if(!list.equals(orderlist)){
-            UserList temp = new UserList(list);
-            Platform.runLater(() -> orders.setAll(temp.toList()));
-        }
-        orderlist = new UserList(list);
-
-        list.remove(user);
         if(!list.equals(userlist)){
             UserList temp = new UserList(list);
-            Platform.runLater(() -> users.setAll(temp.toList()));
+            Platform.runLater(() -> {
+                users.setAll(temp.toList());
+                users.remove(user);
+                users.add(0, user);
+            });
         }
         userlist = new UserList(list);
     }

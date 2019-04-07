@@ -16,6 +16,8 @@ import java.util.prefs.Preferences;
  * button at the bottom.
  */
 public class UsersStage extends Stage {
+
+
     public UsersStage(){
         super();
         FXMLLoader loader = new FXMLLoader(ClassLoader.getSystemResource("users.fxml"));
@@ -52,4 +54,5 @@ public class UsersStage extends Stage {
             preferences.putDouble("win_height", getHeight());
         });
     }
+
 }
