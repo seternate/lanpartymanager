@@ -135,15 +135,15 @@ public class GameDownload extends Thread {
             //Calculate remaining
             remaining -= read;
             //Start timer to provide speed information
-            long start = System.currentTimeMillis();
+            long start = System.nanoTime();
             //Safe data
             fos.write(buffer, 0, read);
             //Calculate duration and set download speed
-            long duration = (System.currentTimeMillis() - start == 0) ? 1 : System.currentTimeMillis() - start;
-            durationSum += (double)duration/1000.;
+            long duration = (System.nanoTime() - start == 0) ? 1 : System.nanoTime() - start;
+            durationSum += (double)duration/1000000000.;
             readSum += read;
             //Set current speed in bytes/millis
-            downloadspeed = read/duration;
+            downloadspeed = read/Math.round((double)duration/1000000.);
             //Set average speed in bytes/second
             averageDownloadspeed = Math.round((double)readSum/durationSum);
             //Set progress
