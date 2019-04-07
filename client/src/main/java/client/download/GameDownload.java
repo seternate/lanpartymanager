@@ -125,21 +125,24 @@ public class GameDownload extends Thread {
         if(stop)
             return;
         log.info("Started download of '" + game + "' with a size of " + (double)Math.round((double)gamesize/10485.76)/100. + " MByte.");
-        int read;
+        int read = 1;
         long readSum = 0;
         double durationSum = 0;
-        while((read = dis.read(buffer, 0, (int)Math.min(buffer.length, remaining))) > 0) {
+        while(read > 0) {
+            //TODO:
             //Check if download got canceled
             if(stop)
                 break;
-            //Calculate remaining
-            remaining -= read;
             //Start timer to provide speed information
             long start = System.nanoTime();
+            //Read data
+            read = dis.read(buffer, 0, (int)Math.min(buffer.length, remaining));
+            //Calculate remaining
+            remaining -= read;
             //Safe data
             fos.write(buffer, 0, read);
             //Calculate duration and set download speed
-            long duration = (System.nanoTime() - start == 0) ? 1 : System.nanoTime() - start;
+            long duration = (System.nanoTime() - start == 0) ? 1 : Math.abs(System.nanoTime() - start);
             durationSum += (double)duration/1000000000.;
             readSum += read;
             //Set current speed in bytes/millis
