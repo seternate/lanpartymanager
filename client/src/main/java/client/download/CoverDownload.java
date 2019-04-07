@@ -76,7 +76,7 @@ public class CoverDownload extends Thread {
             //Get filename
             File coverpath = new File(this.gamepath, "cover");
             if(!coverpath.exists())
-                coverpath.mkdir();
+                coverpath.mkdirs();
             File coverfile = new File(coverpath, dis.readUTF());
             //Open Fileoutputstream
             FileOutputStream fos = new FileOutputStream(coverfile, false);
