@@ -36,6 +36,7 @@ public abstract class GameInfoHelper {
         while(Objects.requireNonNull(scr).hasNextLine()){
             String line = scr.nextLine();
             if(line.contains(query)){
+                scr.close();
                 return line.substring(query.length());
             }
         }
