@@ -118,6 +118,11 @@ public class LANServer extends Server {
         log.info("Server started successfully.");
     }
 
+    /**
+     * Restarts the server and stops all running gameuploads.
+     *
+     * @return the new LANServer.
+     */
     public LANServer restart(){
         for(Connection connection : getConnections()){
             connection.sendTCP(new DownloadStopMessage());
@@ -471,6 +476,7 @@ public class LANServer extends Server {
     public void stopUpload(GameUpload upload){
         getConnection(upload.getUser()).sendTCP(new DownloadStopMessage(null, upload.getGame()));
         upload.stopUpload();
+        log.info("Stopped uploading '" + upload.getGame() + "' to '" + upload.getUser() + "'.");
     }
 
 }
