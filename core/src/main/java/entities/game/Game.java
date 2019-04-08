@@ -48,14 +48,14 @@ public final class Game {
         name = properties.getProperty("name");
         versionServer = properties.getProperty("version");
         connectParam = properties.getProperty("connect.param");
-        exeFileRelative = properties.getProperty("exe.file");
+        exeFileRelative = parsePath(properties.getProperty("exe.file"));
         coverUrl = properties.getProperty("cover.url");
         serverFileName = properties.getProperty("file.server");
         connectDirect = Boolean.valueOf(properties.getProperty("connect.direct"));
         String versionFormat = properties.getProperty("version.format");
         switch(versionFormat){
             case "file": {
-                String versionFile = properties.getProperty("version.file"),
+                String versionFile = parsePath(properties.getProperty("version.file")),
                         versionQuery = properties.getProperty("version.query");
                 version = new Version(versionFormat, versionFile, versionQuery);
                 break;
@@ -64,7 +64,8 @@ public final class Game {
             default: version = new Version(null, null, null);
         }
         param = properties.getProperty("exe.param")==null ? "" : properties.getProperty("exe.param");
-        exeServerRelative = (properties.getProperty("exe.server")==null || properties.getProperty("exe.server").equals("")) ? exeFileRelative : properties.getProperty("exe.server");
+        exeServerRelative = (properties.getProperty("exe.server")==null || properties.getProperty("exe.server").equals(""))
+                ? exeFileRelative : parsePath(properties.getProperty("exe.server"));
         serverParam = properties.getProperty("exe.server.param")==null ? "" : properties.getProperty("exe.server.param");
         openServer = Boolean.valueOf(properties.getProperty("openserver"));
     }
@@ -84,6 +85,15 @@ public final class Game {
         this.exeServerRelative = exeServerRelative;
         this.serverParam = serverParam;
         this.openServer = openServer;
+    }
+
+    private String parsePath(String relativePath){
+        if(relativePath.trim().isEmpty())
+            return "";
+        else if(relativePath.trim().startsWith("/"))
+            return relativePath.trim();
+        else
+            return "/" + relativePath.trim();
     }
 
     public String getName(){

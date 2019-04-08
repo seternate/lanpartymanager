@@ -94,6 +94,7 @@ class GameOverlayController {
         ivOpenExplorer.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
             if(event.getButton() == MouseButton.PRIMARY)
                 ApplicationManager.openExplorer(game);
+            System.out.println(game.getExeFileRelative());
             event.consume();
         });
         ivConnectServer.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
