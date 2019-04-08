@@ -128,7 +128,7 @@ public class GameDownload extends Thread {
         if(stop)
             return;
         log.info("Started download of '" + game + "' with a size of " + (double)Math.round((double)gamesize/10485.76)/100. + " MByte.");
-        int read = 1;
+        int read;
         long readSum = 0;
         long durationSum = 0;
         do {
