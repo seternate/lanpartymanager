@@ -8,6 +8,8 @@ import entities.server.ServerStatus;
 import entities.settings.ClientSettings;
 import entities.user.User;
 import entities.user.UserList;
+import entities.user.UserRunGamesList;
+import entities.user.UserRunServerList;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -37,6 +39,8 @@ public class Client implements Runnable {
     private volatile Label lblFileStatus;
     private volatile ObservableList<User> users;
     private volatile UserList userlist;
+    private volatile UserRunGamesList rungameslist;
+    private volatile UserRunServerList runserverlist;
     private ScheduledExecutorService executor;
 
 
@@ -57,6 +61,8 @@ public class Client implements Runnable {
         userlist = new UserList();
         userlist = new UserList();
         user = new User();
+        rungameslist = new UserRunGamesList();
+        runserverlist = new UserRunServerList();
         //ExecutorService for the client updating
         executor = Executors.newSingleThreadScheduledExecutor();
         executor.scheduleAtFixedRate(this, 0, 500, TimeUnit.MILLISECONDS);
@@ -193,6 +199,8 @@ public class Client implements Runnable {
         }
         updateUsers();
         updateGames();
+        rungameslist = client.getUserRunGames().execute().body();
+        runserverlist = client.getUserRunServer().execute().body();
         status = client.getStatus().execute().body();
         fileStatus = client.getFileStatus().execute().body();
     }

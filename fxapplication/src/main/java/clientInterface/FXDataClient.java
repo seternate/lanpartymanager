@@ -6,6 +6,8 @@ import entities.game.GameStatus;
 import entities.server.ServerStatus;
 import entities.user.User;
 import entities.user.UserList;
+import entities.user.UserRunGamesList;
+import entities.user.UserRunServerList;
 import retrofit2.Call;
 import retrofit2.http.*;
 
@@ -55,5 +57,11 @@ public interface FXDataClient {
 
     @POST("stopdownloadunzip")
     Call<Boolean> stopDownloadUnzip(@Body Game game);
+
+    @GET("getuserrungames")
+    Call<UserRunGamesList> getUserRunGames();
+
+    @GET("getuserrunservers")
+    Call<UserRunServerList> getUserRunServer();
 
 }

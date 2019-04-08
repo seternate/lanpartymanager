@@ -608,6 +608,20 @@ public class LANClient extends Client {
         return true;
     }
 
+    /**
+     * @return userrungameslist with all running games of the users.
+     */
+    public UserRunGamesList getUserRunGames(){
+        return rungameslist;
+    }
+
+    /**
+     * @return userrunserverlist with all running servers of the users.
+     */
+    public UserRunServerList getUserRunServer(){
+        return runserverlist;
+    }
+
 
 
 

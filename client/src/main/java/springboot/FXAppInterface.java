@@ -19,6 +19,7 @@ import java.util.List;
 public class FXAppInterface {
     private static final LANClient client = LanClient.client;
 
+
     @RequestMapping(value = "/status", method = RequestMethod.GET)
     public ResponseEntity status(){
         return new ResponseEntity<>(client.getStatus(), HttpStatus.OK);
@@ -87,6 +88,16 @@ public class FXAppInterface {
     @RequestMapping(value = "/stopdownloadunzip", method = RequestMethod.POST)
     public Boolean stopDownloadUnzip(@RequestBody Game game){
         return client.stopDownloadUnzip(game);
+    }
+
+    @RequestMapping(value = "/getuserrungames", method = RequestMethod.GET)
+    public ResponseEntity getUserRunGames(){
+        return new ResponseEntity<>(client.getUserRunGames(), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/getuserrunservers", method = RequestMethod.GET)
+    public ResponseEntity getUserRunServer(){
+        return new ResponseEntity<>(client.getUserRunServer(), HttpStatus.OK);
     }
 
 }

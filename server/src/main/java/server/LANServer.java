@@ -258,7 +258,7 @@ public class LANServer extends Server {
         registerDisconnectListener();
         registerUserRunGameListener();
         registerUserRunServerListener();
-        registerCoverDownloadListener();
+        registerImageDownloadListener();
     }
 
     /**
@@ -418,7 +418,7 @@ public class LANServer extends Server {
     /**
      * Registers the listener for cover downloads.
      */
-    private void registerCoverDownloadListener(){
+    private void registerImageDownloadListener(){
         addListener(new Listener() {
             @Override
             public void received(Connection connection, Object object) {
