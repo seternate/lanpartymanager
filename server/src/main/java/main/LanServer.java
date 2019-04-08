@@ -47,7 +47,7 @@ public final class LanServer {
             Scanner scanner = new Scanner(System.in);
             while(true){
                 //Input parameter list
-                System.out.println("INPUT: [rebuildgames] [games] [game #] [users] [user #] [downloads] [restart] [exit]");
+                System.out.println("INPUT: [rebuildgames] [games] [game #] [users] [user #] [downloads] [download-stop #] [restart] [exit]");
 
                 //Get user input and split it for arguments with multiple input
                 String[] inputs = scanner.nextLine().trim().split(" ");
@@ -86,6 +86,16 @@ public final class LanServer {
                 }
                 else if(argument.equals("downloads"))
                     printDownloads();
+                else if(argument.trim().equals("download-stop")){
+                    int download;
+                    try {
+                        download = Integer.valueOf(inputs[1]) - 1;
+                        stopDownload(download);
+                    } catch(Exception e) {
+                        log.warn("Wrong argument provided for 'user'. Please use 'users' for an existing user number.");
+                        log.debug(e);
+                    }
+                }
                 else if(argument.equals("restart")){
                     server = server.restart();
                 }
@@ -212,5 +222,15 @@ public final class LanServer {
         }while(!gamedirectory.isDirectory());
 
         return gamedirectory;
+    }
+
+    /**
+     * Stops a download.
+     *
+     * @param download download number to be stopped.
+     */
+    private static void stopDownload(int download){
+        GameUpload upload = server.getUploads().get(download);
+        server.stopUpload(upload);
     }
 }

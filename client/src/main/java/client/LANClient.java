@@ -255,6 +255,10 @@ public class LANClient extends Client {
                         log.info("Server stopped all downloads.");
                         gameDownloadManager.stopAll();
                     }
+                    else if(message.user == null && message.game != null){
+                        log.info("Server stopped download of '" + message.game + "'.");
+                        gameDownloadManager.stop(message.game);
+                    }
                 }
             }
         });

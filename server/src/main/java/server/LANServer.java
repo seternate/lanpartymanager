@@ -449,4 +449,28 @@ public class LANServer extends Server {
         return gamedirectory;
     }
 
+    /**
+     * Searches for the connection of a user.
+     *
+     * @param user the user which connection should be found.
+     * @return the connection of the user or null if no connection can be found.
+     */
+    private Connection getConnection(User user){
+        for(Connection connection : getConnections()){
+            if(connection.getID() == users.getConnectionID(user))
+                return connection;
+        }
+        return null;
+    }
+
+    /**
+     * Stops a gameupload.
+     *
+     * @param upload gameupload to be stopped.
+     */
+    public void stopUpload(GameUpload upload){
+        getConnection(upload.getUser()).sendTCP(new DownloadStopMessage(null, upload.getGame()));
+        upload.stopUpload();
+    }
+
 }

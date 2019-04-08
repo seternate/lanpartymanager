@@ -35,4 +35,12 @@ public final class UserList extends HashMap<Integer, User> {
         this.keySet().removeIf(e -> get(e).equals(user));
     }
 
+    public int getConnectionID(User user){
+        for(Integer key : this.keySet()){
+            if(get(key).equals(user))
+                return key;
+        }
+        return -1;
+    }
+
 }

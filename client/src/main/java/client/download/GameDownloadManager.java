@@ -62,4 +62,13 @@ public class GameDownloadManager extends ArrayList<GameDownload>{
             download.stopDownloadUnzip();
     }
 
+    /**
+     * Stops the download/unzip of the game.
+     *
+     * @param game game to stop download/unzip.
+     */
+    public void stop(Game game){
+        this.getDownload(game).stopDownloadUnzip();
+    }
+
 }
