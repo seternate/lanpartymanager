@@ -76,7 +76,6 @@ public class CoverUpload extends Thread {
             dos.writeLong(coverfile.length());
             //Send cover name
             dos.writeUTF(coverfile.getName());
-            log.info("Sending cover '" + coverfile.getName() + "' to '" + user + "'.");
             //Sending game
             int read;
             while((read = fis.read(buffer)) > 0) {

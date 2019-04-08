@@ -100,23 +100,28 @@ public class GameUpload extends Thread{
         //Sending game
         int read;
         long readSum = 0;
-        double durationSum = 0;
-        while((read = fis.read(buffer)) > 0 && !stop) {
+        long durationSum = 0;
+        do {
             //Start timer to provide speed information
             long start = System.nanoTime();
+            //Read Data
+            read = fis.read(buffer);
+            //Check if anything has to be send, else break while
+            if(!(read > 0))
+                break;
             //Write data
             dos.write(buffer,0, read);
             //Calculate duration and set upload speed
             long duration = (System.nanoTime() - start == 0) ? 1 : Math.abs(System.nanoTime() - start);
-            durationSum += (double)duration/1000000000.;
+            durationSum += duration;
             readSum += read;
-            //Set current speed in bytes/millis
-            uploadspeed = read/Math.round((double)duration/1000000.);
+            //Set current speed in bytes/second
+            uploadspeed = Math.round((double)read/((double)duration/1000000000.));
             //Set average speed in bytes/second
-            averageUploadspeed = Math.round((double)readSum/durationSum);
+            averageUploadspeed = Math.round((double)readSum/((double)durationSum/1000000000.));
             //Set progress
             progress = (double)readSum/(double)gamefile.length();
-        }
+        } while(read > 0 && !stop);
         //Close all open streams
         fis.close();
         dos.close();
@@ -142,7 +147,7 @@ public class GameUpload extends Thread{
      * @return current upload speed [bytes/second].
      */
     public long getUploadspeed(){
-        return uploadspeed * 1000;
+        return uploadspeed;
     }
 
     /**

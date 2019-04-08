@@ -127,31 +127,29 @@ public class GameDownload extends Thread {
         log.info("Started download of '" + game + "' with a size of " + (double)Math.round((double)gamesize/10485.76)/100. + " MByte.");
         int read = 1;
         long readSum = 0;
-        double durationSum = 0;
-        while(read > 0) {
-            //TODO:
-            //Check if download got canceled
-            if(stop)
-                break;
+        long durationSum = 0;
+        do {
             //Start timer to provide speed information
             long start = System.nanoTime();
             //Read data
             read = dis.read(buffer, 0, (int)Math.min(buffer.length, remaining));
             //Calculate remaining
-            remaining -= read;
+            synchronized (this) {
+                remaining -= read;
+            }
             //Safe data
             fos.write(buffer, 0, read);
             //Calculate duration and set download speed
             long duration = (System.nanoTime() - start == 0) ? 1 : Math.abs(System.nanoTime() - start);
-            durationSum += (double)duration/1000000000.;
+            durationSum += duration;
             readSum += read;
-            //Set current speed in bytes/millis
-            downloadspeed = read/Math.round((double)duration/1000000.);
+            //Set current speed in bytes/second
+            downloadspeed = Math.round((double)read/((double)duration/1000000000.));
             //Set average speed in bytes/second
-            averageDownloadspeed = Math.round((double)readSum/durationSum);
+            averageDownloadspeed = Math.round((double)readSum/((double)durationSum/1000000000.));
             //Set progress
             downloadprogress = (double)readSum/(double)gamesize;
-        }
+        } while(read > 0 && !stop);
         //Close all streams
         fos.close();
         dis.close();
@@ -241,7 +239,7 @@ public class GameDownload extends Thread {
      * @return current download speed [bytes/second].
      */
     public long getDownloadspeed(){
-        return downloadspeed * 1000;
+        return downloadspeed;
     }
 
     /**
