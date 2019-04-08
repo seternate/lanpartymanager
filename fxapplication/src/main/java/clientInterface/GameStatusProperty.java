@@ -12,7 +12,7 @@ public final class GameStatusProperty {
 
     public GameStatusProperty(){
         playable = new SimpleBooleanProperty(false);
-        local = new SimpleBooleanProperty(false);
+        local = new SimpleBooleanProperty(true);
         version = new SimpleBooleanProperty(true);
         update = new SimpleBooleanProperty(false);
         downloading = new SimpleBooleanProperty(false);

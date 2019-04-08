@@ -141,6 +141,7 @@ class GameOverlayController {
                     Platform.runLater(() -> lblVersion.setTextFill(Paint.valueOf("black")));
                 }
             }
+
         });
         //DownloadSpeedListener
         gameStatus.downloadSpeed.addListener(new ChangeListener<String>() {
