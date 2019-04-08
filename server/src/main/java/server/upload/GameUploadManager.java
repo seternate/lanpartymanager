@@ -31,5 +31,11 @@ public class GameUploadManager extends ArrayList<GameUpload> {
         return null;
     }
 
-
+    /**
+     * Stops all running uploads.
+     */
+    public void stopAll(){
+        for(GameUpload upload : this)
+            upload.stopUpload();
+    }
 }

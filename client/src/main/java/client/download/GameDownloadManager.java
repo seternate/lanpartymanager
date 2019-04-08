@@ -54,4 +54,12 @@ public class GameDownloadManager extends ArrayList<GameDownload>{
         return remaining;
     }
 
+    /**
+     * Stops all downloads.
+     */
+    public void stopAll(){
+        for(GameDownload download : this)
+            download.stopDownloadUnzip();
+    }
+
 }
