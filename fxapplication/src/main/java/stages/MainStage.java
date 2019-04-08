@@ -79,7 +79,6 @@ public class MainStage extends Stage {
         controller.updateGamePane();
         //Needed for correct resizing of the labels.
         setWidth(getWidth()+1);
-        setWidth(getWidth()-1);
     }
 
     /**
