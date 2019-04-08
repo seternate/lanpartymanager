@@ -12,10 +12,10 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 /**
- * Handles the download for all gamecovers.
+ * Handles the download for all game images.
  */
-public class CoverDownload extends Thread {
-    private static Logger log = Logger.getLogger(CoverDownload.class);
+public class ImageDownload extends Thread {
+    private static Logger log = Logger.getLogger(ImageDownload.class);
 
 
     private Socket clientsocket;
@@ -25,11 +25,11 @@ public class CoverDownload extends Thread {
 
 
     /**
-     * Creates the CoverDownload object.
+     * Creates the ImageDownload object.
      *
-     * @param user user that downloads the game.
+     * @param user user that downloads the images.
      */
-    public CoverDownload(User user){
+    public ImageDownload(User user){
         clientsocket = new Socket();
         gamepath = user.getGamepath();
         //Get a free port to listen to
@@ -49,19 +49,19 @@ public class CoverDownload extends Thread {
         while (!clientsocket.isConnected()) {
             try {
                 clientsocket = serversocket.accept();
-                saveCovers();
+                saveImages();
             } catch (IOException e) {
-                log.error("Error while saving the covers.", e);
+                log.error("Error while saving the images.", e);
             }
         }
     }
 
     /**
-     * Saves all covers to the gamepath of the user.
+     * Saves all images to the gamepath of the user.
      *
      * @throws IOException if any IO-Error occurs.
      */
-    private void saveCovers() throws IOException {
+    private void saveImages() throws IOException {
         //Open inputstream
         DataInputStream dis = new DataInputStream(clientsocket.getInputStream());
         //Create buffer [1MByte]
@@ -69,19 +69,19 @@ public class CoverDownload extends Thread {
 
         int files = dis.readInt();
 
-        log.info("Started download of game covers.");
+        log.info("Started download of game images.");
         for(int i = 0; i < files; i++){
             //Get file size
             long filesize = dis.readLong();
             //Get filename
-            File coverpath = new File(this.gamepath, "cover");
-            if(!coverpath.exists())
-                coverpath.mkdirs();
-            File coverfile = new File(coverpath, dis.readUTF());
+            File imagepath = new File(this.gamepath, "images");
+            if(!imagepath.exists())
+                imagepath.mkdirs();
+            File coverfile = new File(imagepath, dis.readUTF());
             //Open Fileoutputstream
             FileOutputStream fos = new FileOutputStream(coverfile, false);
 
-            //Read game data
+            //Read image data
             int read;
             while((read = dis.read(buffer, 0, (int)Math.min(buffer.length, filesize))) > 0) {
                 //Calculate remaining
@@ -96,11 +96,11 @@ public class CoverDownload extends Thread {
         dis.close();
         clientsocket.close();
         serversocket.close();
-        log.info("Downloaded all covers.");
+        log.info("Downloaded all images.");
     }
 
     /**
-     * @return port this CoverDownload listens to for incoming covers.
+     * @return port this ImageDownload listens to for incoming images.
      */
     public int getPort(){
         return port;

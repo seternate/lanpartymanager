@@ -11,7 +11,7 @@ import entities.user.UserList;
 import entities.user.UserRunGamesList;
 import entities.user.UserRunServerList;
 import message.*;
-import requests.CoverDownloadRequest;
+import requests.ImageDownloadRequest;
 import requests.DownloadRequest;
 
 import java.util.ArrayList;
@@ -39,7 +39,7 @@ public abstract class NetworkClassRegistrationHelper {
         kryo.register(ClientSettings.class);
         kryo.register(DownloadRequest.class);
         kryo.register(DownloadStopMessage.class);
-        kryo.register(CoverDownloadRequest.class);
+        kryo.register(ImageDownloadRequest.class);
         kryo.register(LoginMessage.class);
         kryo.register(ErrorMessage.class);
         kryo.register(GamelistMessage.class);

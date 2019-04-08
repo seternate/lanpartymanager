@@ -150,7 +150,7 @@ public class MainController {
      * @return the image used for the gametileimage
      */
     private Image getGameCover(Game game) {
-        File coverpath = new File(ApplicationManager.getGamepath() + "/cover");
+        File coverpath = new File(ApplicationManager.getGamepath() + "/images");
         if(coverpath.listFiles() != null){
             for(File cover : coverpath.listFiles()){
                 int index = cover.getName().lastIndexOf(".");

@@ -1,6 +1,6 @@
 package client;
 
-import client.download.CoverDownload;
+import client.download.ImageDownload;
 import client.download.GameDownload;
 import client.download.GameDownloadManager;
 import client.filedrop.FileDropClient;
@@ -25,7 +25,7 @@ import helper.GameFolderHelper;
 import helper.kryo.NetworkClassRegistrationHelper;
 import message.*;
 import org.apache.log4j.Logger;
-import requests.CoverDownloadRequest;
+import requests.ImageDownloadRequest;
 import requests.DownloadRequest;
 
 import java.io.File;
@@ -139,8 +139,8 @@ public class LANClient extends Client {
                 sendTCP(new LoginMessage(user));
                 sendTCP(new UserRunGameMessage(user, gamemonitor.getRunningProcesses()));
                 sendTCP(new UserRunServerMessage(user, servermonitor.getRunningProcesses()));
-                CoverDownload coverdownload = new CoverDownload(user);
-                sendTCP(new CoverDownloadRequest(user, coverdownload.getPort()));
+                ImageDownload imagedownload = new ImageDownload(user);
+                sendTCP(new ImageDownloadRequest(user, imagedownload.getPort()));
                 serverStatus.setServerIP(connection.getRemoteAddressTCP().getAddress().getHostAddress());
                 serverStatus.connected();
                 log.info("Successfully logged into the LANServer '" + serverStatus.getServerIP() + "'.");
@@ -344,8 +344,8 @@ public class LANClient extends Client {
             //Update user information
             if(this.user.update(user)) {
                 //Send new user to the server
-                CoverDownload coverdownload = new CoverDownload(user);
-                sendTCP(new CoverDownloadRequest(user, coverdownload.getPort()));
+                ImageDownload imagedownload = new ImageDownload(user);
+                sendTCP(new ImageDownloadRequest(user, imagedownload.getPort()));
                 sendTCP(new UserupdateMessage(user));
                 return true;
             }

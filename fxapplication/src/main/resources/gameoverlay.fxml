@@ -88,7 +88,7 @@
             </Label>
          </children>
          <VBox.margin>
-            <Insets top="5.0" />
+            <Insets left="5.0" top="5.0" />
          </VBox.margin>
       </GridPane>
    </children>

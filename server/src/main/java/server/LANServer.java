@@ -14,9 +14,9 @@ import entities.user.UserRunServerList;
 import helper.kryo.NetworkClassRegistrationHelper;
 import message.*;
 import org.apache.log4j.Logger;
-import requests.CoverDownloadRequest;
+import requests.ImageDownloadRequest;
 import requests.DownloadRequest;
-import server.upload.CoverUpload;
+import server.upload.ImageUpload;
 import server.upload.GameUpload;
 import server.upload.GameUploadManager;
 
@@ -422,8 +422,8 @@ public class LANServer extends Server {
         addListener(new Listener() {
             @Override
             public void received(Connection connection, Object object) {
-                if(object instanceof CoverDownloadRequest){
-                    CoverDownloadRequest request = (CoverDownloadRequest)object;
+                if(object instanceof ImageDownloadRequest){
+                    ImageDownloadRequest request = (ImageDownloadRequest)object;
                     //Check if the user is logged in and sends the game files to the user
                     if(!users.containsKey(connection.getID())) {
                         log.warn("Connection: " + connection.getID() + " - is not logged in and tried to " +
@@ -432,7 +432,7 @@ public class LANServer extends Server {
                         connection.sendTCP(new ErrorMessage(ErrorMessage.userNotLoggedIn));
                     } else {
                         //Send covers to the user
-                        new CoverUpload(request.port, users.get(connection.getID()), new File(gamedirectory, "cover"));
+                        new ImageUpload(request.port, users.get(connection.getID()), new File(gamedirectory, "images"));
                     }
 
                 }
