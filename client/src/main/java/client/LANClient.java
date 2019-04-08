@@ -126,6 +126,7 @@ public class LANClient extends Client {
         registerErrorListener();
         registerUserRunGamesListener();
         registerUserRunServersListener();
+        registerDownloadStopListener();
     }
 
     /**
@@ -235,6 +236,25 @@ public class LANClient extends Client {
                     UserRunServerList runServerList = (UserRunServerList)object;
                     runserverlist = runServerList;
                     log.info("Received userrunserverlist from the server '" + serverStatus.getServerIP() + "'.");
+                }
+            }
+        });
+    }
+
+    /**
+     * Registers listener for stopping download messages.
+     */
+    private void registerDownloadStopListener(){
+        addListener(new Listener(){
+            @Override
+            public void received(Connection connection, Object object) {
+                if(object instanceof DownloadStopMessage){
+                    DownloadStopMessage message = (DownloadStopMessage)object;
+                    //If all gamedownloads should be stopped
+                    if(message.user == null && message.game == null){
+                        log.info("Server stopped all downloads.");
+                        gameDownloadManager.stopAll();
+                    }
                 }
             }
         });

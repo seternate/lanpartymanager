@@ -107,7 +107,7 @@ public class LANServer extends Server {
      *
      * @param server that should be recreated
      */
-    public LANServer(LANServer server){
+    private LANServer(LANServer server){
         this(server.gamedirectory);
         this.start();
     }
@@ -116,6 +116,16 @@ public class LANServer extends Server {
     public void start() {
         super.start();
         log.info("Server started successfully.");
+    }
+
+    public LANServer restart(){
+        for(Connection connection : getConnections()){
+            connection.sendTCP(new DownloadStopMessage());
+        }
+        stop();
+        close();
+        this.gameUploadManager.stopAll();
+        return new LANServer(this);
     }
 
     /**

@@ -87,9 +87,7 @@ public final class LanServer {
                 else if(argument.equals("downloads"))
                     printDownloads();
                 else if(argument.equals("restart")){
-                    server.stop();
-                    server.close();
-                    server = new LANServer(server);
+                    server = server.restart();
                 }
                 else if(argument.equals("exit")){
                     server.close();

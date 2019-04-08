@@ -76,7 +76,10 @@ public class GameDownload extends Thread {
         //Save incoming file and remove this GameDownload after finished
             try {
                 saveFile();
-            } catch (IOException e) {
+            } catch (Exception e) {
+                if(stop) {
+                    return;
+                }
                 log.error("Error while saving/extracting the gamefile.", e);
             } finally {
                 manager.remove(this);
@@ -156,7 +159,7 @@ public class GameDownload extends Thread {
         clientsocket.close();
         serversocket.close();
         if(stop) {
-            log.info("Download of '" + game + "' was stopped by the user.");
+            log.info("Download of '" + game + "' was stopped.");
             return;
         }
         log.info("Download of '" + game + "' ended successfully - "
