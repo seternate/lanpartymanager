@@ -4,6 +4,7 @@ import entities.game.Game;
 import entities.user.User;
 import javafx.application.Platform;
 import javafx.collections.MapChangeListener;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -111,9 +112,9 @@ public class UsersController {
         itemJoin.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                //TODO: mit serverliste
                 User user = lvUsers.getSelectionModel().getSelectedItem();
-                Game game = ApplicationManager.getUserRunGames().get(user);
+                ObservableList<Game> servers = ApplicationManager.getUserRunServers().get(user);
+                Game game = servers.get(servers.size() - 1);
                 if(game != null)
                     ApplicationManager.connectServer(game, user.getIpAddress());
             }

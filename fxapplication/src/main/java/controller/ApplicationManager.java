@@ -309,7 +309,8 @@ public class ApplicationManager {
      */
     public static void connectServer(Game game, String ip){
         client.connectServer(game, ip);
-        serverconnectstage.hide();
+        if(serverconnectstage.isShowing())
+            serverconnectstage.hide();
     }
 
     /**
@@ -317,6 +318,13 @@ public class ApplicationManager {
      */
     public static ObservableMap<User, Game> getUserRunGames(){
         return client.getRunGamesList();
+    }
+
+    /**
+     * @return UserRunServerList of open games running.
+     */
+    public static ObservableMap<User, ObservableList<Game>> getUserRunServers(){
+        return client.getRunServerList();
     }
 
 

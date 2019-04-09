@@ -287,17 +287,36 @@ public class Client implements Runnable {
 
 
         rungames.keySet().forEach(key -> {
-            if(rungames.get(key).size() == 0){
-                rungameslist.put(key, null);
-                return;
-            }
             Game newValue = rungames.get(key).get(rungames.get(key).size() - 1);
             Game oldValue = rungameslist.putIfAbsent(key, newValue);
             if(oldValue != null && !newValue.equals(oldValue))
-                rungameslist.put(key, newValue);
+                Platform.runLater(() -> rungameslist.put(key, newValue));
+        });
+        rungameslist.keySet().forEach(key -> {
+            if(rungames.get(key) == null)
+                Platform.runLater(() -> rungameslist.remove(key));
         });
 
-
+        runserver.keySet().forEach(key -> {
+            if(runserverlist.containsKey(key)){
+                for(Game game : runserver.get(key)){
+                    if(!runserverlist.get(key).contains(game))
+                        Platform.runLater(() -> runserverlist.get(key).addAll(runserver.get(key)));
+                }
+                for(Game game : runserverlist.get(key)){
+                    if(!runserver.get(key).contains(game))
+                        Platform.runLater(() -> runserverlist.get(key).remove(game));
+                }
+            } else {
+                ObservableList<Game> obsList = FXCollections.observableArrayList();
+                obsList.addAll(runserver.get(key));
+                Platform.runLater(() -> runserverlist.put(key, obsList));
+            }
+        });
+        runserverlist.keySet().forEach(key -> {
+            if(runserver.get(key) == null)
+                Platform.runLater(() -> runserverlist.remove(key));
+        });
 
     }
 
