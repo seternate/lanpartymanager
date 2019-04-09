@@ -19,6 +19,11 @@
 {
     -fx-text-fill: #B3A9A3;
 }
+.label
+{
+    -fx-text-fill: white;
+    -fx-font: bold 16 System;
+}
 /*
 	BUTTON STUFF
 */
@@ -40,7 +45,7 @@
 {
     -fx-background-color: #333333;
     -fx-text-fill: white;
-    -fx-font: bold 20 System;
+    -fx-font: 14 System;
     -fx-border-radius: 0;
     -fx-background-insets: 0;
 
@@ -108,4 +113,9 @@
 .menu-item:focused, .menu-item:hover
 {
     -fx-background-color: #2E2E2E;
+}
+.menu-item > .label
+{
+    -fx-text-fill: white;
+    -fx-font: 12 System;
 }
