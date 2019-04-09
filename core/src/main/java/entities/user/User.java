@@ -2,12 +2,10 @@ package entities.user;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import deserialize.UserDeserializer;
-import entities.game.Game;
 import entities.settings.ClientSettings;
 import helper.NetworkHelper;
 
 import java.io.*;
-import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 @JsonDeserialize(using = UserDeserializer.class)
@@ -95,4 +93,5 @@ public final class User {
     public String toString(){
         return getUsername();
     }
+
 }
