@@ -283,7 +283,6 @@ public class Client implements Runnable {
 
     private void updateRunningApplications() throws IOException {
         UserRunGamesList rungames = client.getUserRunGames().execute().body();
-        //TODO: Deserializing
         UserRunServerList runserver = client.getUserRunServer().execute().body();
 
 
@@ -297,6 +296,8 @@ public class Client implements Runnable {
             if(oldValue != null && !newValue.equals(oldValue))
                 rungameslist.put(key, newValue);
         });
+
+
 
     }
 

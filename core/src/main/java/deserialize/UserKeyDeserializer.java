@@ -8,7 +8,7 @@ import entities.user.User;
 
 import java.io.IOException;
 
-public final class UserRunGamesListDeserializer extends KeyDeserializer {
+public final class UserKeyDeserializer extends KeyDeserializer {
 
     @Override
     public Object deserializeKey(String key, DeserializationContext ctxt) throws IOException, JsonProcessingException {

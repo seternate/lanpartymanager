@@ -378,9 +378,10 @@ public class LANServer extends Server {
                     userrungames.put(message.user, message.games);
                     StringBuilder opengames = new StringBuilder();
                     message.games.forEach(game -> opengames.append("'" + game + "' "));
-                    if(message.games.isEmpty())
+                    if(message.games.isEmpty()) {
+                        userrungames.remove(message.user);
                         log.info("'" + message.user + "' has closed all open games.");
-                    else
+                    }else
                         log.info("'" + message.user + "' has opened a game. Open games: " + opengames);
                     sendToAllTCP(userrungames);
                 }
@@ -405,9 +406,10 @@ public class LANServer extends Server {
                     userrunservers.put(message.user, message.servers);
                     StringBuilder openservers = new StringBuilder();
                     message.servers.forEach(server -> openservers.append("'" + server + "' "));
-                    if(message.servers.isEmpty())
+                    if(message.servers.isEmpty()) {
+                        userrunservers.remove(message.user);
                         log.info("'" + message.user + "' has closed all open servers.");
-                    else
+                    }else
                         log.info("'" + message.user + "' has opened a server. Open servers: " + openservers);
                     sendToAllTCP(userrunservers);
                 }
