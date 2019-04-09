@@ -49,4 +49,14 @@ public class LoginStage extends Stage {
         setResizable(false);
     }
 
+    /**
+     * Exit the whole application if the LoginStage is closed at the first login stage.
+     */
+    @Override
+    public void hide(){
+        super.hide();
+        if(!ApplicationManager.isMainstage())
+            System.exit(0);
+    }
+
 }

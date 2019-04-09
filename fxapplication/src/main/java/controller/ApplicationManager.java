@@ -333,6 +333,8 @@ public class ApplicationManager {
 
 
 
+
+
     public static User getUser(){
         return client.getUser();
     }
