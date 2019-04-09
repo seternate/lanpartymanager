@@ -13,6 +13,7 @@ import entities.user.UserRunServerList;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.ObservableMap;
 import javafx.scene.control.Label;
 import org.apache.log4j.Logger;
 import retrofit2.Retrofit;
@@ -39,8 +40,8 @@ public class Client implements Runnable {
     private volatile Label lblFileStatus;
     private volatile ObservableList<User> users;
     private volatile UserList userlist;
-    private volatile UserRunGamesList rungameslist;
-    private volatile UserRunServerList runserverlist;
+    private volatile ObservableMap<User, Game> rungameslist;
+    private volatile ObservableMap<User, ObservableList<Game>> runserverlist;
     private ScheduledExecutorService executor;
 
 
@@ -61,8 +62,8 @@ public class Client implements Runnable {
         userlist = new UserList();
         userlist = new UserList();
         user = new User();
-        rungameslist = new UserRunGamesList();
-        runserverlist = new UserRunServerList();
+        rungameslist = FXCollections.observableHashMap();
+        runserverlist = FXCollections.observableHashMap();
         //ExecutorService for the client updating
         executor = Executors.newSingleThreadScheduledExecutor();
         executor.scheduleAtFixedRate(this, 0, 500, TimeUnit.MILLISECONDS);
@@ -78,6 +79,8 @@ public class Client implements Runnable {
                 e.printStackTrace();
                 System.err.println("Client-application connection problems.");
                 status = null;
+            } catch(Exception e) {
+                e.printStackTrace();
             }
         } else {
             executor.shutdown();
@@ -108,28 +111,16 @@ public class Client implements Runnable {
         return this.users;
     }
 
-    public void sendUserData(String username, String gamepath, String order){
-        new Thread(() -> {
-            User userdata;
-            try {
-                userdata = new User(new ClientSettings());
-            } catch (IOException e) {
-                e.printStackTrace();
-                return;
-            }
-            userdata.setUsername(username);
-            userdata.setGamepath(gamepath);
-            userdata.setOrder(order);
-            try {
-                client.sendUser(userdata).execute();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }).start();
-    }
-
     public GameStatusProperty getGamestatusProperty(){
         return gamestatus;
+    }
+
+    public ObservableMap<User, Game> getRunGamesList(){
+        return rungameslist;
+    }
+
+    public ObservableMap<User, ObservableList<Game>> getRunServerList(){
+        return runserverlist;
     }
 
     public void startGame(Game game){
@@ -182,6 +173,46 @@ public class Client implements Runnable {
         }).start();
     }
 
+    public void sendUserData(String username, String gamepath, String order){
+        new Thread(() -> {
+            User userdata;
+            try {
+                userdata = new User(new ClientSettings());
+            } catch (IOException e) {
+                e.printStackTrace();
+                return;
+            }
+            userdata.setUsername(username);
+            userdata.setGamepath(gamepath);
+            userdata.setOrder(order);
+            try {
+                client.sendUser(userdata).execute();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }).start();
+    }
+
+    public void sendFiles(User user, List<File> files){
+        new Thread(() -> {
+            try {
+                client.sendFiles(user, files).execute();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }).start();
+    }
+
+    public void stopDownloadUnzip(Game game){
+        new Thread(() -> {
+            try {
+                client.stopDownloadUnzip(game).execute();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }).start();
+    }
+
     private void update() throws IOException {
         user = client.getUser().execute().body();
         if(ApplicationManager.getFocusedGame() != null){
@@ -199,8 +230,7 @@ public class Client implements Runnable {
         }
         updateUsers();
         updateGames();
-        rungameslist = client.getUserRunGames().execute().body();
-        runserverlist = client.getUserRunServer().execute().body();
+        updateRunningApplications();
         status = client.getStatus().execute().body();
         fileStatus = client.getFileStatus().execute().body();
     }
@@ -251,24 +281,23 @@ public class Client implements Runnable {
         });
     }
 
-    public void sendFiles(User user, List<File> files){
-        new Thread(() -> {
-            try {
-                client.sendFiles(user, files).execute();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }).start();
-    }
+    private void updateRunningApplications() throws IOException {
+        UserRunGamesList rungames = client.getUserRunGames().execute().body();
+        //TODO: Deserializing
+        UserRunServerList runserver = client.getUserRunServer().execute().body();
 
-    public void stopDownloadUnzip(Game game){
-        new Thread(() -> {
-            try {
-                client.stopDownloadUnzip(game).execute();
-            } catch (IOException e) {
-                e.printStackTrace();
+
+        rungames.keySet().forEach(key -> {
+            if(rungames.get(key).size() == 0){
+                rungameslist.put(key, null);
+                return;
             }
-        }).start();
+            Game newValue = rungames.get(key).get(rungames.get(key).size() - 1);
+            Game oldValue = rungameslist.putIfAbsent(key, newValue);
+            if(oldValue != null && !newValue.equals(oldValue))
+                rungameslist.put(key, newValue);
+        });
+
     }
 
 }

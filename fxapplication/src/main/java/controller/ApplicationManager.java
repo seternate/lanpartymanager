@@ -7,6 +7,7 @@ import clientInterface.GameStatusProperty;
 import entities.server.ServerStatus;
 import entities.user.User;
 import javafx.collections.ObservableList;
+import javafx.collections.ObservableMap;
 import javafx.scene.control.Label;
 import stages.*;
 
@@ -193,19 +194,6 @@ public class ApplicationManager {
         client.stopDownloadUnzip(game);
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
     /**
      * Starts a game.
      * @param game game to be started.
@@ -311,14 +299,22 @@ public class ApplicationManager {
         serverconnectstage.hide();
     }
 
+    /**
+     * @return UserRunGamesList of open games running.
+     */
+    public static ObservableMap<User, Game> getUserRunGames(){
+        return client.getRunGamesList();
+    }
+
+
+
+
 
 
 
     public static User getUser(){
         return client.getUser();
     }
-
-
 
     public static ObservableList<User> getOrderList(){
         return client.getUsersList();

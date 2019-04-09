@@ -15,4 +15,5 @@ public class UserRunGamesList extends HashMap<User, List<Game>> {
 
     public UserRunGamesList(){ }
 
+
 }

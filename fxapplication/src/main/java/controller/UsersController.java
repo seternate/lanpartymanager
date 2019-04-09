@@ -1,7 +1,9 @@
 package controller;
 
-import clientInterface.Client;
+import entities.game.Game;
 import entities.user.User;
+import javafx.application.Platform;
+import javafx.collections.MapChangeListener;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -10,8 +12,15 @@ import javafx.scene.control.ContextMenu;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
+import javafx.util.Callback;
 import org.apache.log4j.Logger;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 public class UsersController {
 
@@ -33,12 +42,21 @@ public class UsersController {
         @Override
         protected void updateItem(User item, boolean empty) {
             super.updateItem(item, empty);
+            this.setGraphicTextGap(10);
             setGraphic(null);
             setText(null);
             if(item != null){
                 setText(item.getUsername());
+                if(ApplicationManager.getUserRunGames().get(item) != null){
+                    Image image = UsersController.getIcon(ApplicationManager.getUserRunGames().get(item));
+                    ImageView icon = new ImageView(image);
+                    icon.setFitHeight(56);
+                    icon.setFitWidth(56);
+                    setGraphic(icon);
+                }
             }
         }
+
     }
 
 
@@ -46,6 +64,21 @@ public class UsersController {
 
     @FXML
     private ListView<User> lvUsers;
+
+
+    static Image getIcon(Game game){
+        File iconpath = new File(ApplicationManager.getGamepath() + "/images");
+        if (iconpath.listFiles() != null) {
+            for (File icon : iconpath.listFiles()) {
+                int index = icon.getName().lastIndexOf(".");
+                if (icon.getName().substring(0, index).equals(game.getName() + "_icon")) {
+                    log.info("Local icon of '" + game + "' found.");
+                    return new Image("file:" + icon.getAbsolutePath(), true);
+                }
+            }
+        }
+        return null;
+    }
 
 
     /**
@@ -56,9 +89,16 @@ public class UsersController {
         log.info("Initializing.");
         //Bind ObservableList from client to show users
         lvUsers.setItems(ApplicationManager.getUserslist());
-        lvUsers.setCellFactory(c -> new UserCell());
-
-        MenuItem itemUsername = new MenuItem("Copy IP-Address");
+        List<UserCell> cellFactory = new ArrayList<>();
+        lvUsers.setCellFactory(new Callback<ListView<User>, ListCell<User>>() {
+            @Override
+            public ListCell<User> call(ListView<User> param) {
+                UserCell cell = new UserCell();
+                cellFactory.add(cell);
+                return cell;
+            }
+        });
+        MenuItem itemUsername = new MenuItem("Copy IP to clipboard");
         itemUsername.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent e) {
                 Clipboard clipboard = Clipboard.getSystemClipboard();
@@ -67,15 +107,31 @@ public class UsersController {
                 clipboard.setContent(content);
             }
         });
-
         ContextMenu context = new ContextMenu(itemUsername);
         lvUsers.setContextMenu(context);
-
         lvUsers.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
                 if(event.getButton() == MouseButton.SECONDARY)
                     context.show(lvUsers, Side.BOTTOM, 0, 0);
+            }
+        });
+        ApplicationManager.getUserRunGames().addListener(new MapChangeListener<User, Game>() {
+            @Override
+            public void onChanged(Change<? extends User, ? extends Game> change) {
+                Image image = null;
+                if(change.getValueAdded() != null){
+                    image = UsersController.getIcon(change.getValueAdded());
+                }
+                ImageView icon = new ImageView(image);
+                icon.setFitHeight(48);
+                icon.setFitWidth(48);
+                for(UserCell cell : cellFactory){
+                    if(image != null && cell.getItem() != null && cell.getItem().equals(change.getKey()))
+                        Platform.runLater(() -> cell.setGraphic(icon));
+                    else
+                        Platform.runLater(() -> cell.setGraphic(null));
+                }
             }
         });
 
