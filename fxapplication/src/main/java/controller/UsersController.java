@@ -48,6 +48,8 @@ public class UsersController {
                 if(ApplicationManager.getUserRunGames().get(item) != null){
                     Image image = UsersController.getIcon(ApplicationManager.getUserRunGames().get(item));
                     ImageView icon = new ImageView(image);
+                    Tooltip tooltip = new Tooltip(ApplicationManager.getUserRunGames().get(item).toString());
+                    this.setTooltip(tooltip);
                     icon.setFitHeight(56);
                     icon.setFitWidth(56);
                     setGraphic(icon);
@@ -139,9 +141,14 @@ public class UsersController {
                     if(image != null && cell.getItem() != null && cell.getItem().equals(change.getKey()))
                         Platform.runLater(() -> {
                             cell.setGraphic(icon);
+                            Tooltip tooltip = new Tooltip(change.getValueAdded().toString());
+                            cell.setTooltip(tooltip);
                         });
                     else if(image == null && cell.getItem() != null && cell.getItem().equals((change.getKey())))
-                        Platform.runLater(() -> cell.setGraphic(null));
+                        Platform.runLater(() -> {
+                            cell.setGraphic(null);
+                            cell.setTooltip(null);
+                        });
                 }
             }
         });

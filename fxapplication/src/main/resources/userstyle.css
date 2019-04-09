@@ -109,3 +109,8 @@
 {
     -fx-background-color: #2E2E2E;
 }
+.tooltip
+{
+    -fx-text-fill: white;
+    -fx-font: 12 System;
+}
