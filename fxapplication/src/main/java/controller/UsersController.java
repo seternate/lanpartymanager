@@ -129,7 +129,7 @@ public class UsersController {
                 for(UserCell cell : cellFactory){
                     if(image != null && cell.getItem() != null && cell.getItem().equals(change.getKey()))
                         Platform.runLater(() -> cell.setGraphic(icon));
-                    else
+                    else if(image == null && cell.getItem() != null && cell.getItem().equals((change.getKey())))
                         Platform.runLater(() -> cell.setGraphic(null));
                 }
             }
