@@ -398,10 +398,10 @@ public class LANClient extends Client {
      * @param game game that should be started.
      * @return true if the game has been successfully started, else it returns false.
      */
-    public boolean startGame(Game game){
+    public boolean startGame(Game game, boolean download){
         //Check if the game is up-to-date/locally available.
         int uptodate = game.isUptodate();
-        if(uptodate != 0 && uptodate != -2){
+        if(uptodate != 0 && uptodate != -2 && download){
             switch(uptodate){
                 case -1: log.info("'" + game + "' can not be found in the gamepath '" + user.getGamepath() + "'.");
                 case -3: log.info("'" + game + "' is not up-to-date.");
@@ -413,7 +413,7 @@ public class LANClient extends Client {
                 while(gameDownloadManager.isDownloading(game)){
                     try { sleep(10); } catch (InterruptedException e) { }
                 }
-                startGame(game);
+                startGame(game, false);
             }).start();
             return false;
         }
@@ -423,7 +423,7 @@ public class LANClient extends Client {
             gameprocess = startProcess(game, GameFolderHelper.getGameFolder(game.getExeFileRelative()),
                                                 game.getExeFileRelative(), game.getParam());
             gamemonitor.add(new GameProcess(game, gameprocess));
-        } catch (IOException e) {
+        } catch (Exception e) {
             log.error("Can not launch the game '" + game + "'.", e);
             return false;
         }
@@ -491,12 +491,12 @@ public class LANClient extends Client {
      * @param ip ip address of the server the game should connect to.
      * @return true if the game STARTED properly, else false.
      */
-    public boolean connectServer(Game game, String ip){
+    public boolean connectServer(Game game, String ip, boolean download){
         //Check if the game is up-to-date/locally available.
         if(!game.isConnectDirect())
             return false;
         int uptodate = game.isUptodate();
-        if(uptodate != 0 && uptodate != -2){
+        if(uptodate != 0 && uptodate != -2 && download){
             switch(uptodate){
                 case -1: log.info("'" + game + "' can not be found in the gamepath '" + user.getGamepath() + "'.");
                 case -3: log.info("'" + game + "' is not up-to-date.");
@@ -508,7 +508,7 @@ public class LANClient extends Client {
                 while(gameDownloadManager.isDownloading(game)){
                     try { sleep(10); } catch (InterruptedException e) { }
                 }
-                connectServer(game, ip);
+                connectServer(game, ip, false);
             }).start();
             return false;
         }
@@ -534,11 +534,11 @@ public class LANClient extends Client {
      * @param param server command-line arguments.
      * @return true if the server STARTED properly, else false.
      */
-    public boolean startServer(Game game, String param){
+    public boolean startServer(Game game, String param, boolean download){
         if(!game.isOpenServer())
             return false;
         int uptodate = game.isUptodate();
-        if(uptodate != 0 && uptodate != -2){
+        if(uptodate != 0 && uptodate != -2 && download){
             switch(uptodate){
                 case -1: log.info("'" + game + "' can not be found in the gamepath '" + user.getGamepath() + "'.");
                 case -3: log.info("'" + game + "' is not up-to-date.");
@@ -550,7 +550,7 @@ public class LANClient extends Client {
                 while(gameDownloadManager.isDownloading(game)){
                     try { sleep(10); } catch (InterruptedException e) { }
                 }
-                startServer(game, param);
+                startServer(game, param, false);
             }).start();
             return false;
         }

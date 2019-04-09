@@ -42,7 +42,7 @@ public class FXAppInterface {
 
     @RequestMapping(value = "/startgame", method = RequestMethod.POST)
     public boolean startGame(@RequestBody Game game){
-        return client.startGame(game);
+        return client.startGame(game, true);
     }
 
     @RequestMapping(value = "/download", method = RequestMethod.POST)
@@ -67,12 +67,12 @@ public class FXAppInterface {
 
     @RequestMapping(value = "/startserver", method = RequestMethod.POST)
     public Boolean startServer(@RequestBody Game game, @RequestParam("param") String parameters){
-        return client.startServer(game, parameters);
+        return client.startServer(game, parameters, true);
     }
 
     @RequestMapping(value = "/connect", method = RequestMethod.POST)
     public Boolean connect(@RequestBody Game game, @RequestParam("ip") String ip){
-        return client.connectServer(game, ip);
+        return client.connectServer(game, ip, true);
     }
 
     @RequestMapping(value = "/sendfiles", method = RequestMethod.POST)
