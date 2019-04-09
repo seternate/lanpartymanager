@@ -98,8 +98,8 @@ public class UsersController {
                 return cell;
             }
         });
-        MenuItem itemUsername = new MenuItem("Copy IP to clipboard");
-        itemUsername.setOnAction(new EventHandler<ActionEvent>() {
+        MenuItem itemIPAddress = new MenuItem("Copy IP to clipboard");
+        itemIPAddress.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent e) {
                 Clipboard clipboard = Clipboard.getSystemClipboard();
                 ClipboardContent content = new ClipboardContent();
@@ -107,7 +107,18 @@ public class UsersController {
                 clipboard.setContent(content);
             }
         });
-        ContextMenu context = new ContextMenu(itemUsername);
+        MenuItem itemJoin = new MenuItem("Join open server");
+        itemJoin.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                //TODO: mit serverliste
+                User user = lvUsers.getSelectionModel().getSelectedItem();
+                Game game = ApplicationManager.getUserRunGames().get(user);
+                if(game != null)
+                    ApplicationManager.connectServer(game, user.getIpAddress());
+            }
+        });
+        ContextMenu context = new ContextMenu(itemIPAddress, itemJoin);
         lvUsers.setContextMenu(context);
         lvUsers.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override

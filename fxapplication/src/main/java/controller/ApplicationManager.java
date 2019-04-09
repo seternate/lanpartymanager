@@ -23,6 +23,7 @@ public class ApplicationManager {
     private static MainStage mainStage;
     private static UsersStage usersStage;
     private static OrderStage orderStage;
+    private static ServerbrowserStage serverbrowserStage;
     private static ServerStartStage serverstartstage;
     private static ServerConnectStage serverconnectstage;
     private static Client client;
@@ -57,6 +58,7 @@ public class ApplicationManager {
         mainStage = new MainStage();
         usersStage = new UsersStage();
         orderStage = new OrderStage();
+        serverbrowserStage = new ServerbrowserStage();
         mainStage.show();
         loginStage.hide();
         loginStage = new LoginStage();
@@ -93,12 +95,23 @@ public class ApplicationManager {
     }
 
     /**
+     * Shows the serverbrowser stage.
+     */
+    public static void showServerBrowser(){
+        if(serverbrowserStage.isShowing())
+            serverbrowserStage.requestFocus();
+        else
+            serverbrowserStage.show();
+    }
+
+    /**
      * Called from main stage to proper exit the application.
      */
     public static void closeAllMainStages(){
         usersStage.hide();
         loginStage.hide();
         orderStage.hide();
+        serverbrowserStage.hide();
     }
 
     /**

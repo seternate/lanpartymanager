@@ -51,6 +51,14 @@
             <Insets bottom="7.0" right="90.0" />
          </StackPane.margin>
       </ImageView>
+      <ImageView fx:id="ivServerbrowser" fitHeight="150.0" fitWidth="45.0" pickOnBounds="true" preserveRatio="true" StackPane.alignment="BOTTOM_RIGHT">
+         <image>
+            <Image url="@serverbrowser_icon.png" />
+         </image>
+         <StackPane.margin>
+            <Insets right="122.0" />
+         </StackPane.margin>
+      </ImageView>
       <ScrollPane fx:id="spMain" hbarPolicy="NEVER">
          <StackPane.margin>
             <Insets bottom="45.0" left="10.0" right="10.0" top="15.0" />

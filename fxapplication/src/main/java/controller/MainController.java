@@ -34,7 +34,7 @@ public class MainController {
     @FXML
     private Label lblStatus, lblFileStatus;
     @FXML
-    private ImageView ivUsers, ivSettings, ivOrder;
+    private ImageView ivUsers, ivSettings, ivOrder, ivServerbrowser;
 
 
     /**
@@ -76,6 +76,10 @@ public class MainController {
         ivOrder.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
             if(event.getButton() == MouseButton.PRIMARY)
                 ApplicationManager.showOrder();
+        });
+        ivServerbrowser.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+            if(event.getButton() == MouseButton.PRIMARY)
+                ApplicationManager.showServerBrowser();
         });
         log.info("Added all button listener.");
     }
