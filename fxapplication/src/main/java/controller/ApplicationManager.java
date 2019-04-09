@@ -309,7 +309,7 @@ public class ApplicationManager {
      */
     public static void connectServer(Game game, String ip){
         client.connectServer(game, ip);
-        if(serverconnectstage.isShowing())
+        if(serverconnectstage != null && serverconnectstage.isShowing())
             serverconnectstage.hide();
     }
 

@@ -10,6 +10,8 @@ import javafx.collections.ObservableList;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.ListView;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 
 public class ServerbrowserController {
     ObservableList<User> users = FXCollections.observableArrayList(ApplicationManager.getUserRunServers().keySet());
@@ -33,6 +35,13 @@ public class ServerbrowserController {
             @Override
             public void changed(ObservableValue<? extends User> observable, User oldValue, User newValue) {
                 lvGames.setItems(ApplicationManager.getUserRunServers().get(newValue));
+            }
+        });
+        lvGames.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+            if(event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2){
+                Game game = lvGames.getSelectionModel().getSelectedItem();
+                User user = lvUser.getSelectionModel().getSelectedItem();
+                ApplicationManager.connectServer(game, user.getIpAddress());
             }
         });
     }
