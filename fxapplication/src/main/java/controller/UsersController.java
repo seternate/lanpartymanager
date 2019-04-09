@@ -9,10 +9,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Side;
-import javafx.scene.control.ContextMenu;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
-import javafx.scene.control.MenuItem;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
@@ -78,7 +75,7 @@ public class UsersController {
                 }
             }
         }
-        return null;
+        return new Image(ClassLoader.getSystemResource("dummyicon.png").toString(), true);
     }
 
 
@@ -140,7 +137,9 @@ public class UsersController {
                 icon.setFitWidth(48);
                 for(UserCell cell : cellFactory){
                     if(image != null && cell.getItem() != null && cell.getItem().equals(change.getKey()))
-                        Platform.runLater(() -> cell.setGraphic(icon));
+                        Platform.runLater(() -> {
+                            cell.setGraphic(icon);
+                        });
                     else if(image == null && cell.getItem() != null && cell.getItem().equals((change.getKey())))
                         Platform.runLater(() -> cell.setGraphic(null));
                 }
