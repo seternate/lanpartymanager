@@ -32,9 +32,9 @@ public class UsersStage extends Stage {
             getIcons().add(new Image(icon));
         }
         setTitle("Users");
-        setMinWidth(220);
-        setMaxWidth(400);
-        setMinHeight(250);
+        setMinWidth(250);
+        setMaxWidth(350);
+        setMinHeight(400);
 
         Preferences pref = Preferences.userRoot().node("UserStage");
         double x = pref.getDouble("win_pos_x", (Screen.getPrimary().getVisualBounds().getWidth() - getWidth()) / 2);
