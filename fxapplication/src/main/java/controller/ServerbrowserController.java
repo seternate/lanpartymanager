@@ -25,7 +25,7 @@ public class ServerbrowserController {
         ApplicationManager.getUserRunServers().addListener(new MapChangeListener<User, ObservableList<Game>>() {
             @Override
             public void onChanged(Change<? extends User, ? extends ObservableList<Game>> change) {
-                System.out.println("here");
+                users.setAll(ApplicationManager.getUserRunServers().keySet());
             }
         });
         lvUser.setItems(users);

@@ -301,7 +301,7 @@ public class Client implements Runnable {
             if(runserverlist.containsKey(key)){
                 for(Game game : runserver.get(key)){
                     if(!runserverlist.get(key).contains(game))
-                        Platform.runLater(() -> runserverlist.get(key).addAll(runserver.get(key)));
+                        Platform.runLater(() -> runserverlist.get(key).add(game));
                 }
                 for(Game game : runserverlist.get(key)){
                     if(!runserver.get(key).contains(game))
