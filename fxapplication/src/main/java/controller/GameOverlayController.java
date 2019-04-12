@@ -153,6 +153,16 @@ class GameOverlayController {
                 Platform.runLater(() -> lblDownloadSpeed.setText(newValue));
             }
         });
+        //Game running listener
+        gameStatus.running.addListener(new ChangeListener<Boolean>() {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                if(newValue)
+                    Platform.runLater(() -> ivRunGame.setImage(new Image(ClassLoader.getSystemResource("close.png").toString(), true)));
+                else
+                    Platform.runLater(() -> ivRunGame.setImage(new Image(ClassLoader.getSystemResource("play.png").toString(), true)));
+            }
+        });
         //Label fontsizing
         gameTileImage.fitHeightProperty().addListener((observable, oldValue, newValue) -> {
             //Font resizing
