@@ -4,7 +4,7 @@ package entities.game;
  * Class for Client GUI communication about a games status on the system.
  */
 public final class GameStatus {
-    private boolean playable, local, version, update, downloading, unzipping;
+    private boolean playable, local, version, update, downloading, unzipping, running;
     private double downloadProgress, unzipProgress;
     private String downloadSpeed;
 
@@ -19,6 +19,7 @@ public final class GameStatus {
         update = false;
         downloading = false;
         unzipping = false;
+        running = false;
         downloadProgress = 0.;
         unzipProgress = 0.;
         downloadSpeed = "";
@@ -96,4 +97,11 @@ public final class GameStatus {
         this.downloadSpeed = downloadSpeed;
     }
 
+    public boolean isRunning() {
+        return running;
+    }
+
+    public void setRunning(boolean running) {
+        this.running = running;
+    }
 }

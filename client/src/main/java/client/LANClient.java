@@ -317,6 +317,8 @@ public class LANClient extends Client {
             case 0: gamestatus.setPlayable(true);
                     gamestatus.setLocal(true);
         }
+        //Check if game is running or not
+        gamestatus.setRunning(gamemonitor.getRunningProcesses().contains(game));
         //Check if game is downloaded, else send games status
         if(!gameDownloadManager.isDownloading(game))
             return gamestatus;

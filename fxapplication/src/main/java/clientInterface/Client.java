@@ -220,6 +220,7 @@ public class Client implements Runnable {
             assert newStatus != null;
             gamestatus.downloading.setValue(newStatus.isDownloading());
             gamestatus.unzipping.setValue(newStatus.isUnzipping());
+            gamestatus.running.setValue(newStatus.isRunning());
             gamestatus.local.setValue(newStatus.isLocal());
             gamestatus.update.setValue(newStatus.isUpdate());
             gamestatus.version.setValue(newStatus.isVersion());
