@@ -64,4 +64,7 @@ public interface FXDataClient {
     @GET("getuserrunservers")
     Call<UserRunServerList> getUserRunServer();
 
+    @POST("stopgame")
+    Call<Boolean> stopGame(@Body Game game);
+
 }

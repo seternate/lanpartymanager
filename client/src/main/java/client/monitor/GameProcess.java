@@ -63,4 +63,11 @@ public class GameProcess extends Thread{
         return game;
     }
 
+    public boolean kill(){
+        process.destroy();
+        if(process.isAlive())
+            return false;
+        return true;
+    }
+
 }

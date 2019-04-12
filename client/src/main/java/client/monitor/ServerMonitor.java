@@ -1,6 +1,7 @@
 package client.monitor;
 
 import client.LANClient;
+import entities.game.Game;
 
 /**
  * Handles all GameProcesses for the servers.
@@ -30,6 +31,12 @@ public class ServerMonitor extends Monitor{
         if(removed)
             client.updateOpenServers();
         return removed;
+    }
+
+    @Override
+    public boolean stop(Game game) {
+        //TODO
+        return false;
     }
 
 }

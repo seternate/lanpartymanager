@@ -45,4 +45,6 @@ public abstract class Monitor extends ArrayList<GameProcess> {
      * @return true if this monitor contained the gameprocess and removed it.
      */
     abstract boolean update(GameProcess gameProcess);
+
+    public abstract boolean stop(Game game);
 }

@@ -100,4 +100,9 @@ public class FXAppInterface {
         return new ResponseEntity<>(client.getUserRunServer(), HttpStatus.OK);
     }
 
+    @RequestMapping(value = "/stopgame", method = RequestMethod.POST)
+    public Boolean stopGame(@RequestBody Game game){
+        return client.stopGame(game);
+    }
+
 }

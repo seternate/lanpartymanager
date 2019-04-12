@@ -327,7 +327,14 @@ public class ApplicationManager {
         return client.getRunServerList();
     }
 
-
+    /**
+     * Stops a running game.
+     *
+     * @param game game to stop.
+     */
+    public static void stopGame(Game game){
+        client.stopGame(game);
+    }
 
 
 

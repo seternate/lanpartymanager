@@ -81,7 +81,8 @@ class GameOverlayController {
             if(event.getButton() == MouseButton.PRIMARY)
                 if(!gameStatus.running.getValue())
                     ApplicationManager.startGame(game);
-
+                else
+                    ApplicationManager.stopGame(game);
             event.consume();
         });
         ivDownloadGame.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {

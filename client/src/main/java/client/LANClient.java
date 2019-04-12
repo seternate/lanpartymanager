@@ -624,6 +624,15 @@ public class LANClient extends Client {
         return runserverlist;
     }
 
+    /**
+     * Kills a game subprocess.
+     *
+     * @param game game to stop.
+     * @return true if the process was killed, else false.
+     */
+    public boolean stopGame(Game game){
+        return gamemonitor.stop(game);
+    }
 
 
 
