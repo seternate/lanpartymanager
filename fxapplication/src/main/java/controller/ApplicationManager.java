@@ -112,6 +112,7 @@ public class ApplicationManager {
         loginStage.hide();
         orderStage.hide();
         serverbrowserStage.hide();
+        System.exit(0);
     }
 
     /**
