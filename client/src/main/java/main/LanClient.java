@@ -2,14 +2,17 @@ package main;
 
 import client.LANClient;
 import com.esotericsoftware.minlog.Log;
+import controller.ApplicationManager;
 import helper.kryo.NoKryoLogging;
+import javafx.application.Application;
+import javafx.stage.Stage;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
 @ComponentScan(basePackages="springboot")
-public class LanClient {
+public class LanClient extends Application {
     public static LANClient client;
 
 
@@ -23,6 +26,12 @@ public class LanClient {
         client = new LANClient();
 
         SpringApplication.run(LanClient.class, args);
+
+        launch(args);
     }
 
+    @Override
+    public void start(Stage primaryStage) throws Exception {
+        ApplicationManager.start();
+    }
 }
