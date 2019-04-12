@@ -101,6 +101,7 @@
 {
     -fx-background-color: #2E2E2E;
     -fx-text-fill: white;
+    -fx-cell-size: 36px;
 }
 .cell:hover
 {

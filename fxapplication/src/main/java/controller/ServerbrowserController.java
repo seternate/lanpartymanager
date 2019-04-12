@@ -12,15 +12,36 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Side;
-import javafx.scene.control.ContextMenu;
-import javafx.scene.control.ListView;
-import javafx.scene.control.MenuItem;
-import javafx.scene.input.Clipboard;
-import javafx.scene.input.ClipboardContent;
-import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.*;
+import javafx.util.Callback;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ServerbrowserController {
+
+    private class GameCell extends ListCell<Game> {
+        @Override
+        protected void updateItem(Game item, boolean empty) {
+            super.updateItem(item, empty);
+            this.setGraphicTextGap(10);
+            setGraphic(null);
+            setText(null);
+            if(item != null){
+                setText(item.getName());
+                Image image = ControllerHelper.getIcon(item);
+                ImageView icon = new ImageView(image);
+                icon.setFitHeight(32);
+                icon.setFitWidth(32);
+                setGraphic(icon);
+            }
+        }
+    }
+
+
     ObservableList<User> users = FXCollections.observableArrayList(ApplicationManager.getUserRunServers().keySet());
     @FXML
     private ListView<User> lvUser;
@@ -91,6 +112,15 @@ public class ServerbrowserController {
             }
             if(event.getButton() == MouseButton.SECONDARY)
                 contextGame.show(lvGames, Side.BOTTOM, 0, 0);
+        });
+        List<GameCell> cellFactory = new ArrayList<>();
+        lvGames.setCellFactory(new Callback<ListView<Game>, ListCell<Game>>() {
+            @Override
+            public ListCell<Game> call(ListView<Game> param) {
+                GameCell cell = new GameCell();
+                cellFactory.add(cell);
+                return cell;
+            }
         });
     }
 
