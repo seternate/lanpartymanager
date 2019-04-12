@@ -42,7 +42,7 @@ public class ServerbrowserStage extends Stage {
         //Set title with users ip-address
         setTitle("Serverbrowser");
         //MinHeight and MinWidth for the window
-        setMinWidth(300);
+        setMinWidth(350);
         setMaxWidth(500);
         setMinHeight(250);
 

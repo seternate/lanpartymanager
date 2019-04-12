@@ -28,8 +28,8 @@ public class OrderStage extends Stage {
         }
         setTitle("Food ordering");
         //MinHeight and MinWidth for the window
-        setMinWidth(260);
-        setMaxWidth(350);
+        setMinWidth(330);
+        setMaxWidth(500);
         setMinHeight(250);
 
         Preferences pref = Preferences.userRoot().node("OrderStage");
