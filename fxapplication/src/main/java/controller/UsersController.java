@@ -46,7 +46,7 @@ public class UsersController {
             if(item != null){
                 setText(item.getUsername());
                 if(ApplicationManager.getUserRunGames().get(item) != null){
-                    Image image = UsersController.getIcon(ApplicationManager.getUserRunGames().get(item));
+                    Image image = ControllerHelper.getIcon(ApplicationManager.getUserRunGames().get(item));
                     ImageView icon = new ImageView(image);
                     Tooltip tooltip = new Tooltip(ApplicationManager.getUserRunGames().get(item).toString());
                     this.setTooltip(tooltip);
@@ -64,21 +64,6 @@ public class UsersController {
 
     @FXML
     private ListView<User> lvUsers;
-
-
-    static Image getIcon(Game game){
-        File iconpath = new File(ApplicationManager.getGamepath() + "/images");
-        if (iconpath.listFiles() != null) {
-            for (File icon : iconpath.listFiles()) {
-                int index = icon.getName().lastIndexOf(".");
-                if (icon.getName().substring(0, index).equals(game.getName() + "_icon")) {
-                    log.info("Local icon of '" + game + "' found.");
-                    return new Image("file:" + icon.getAbsolutePath(), true);
-                }
-            }
-        }
-        return new Image(ClassLoader.getSystemResource("dummyicon.png").toString(), true);
-    }
 
 
     /**
@@ -132,7 +117,7 @@ public class UsersController {
             public void onChanged(Change<? extends User, ? extends Game> change) {
                 Image image = null;
                 if(change.getValueAdded() != null){
-                    image = UsersController.getIcon(change.getValueAdded());
+                    image = ControllerHelper.getIcon(change.getValueAdded());
                 }
                 ImageView icon = new ImageView(image);
                 icon.setFitHeight(48);
