@@ -38,7 +38,7 @@ public class OrderController {
                     } else {
                         super.setText(null);
                         Label l = new Label(item);
-                        l.setStyle("-fx-text-fill: white;");
+                        l.setStyle("-fx-text-fill: white; -fx-font: 12 System;");
                         l.setWrapText(true);
                         VBox box = new VBox(l);
                         l.heightProperty().addListener((observable,oldValue,newValue)-> {

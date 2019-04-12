@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onKeyPressed="#enter" prefHeight="450.0" prefWidth="240.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.OrderController">
+<VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onKeyPressed="#enter" prefHeight="450.0" prefWidth="240.0" stylesheets="@foodstyle.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.OrderController">
    <children>
       <TableView fx:id="tvOrdering" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="279.0" prefWidth="240.0" VBox.vgrow="ALWAYS">
         <columns>
