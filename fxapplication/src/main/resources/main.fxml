@@ -20,7 +20,7 @@
                   <Insets bottom="15.0" left="5.0" right="3.0" top="5.0" />
                </HBox.margin>
             </Label>
-            <Label fx:id="lblFileStatus" text="(Receiving files ....)">
+            <Label fx:id="lblFileStatus" text="(Receiving files ....)" textFill="RED">
                <HBox.margin>
                   <Insets bottom="15.0" right="5.0" top="5.0" />
                </HBox.margin>
