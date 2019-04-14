@@ -30,8 +30,14 @@ public class LanClient extends Application {
         launch(args);
     }
 
+    /**
+     * Starting method for {@link Application}.
+     *
+     * @param primaryStage stage opened by calling {@link #launch(String...)}.
+     */
     @Override
-    public void start(Stage primaryStage) throws Exception {
+    public void start(Stage primaryStage) {
         ApplicationManager.start();
     }
+
 }
