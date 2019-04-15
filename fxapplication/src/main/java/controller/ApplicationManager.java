@@ -1,11 +1,13 @@
 package controller;
 
 import clientInterface.Client;
-import entities.Game;
-import entities.GameList;
-import entities.GameStatusProperty;
-import entities.User;
+import entities.game.Game;
+import entities.game.GameList;
+import clientInterface.GameStatusProperty;
+import entities.server.ServerStatus;
+import entities.user.User;
 import javafx.collections.ObservableList;
+import javafx.collections.ObservableMap;
 import javafx.scene.control.Label;
 import stages.*;
 
@@ -21,6 +23,7 @@ public class ApplicationManager {
     private static MainStage mainStage;
     private static UsersStage usersStage;
     private static OrderStage orderStage;
+    private static ServerbrowserStage serverbrowserStage;
     private static ServerStartStage serverstartstage;
     private static ServerConnectStage serverconnectstage;
     private static Client client;
@@ -33,6 +36,7 @@ public class ApplicationManager {
         preloaderStage.show();
         client = new Client();
     }
+
     /**
      * Called after client connected once to the client-application and opens the login stage.
      */
@@ -43,37 +47,27 @@ public class ApplicationManager {
     }
 
     /**
-     * Called after login stage and sends username and gamepath to the client. Opens the main stage and build the user
-     * and settings stage.
+     * Called after login stage and sends username and gamepath to the client. Opens the main stage and build the user,
+     * order and setting stage.
      *
      * @param username username from the login stage.
      * @param gamepath gampath from the login stage.
      */
-    static void openMainStage(String username, String gamepath){
+    public static void openMainStage(String username, String gamepath){
         client.sendUserData(username, gamepath, getUser().getOrder());
         mainStage = new MainStage();
         usersStage = new UsersStage();
         orderStage = new OrderStage();
+        serverbrowserStage = new ServerbrowserStage();
         mainStage.show();
         loginStage.hide();
         loginStage = new LoginStage();
     }
 
     /**
-     * Called from the settings stage to save username and gamepath.
-     *
-     * @param username username from the login stage.
-     * @param gamepath gampath from the login stage.
-     */
-    static void saveSettings(String username, String gamepath){
-        client.sendUserData(username, gamepath, getUser().getOrder());
-        loginStage.hide();
-    }
-
-    /**
      * Shows the user stage.
      */
-    static void showUsers(){
+    public static void showUsers(){
         if(usersStage.isShowing())
             usersStage.requestFocus();
         else
@@ -83,7 +77,7 @@ public class ApplicationManager {
     /**
      * Shows the settings stage.
      */
-    static void showSettings(){
+    public static void showSettings(){
         if(loginStage.isShowing())
             loginStage.requestFocus();
         else
@@ -93,11 +87,21 @@ public class ApplicationManager {
     /**
      * Shows the food ordering stage.
      */
-    static void showOrder(){
+    public static void showOrder(){
         if(orderStage.isShowing())
             orderStage.requestFocus();
         else
             orderStage.show();
+    }
+
+    /**
+     * Shows the serverbrowser stage.
+     */
+    public static void showServerBrowser(){
+        if(serverbrowserStage.isShowing())
+            serverbrowserStage.requestFocus();
+        else
+            serverbrowserStage.show();
     }
 
     /**
@@ -107,52 +111,8 @@ public class ApplicationManager {
         usersStage.hide();
         loginStage.hide();
         orderStage.hide();
-    }
-
-    /**
-     * Starts a game.
-     * @param game game to be started.
-     */
-    static void startGame(Game game){
-        client.startGame(game);
-    }
-
-    /**
-     * Downloads a game.
-     *
-     * @param game game to be downloaded.
-     */
-    static void downloadGame(Game game){
-        client.downloadGame(game);
-    }
-
-    /**
-     * Opens the game folder in explorer.
-     *
-     * @param game game to be shown in the explorer.
-     */
-    static void openExplorer(Game game){
-        client.openExplorer(game);
-    }
-
-    /**
-     * Shows the serverconnectstage.
-     *
-     * @param game game to connect to a server.
-     */
-    static void openServerList(Game game){
-        serverconnectstage = new ServerConnectStage(game);
-        serverconnectstage.show();
-    }
-
-    /**
-     * Show the serverstartstage.
-     *
-     * @param game game to start a server with.
-     */
-    static void openServerStartup(Game game){
-        serverstartstage = new ServerStartStage(game);
-        serverstartstage.show();
+        serverbrowserStage.hide();
+        System.exit(0);
     }
 
     /**
@@ -169,7 +129,7 @@ public class ApplicationManager {
      *
      * @return true if preloaderStage is showing, else false.
      */
-    static boolean isPreloader(){
+    public static boolean isPreloader(){
         return preloaderStage.isShowing();
     }
 
@@ -183,24 +143,31 @@ public class ApplicationManager {
     }
 
     /**
+     * @return the status of the LANServer.
+     */
+    public static ServerStatus getServerStatus(){
+        return client.getServerStatus();
+    }
+
+    /**
+     * @return true if connected to the server, else false.
+     */
+    public static boolean isConnected(){
+        return client.getServerStatus().isConnected();
+    }
+
+    /**
      * @return username of the user.
      */
-    static String getUsername(){
+    public static String getUsername(){
         return client.getUser().getUsername();
     }
 
     /**
      * @return gamepath of the user.
      */
-    static String getGamepath(){
+    public static String getGamepath(){
         return client.getUser().getGamepath();
-    }
-
-    /**
-     * @return games available on the server.
-     */
-    static GameList getGames(){
-        return client.getGames();
     }
 
     /**
@@ -208,22 +175,97 @@ public class ApplicationManager {
      *
      * @param lblStatus label to be updated.
      */
-    static void setServerStatusLabel(Label lblStatus){
+    public static void setServerStatusLabel(Label lblStatus){
         client.setServerStatusLabel(lblStatus);
+    }
+
+    /**
+     * Called from the settings stage to save username and gamepath.
+     *
+     * @param username username from the login stage.
+     * @param gamepath gampath from the login stage.
+     */
+    public static void saveSettings(String username, String gamepath){
+        client.sendUserData(username, gamepath, getUser().getOrder());
+        loginStage.hide();
+    }
+
+    /**
+     * Saves the order from the user.
+     *
+     * @param order placed order from the user.
+     */
+    public static void setOrder(String order){
+        client.sendUserData(getUsername(), getGamepath(), order);
+    }
+
+    /**
+     * Stops the download or extraction of the specified game.
+     *
+     * @param game game to stop downloading or extracting.
+     */
+    public static void stopDownloadUnzip(Game game){
+        client.stopDownloadUnzip(game);
+    }
+
+    /**
+     * Starts a game.
+     * @param game game to be started.
+     */
+    public static void startGame(Game game){
+        client.startGame(game);
+    }
+
+    /**
+     * Downloads a game.
+     *
+     * @param game game to be downloaded.
+     */
+    public static void downloadGame(Game game){
+        client.downloadGame(game);
+    }
+
+    /**
+     * Opens the game folder in explorer.
+     *
+     * @param game game to be shown in the explorer.
+     */
+    public static void openExplorer(Game game){
+        client.openExplorer(game);
+    }
+
+    /**
+     * Shows the serverconnectstage.
+     *
+     * @param game game to connect to a server.
+     */
+    public static void openServerList(Game game){
+        serverconnectstage = new ServerConnectStage(game);
+        serverconnectstage.show();
+    }
+
+    /**
+     * Show the serverstartstage.
+     *
+     * @param game game to start a server with.
+     */
+    public static void openServerStartup(Game game){
+        serverstartstage = new ServerStartStage(game);
+        serverstartstage.show();
+    }
+
+    /**
+     * @return games available on the server.
+     */
+    public static GameList getGames(){
+        return client.getGames();
     }
 
     /**
      * @return users logged in the server.
      */
-    static ObservableList<User> getUserslist(){
+    public static ObservableList<User> getUserslist(){
         return client.getUsersList();
-    }
-
-    /**
-     * @return true if connected to the server, else false.
-     */
-    static boolean isConnected(){
-        return client.getServerStatus().isConnected();
     }
 
     /**
@@ -236,7 +278,7 @@ public class ApplicationManager {
     /**
      * @return gamestatus from the focused game.
      */
-    static GameStatusProperty getGamestatusProperty(){
+    public static GameStatusProperty getGamestatusProperty(){
         return client.getGamestatusProperty();
     }
 
@@ -255,7 +297,7 @@ public class ApplicationManager {
      * @param game game from which should a server be started.
      * @param parameters start parameters.
      */
-    static void startServer(Game game, String parameters){
+    public static void startServer(Game game, String parameters){
         client.startServer(game, parameters);
         serverstartstage.hide();
     }
@@ -266,28 +308,54 @@ public class ApplicationManager {
      * @param game game which should be connected to.
      * @param ip ip address of the user with the open server.
      */
-    static void connectServer(Game game, String ip){
+    public static void connectServer(Game game, String ip){
         client.connectServer(game, ip);
-        serverconnectstage.hide();
+        if(serverconnectstage != null && serverconnectstage.isShowing())
+            serverconnectstage.hide();
     }
 
-    static User getUser(){
+    /**
+     * @return UserRunGamesList of open games running.
+     */
+    public static ObservableMap<User, Game> getUserRunGames(){
+        return client.getRunGamesList();
+    }
+
+    /**
+     * @return UserRunServerList of open games running.
+     */
+    public static ObservableMap<User, ObservableList<Game>> getUserRunServers(){
+        return client.getRunServerList();
+    }
+
+    /**
+     * Stops a running game.
+     *
+     * @param game game to stop.
+     */
+    public static void stopGame(Game game){
+        client.stopGame(game);
+    }
+
+
+
+
+
+
+
+    public static User getUser(){
         return client.getUser();
     }
 
-    static void setOrder(String order){
-        client.sendUserData(getUsername(), getGamepath(), order);
+    public static ObservableList<User> getOrderList(){
+        return client.getUsersList();
     }
 
-    static ObservableList<User> getOrderList(){
-        return client.getOrderList();
-    }
-
-    static void sendFiles(User user, List<File> files){
+    public static void sendFiles(User user, List<File> files){
         client.sendFiles(user, files);
     }
 
-    static void setFileStatusLabel(Label lblFileStatus){
+    public static void setFileStatusLabel(Label lblFileStatus){
         client.setFileStatusLabel(lblFileStatus);
     }
 }

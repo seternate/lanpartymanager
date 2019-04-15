@@ -1,6 +1,6 @@
 package controller;
 
-import entities.Game;
+import entities.game.Game;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextArea;
 import javafx.scene.input.KeyCode;

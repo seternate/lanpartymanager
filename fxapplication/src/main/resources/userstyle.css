@@ -1,6 +1,6 @@
 .root
 {
-    -fx-base: rgba(60, 63, 65, 255);
+    -fx-base: #2E2E2E;
 }
 .close, .minimize
 {
@@ -12,7 +12,7 @@
 */
 .pane, .hbox, .vbox, .content, .text-area
 {
-    -fx-background-color: #3D3D3D;
+    -fx-background-color: #2E2E2E;
     -fx-background-radius: 0;
 }
 .pane > .label, .text-area, .hbox > .label, .vbox > .label
@@ -40,7 +40,7 @@
 {
     -fx-background-color: #333333;
     -fx-text-fill: white;
-    -fx-font: bold 18 System;
+    -fx-font: bold 20 System;
     -fx-border-radius: 0;
     -fx-background-insets: 0;
 
@@ -104,4 +104,13 @@
 .cell:selected
 {
     -fx-background-color: #828282;
+}
+.menu-item:focused, .menu-item:hover
+{
+    -fx-background-color: #2E2E2E;
+}
+.tooltip
+{
+    -fx-text-fill: white;
+    -fx-font: 12 System;
 }

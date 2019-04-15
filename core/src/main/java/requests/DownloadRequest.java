@@ -1,6 +1,6 @@
 package requests;
 
-import entities.Game;
+import entities.game.Game;
 
 public final class DownloadRequest {
     public Game game;

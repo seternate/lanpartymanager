@@ -1,7 +1,7 @@
 package controller;
 
-import entities.Game;
-import entities.User;
+import entities.game.Game;
+import entities.user.User;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;

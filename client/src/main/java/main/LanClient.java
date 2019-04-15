@@ -1,27 +1,43 @@
 package main;
 
-import client.MyClient;
+import client.LANClient;
 import com.esotericsoftware.minlog.Log;
-import helper.NoKryoLogging;
+import controller.ApplicationManager;
+import helper.kryo.NoKryoLogging;
+import javafx.application.Application;
+import javafx.stage.Stage;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.core.task.TaskExecutor;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 @SpringBootApplication
 @ComponentScan(basePackages="springboot")
-public class LanClient {
-    public static MyClient client;
+public class LanClient extends Application {
+    public static LANClient client;
 
+
+    /**
+     * Main-method of the LANClient app. Starts the LANClient and the Springbot-webapp.
+     *
+     * @param args command-line arguments.
+     */
     public static void main(String[] args) {
         Log.setLogger(new NoKryoLogging());
-        client = new MyClient();
-        client.start();
+        client = new LANClient();
 
         SpringApplication.run(LanClient.class, args);
+
+        launch(args);
+    }
+
+    /**
+     * Starting method for {@link Application}.
+     *
+     * @param primaryStage stage opened by calling {@link #launch(String...)}.
+     */
+    @Override
+    public void start(Stage primaryStage) {
+        ApplicationManager.start();
     }
 
 }

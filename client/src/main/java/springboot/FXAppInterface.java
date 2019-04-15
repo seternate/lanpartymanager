@@ -1,8 +1,8 @@
 package springboot;
 
-import client.MyClient;
-import entities.Game;
-import entities.User;
+import client.LANClient;
+import entities.game.Game;
+import entities.user.User;
 import main.LanClient;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,10 +11,14 @@ import org.springframework.web.bind.annotation.*;
 import java.io.File;
 import java.util.List;
 
+/**
+ * Class for Springboot communication with the FXApp GUI.
+ */
 @RestController
 @RequestMapping("/fx")
 public class FXAppInterface {
-    private static final MyClient client = LanClient.client;
+    private static final LANClient client = LanClient.client;
+
 
     @RequestMapping(value = "/status", method = RequestMethod.GET)
     public ResponseEntity status(){
@@ -38,7 +42,7 @@ public class FXAppInterface {
 
     @RequestMapping(value = "/startgame", method = RequestMethod.POST)
     public boolean startGame(@RequestBody Game game){
-        return client.startGame(game);
+        return client.startGame(game, true);
     }
 
     @RequestMapping(value = "/download", method = RequestMethod.POST)
@@ -63,12 +67,12 @@ public class FXAppInterface {
 
     @RequestMapping(value = "/startserver", method = RequestMethod.POST)
     public Boolean startServer(@RequestBody Game game, @RequestParam("param") String parameters){
-        return client.startServer(game, parameters);
+        return client.startServer(game, parameters, true);
     }
 
     @RequestMapping(value = "/connect", method = RequestMethod.POST)
     public Boolean connect(@RequestBody Game game, @RequestParam("ip") String ip){
-        return client.connectServer(game, ip);
+        return client.connectServer(game, ip, true);
     }
 
     @RequestMapping(value = "/sendfiles", method = RequestMethod.POST)
@@ -80,4 +84,25 @@ public class FXAppInterface {
     public Boolean getFileStatus(){
         return client.getDropFileDownloadStatus();
     }
+
+    @RequestMapping(value = "/stopdownloadunzip", method = RequestMethod.POST)
+    public Boolean stopDownloadUnzip(@RequestBody Game game){
+        return client.stopDownloadUnzip(game);
+    }
+
+    @RequestMapping(value = "/getuserrungames", method = RequestMethod.GET)
+    public ResponseEntity getUserRunGames(){
+        return new ResponseEntity<>(client.getUserRunGames(), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/getuserrunservers", method = RequestMethod.GET)
+    public ResponseEntity getUserRunServer(){
+        return new ResponseEntity<>(client.getUserRunServer(), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/stopgame", method = RequestMethod.POST)
+    public Boolean stopGame(@RequestBody Game game){
+        return client.stopGame(game);
+    }
+
 }

@@ -20,7 +20,7 @@
                   <Insets bottom="15.0" left="5.0" right="3.0" top="5.0" />
                </HBox.margin>
             </Label>
-            <Label fx:id="lblFileStatus" text="(Receiving files ....)">
+            <Label fx:id="lblFileStatus" text="(Receiving files ....)" textFill="RED">
                <HBox.margin>
                   <Insets bottom="15.0" right="5.0" top="5.0" />
                </HBox.margin>
@@ -49,6 +49,14 @@
          </image>
          <StackPane.margin>
             <Insets bottom="7.0" right="90.0" />
+         </StackPane.margin>
+      </ImageView>
+      <ImageView fx:id="ivServerbrowser" fitHeight="150.0" fitWidth="45.0" pickOnBounds="true" preserveRatio="true" StackPane.alignment="BOTTOM_RIGHT">
+         <image>
+            <Image url="@serverbrowser_icon.png" />
+         </image>
+         <StackPane.margin>
+            <Insets right="122.0" />
          </StackPane.margin>
       </ImageView>
       <ScrollPane fx:id="spMain" hbarPolicy="NEVER">

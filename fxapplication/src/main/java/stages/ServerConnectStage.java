@@ -1,7 +1,7 @@
 package stages;
 
 import controller.ServerConnectController;
-import entities.Game;
+import entities.game.Game;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;

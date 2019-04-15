@@ -1,93 +1,131 @@
 package main;
 
 import com.esotericsoftware.minlog.Log;
-import entities.Game;
-import entities.User;
-import helper.NoKryoLogging;
-import server.MyServer;
+import entities.game.Game;
+import entities.user.User;
+import helper.kryo.NoKryoLogging;
+import org.apache.log4j.Logger;
+import server.LANServer;
+import server.upload.GameUpload;
 
+import java.io.File;
 import java.util.Scanner;
 
+/**
+ * Class that starts the LAN server for the lanpartymanager.
+ */
 public final class LanServer {
-    private static MyServer server;
+    private static Logger log = Logger.getLogger(LanServer.class);
+    private static LANServer server;
 
 
+    /**
+     * Main-method.
+     *
+     * @param args Command-line arguments
+     */
     public static void main(String[] args) {
-        System.out.print("Please enter gamepath of the server: ");
-        Scanner scanner = new Scanner(System.in);
-        String gamepath = scanner.nextLine();
+        //Startup sequence. Get folder with zipped game files from the user.
+        System.out.println("Lanpartymanager - Server");
+        File gamepath = getGameFolder();
 
+        //Turn off KryoNet logging
         Log.setLogger(new NoKryoLogging());
-        server = new MyServer(gamepath);
+        //Start Server
+        server = new LANServer(gamepath);
         server.start();
-        System.out.println("SERVER: Started.\n");
 
         printGames();
         userInput();
     }
 
+    /**
+     * Listen on user inputs in a new {@link Thread}.
+     */
     private static void userInput(){
         new Thread(() -> {
             Scanner scanner = new Scanner(System.in);
             while(true){
-                System.out.println("\nINPUT: [rebuildgames] [games] [game -#] [users] [user -#] [restart] [exit]\n");
+                //Input parameter list
+                System.out.println("INPUT: [rebuildgames] [games] [game #] [users] [user #] [downloads] [download-stop #] [restart] [exit]");
 
-                String[] inputs = scanner.nextLine().split("-");
+                //Get user input and split it for arguments with multiple input
+                String[] inputs = scanner.nextLine().trim().split(" ");
+                //Get main argument
+                String argument = inputs[0];
 
-                if(inputs.length == 0)
-                    continue;
-
-                String arg = inputs[0];
-
-                if(arg.equals("rebuildgames")){
-                    server.updateGames();
+                //Choose right action to do for the provided main argument
+                if(argument.equals("rebuildgames")){
+                    server.reloadGames();
                     printGames();
                 }
-
-                else if(arg.equals("games"))
+                else if(argument.equals("games"))
                     printGames();
-
-                else if(arg.trim().equals("game")){
+                else if(argument.equals("game")){
                     int game;
                     try {
+                        //Subtract 1 for array-bounds.
                         game = Integer.valueOf(inputs[1]) - 1;
                         printGamesDetails(game);
                     } catch (Exception e) {
-                        System.err.println("ERROR: Wrong arguments provided! No such number!");
+                        log.warn("Wrong argument provided for 'game'. Please use 'games' for an existing game number.");
+                        log.debug(e);
                     }
                 }
-
-                else if(arg.equals("users"))
+                else if(argument.equals("users"))
                     printUsers();
-
-                else if(arg.trim().equals("user")){
+                else if(argument.trim().equals("user")){
                     int user;
                     try {
                         user = Integer.valueOf(inputs[1]) - 1;
                         printUsersDetails(user);
                     } catch (Exception e) {
-                        System.err.println("ERROR: Wrong arguments provided! No such number!");
+                        log.warn("Wrong argument provided for 'user'. Please use 'users' for an existing user number.");
+                        log.debug(e);
                     }
                 }
-
-                else if(arg.equals("restart")){
-                    server.stop();
-                    server.close();
-                    server = new MyServer(server);
+                else if(argument.equals("downloads"))
+                    printDownloads();
+                else if(argument.trim().equals("download-stop")){
+                    int download;
+                    try {
+                        download = Integer.valueOf(inputs[1]) - 1;
+                        stopDownload(download);
+                    } catch(Exception e) {
+                        log.warn("Wrong argument provided for 'user'. Please use 'users' for an existing user number.");
+                        log.debug(e);
+                    }
                 }
-
-                else if(arg.equals("exit")){
+                else if(argument.equals("restart")){
+                    server = server.restart();
+                }
+                else if(argument.equals("exit")){
                     server.close();
                     server.stop();
                     System.exit(0);
                 }
-
                 else
-                    System.err.println("ERROR: Wrong argument provided!");
+                    log.warn("Wrong argument provided.");
             }
         }).start();
     }
 
+    /**
+     * Prints all game names with a preceded number.
+     */
+    private static void printGames(){
+        for(int i = 0; i < server.getGames().size(); i++){
+            System.out.println("(" + (i+1) + ") " + server.getGames().get(i));
+        }
+    }
+
+    /**
+     * Prints details of a game. Printed are the name, filename on the server, version, command-line arguments,
+     * connection command-line arguments, server command-line arguments, .exe file name, server .exe file name,
+     * direct ip connection, open server, size of the game file [bytes].
+     *
+     * @param gamenumber game that should be printed in detail.
+     */
     private static void printGamesDetails(int gamenumber){
         Game game = server.getGames().get(gamenumber);
 
@@ -101,17 +139,30 @@ public final class LanServer {
         System.out.println("SERVER EXE-FILENAME: " + game.getExeServerRelative());
         System.out.println("DIRECT IP CONNECTION: " + game.isConnectDirect());
         System.out.println("OPEN SERVER: " + game.isOpenServer());
-        System.out.println("SIZE [BYTE]: " + game.getSizeServer());
+        System.out.println("SIZE [BYTE]: " + new File(server.getGamedirectory(), game.getServerFileName()).length());
     }
 
-    private static void printGames(){
-        for(int i = 0; i < server.getGames().size(); i++){
-            System.out.println("(" + (i+1) + ") " + server.getGames().get(i));
+    /**
+     * Prints all user names with a preceded number and the amount of open games and servers.
+     */
+    private static void printUsers(){
+        if(server.getUsers().isEmpty())
+            System.out.println("No users logged in.");
+
+        for(int i = 0; i < server.getUsers().size(); i++){
+            User user = server.getUsers().get(i);
+            System.out.println("(" + (i+1) + ") " + user + " : Games open - "
+                    + server.getOpenGamesSize(user) + " : Servers open - " + server.getOpenServersSize(user));
         }
     }
 
+    /**
+     * Prints details of a user. Printed are the name, ip-address, gamepath, order, open games, open servers.
+     *
+     * @param usernumber user that should be printed in detail.
+     */
     private static void printUsersDetails(int usernumber){
-        User user = server.getUsersAsList().get(usernumber);
+        User user = server.getUsers().get(usernumber);
 
         System.out.println("USERNAME: " + user.getUsername());
         System.out.println("IP-ADDRESS: " + user.getIpAddress());
@@ -120,14 +171,66 @@ public final class LanServer {
             System.out.println("ORDER:");
         else
             System.out.println("ORDER: " + user.getOrder());
+
+        StringBuilder opengames = new StringBuilder();
+        for(int i = 0; i < server.getOpenGamesSize(user) - 1; i++){
+            opengames.append(server.getOpenGames(user).get(i) + ", ");
+        }
+        if(server.getOpenGamesSize(user) != 0)
+            opengames.append(server.getOpenGames(user).get(server.getOpenGamesSize(user) - 1));
+        System.out.println("OPEN GAMES: " + opengames.toString());
+
+        StringBuilder openservers = new StringBuilder();
+        for(int i = 0; i < server.getOpenServersSize(user) - 1; i++){
+            openservers.append(server.getOpenServers(user).get(i) + ", ");
+        }
+        if(server.getOpenServersSize(user) != 0)
+            openservers.append(server.getOpenServers(user).get(server.getOpenServersSize(user) - 1));
+        System.out.println("OPEN SERVERS: " + openservers.toString());
     }
 
-    private static void printUsers(){
-        if(server.getUsersAsList().isEmpty()) {
-            System.out.println("No users logged in.");
+    /**
+     * Prints running downloads. Printed are the user, game, upload progress, average upload speed in MByte/second.
+     */
+    private static void printDownloads(){
+        if(server.getUploads().isEmpty())
+            System.out.println("No running uploads.");
+
+        for(int i = 0; i < server.getUploads().size(); i++){
+            GameUpload upload = server.getUploads().get(i);
+            System.out.println("(" + (i+1) + ") " + upload.getUser() + " : " + upload.getGame() + " ("
+                    + upload.getProgress()*100 + "%) - " + (double)Math.round((double)upload.getAverageUploadspeed()/10485.76)/100. + " MByte/sec");
         }
-        for(int i = 0; i < server.getUsersAsList().size(); i++){
-            System.out.println("(" + (i+1) + ") " + server.getUsersAsList().get(i));
-        }
+    }
+
+    /**
+     * Loop until the user enters a directory.
+     *
+     * @return {@link File} of the entered directory.
+     */
+    private static File getGameFolder(){
+        File gamedirectory;
+        String gamepath;
+        Scanner scanner = new Scanner(System.in);
+
+        do{
+            System.out.print("Please enter gamepath of the server: ");
+            gamepath = scanner.nextLine();
+            gamedirectory = new File(gamepath);
+            if(!gamedirectory.isDirectory())
+                log.error("'" + gamedirectory.getAbsolutePath() + "' is no directory or doesn't exist.");
+        }while(!gamedirectory.isDirectory());
+
+        return gamedirectory;
+    }
+
+    /**
+     * Stops a download.
+     *
+     * @param download download number to be stopped.
+     */
+    private static void stopDownload(int download){
+        GameUpload upload = server.getUploads().get(download);
+        server.stopUpload(upload);
     }
 }

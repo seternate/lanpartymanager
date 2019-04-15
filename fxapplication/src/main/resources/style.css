@@ -208,12 +208,30 @@
 {
     -fx-background-color: #F0544C;
 }
-#gameoverlaylabel
+#gameoverlaylabeleffect
 {
     -fx-text-fill: black;
-    -fx-effect: dropshadow(gaussian, grey, 10, 0.05, 0, 3);
+    -fx-effect: dropshadow(gaussian, grey, 12.5, 0.25, 0, 0);
+}
+#gametileoverlaylabel
+{
+    -fx-text-fill: black;
 }
 #gametileoverlay
 {
-    -fx-background-color: rgba(255, 255, 255, 0.6);
+    -fx-background-color: rgba(255, 255, 255, 0.75);
+}
+.progress-bar > .bar
+{
+    -fx-accent: #2E2E2E;
+    -fx-background-insets: 0;
+}
+.progress-bar > .track {
+    -fx-text-box-border: #999999;
+    -fx-control-inner-background: #999999;
+    -fx-background-insets: 0;
+}
+#progressbarlabel
+{
+    -fx-effect: dropshadow(gaussian, #2E2E2E, 2, 0.9, 0, 0);
 }

@@ -1,6 +1,6 @@
 package controller;
 
-import entities.User;
+import entities.user.User;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
@@ -38,7 +38,7 @@ public class OrderController {
                     } else {
                         super.setText(null);
                         Label l = new Label(item);
-                        l.setStyle("-fx-text-fill: white;");
+                        l.setStyle("-fx-text-fill: white; -fx-font: 12 System;");
                         l.setWrapText(true);
                         VBox box = new VBox(l);
                         l.heightProperty().addListener((observable,oldValue,newValue)-> {

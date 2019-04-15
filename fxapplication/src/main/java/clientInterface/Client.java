@@ -1,19 +1,35 @@
 package clientInterface;
 
 import controller.ApplicationManager;
-import entities.*;
+import entities.game.Game;
+import entities.game.GameList;
+import entities.game.GameStatus;
+import entities.server.ServerStatus;
+import entities.settings.ClientSettings;
+import entities.user.User;
+import entities.user.UserList;
+import entities.user.UserRunGamesList;
+import entities.user.UserRunServerList;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.ObservableMap;
 import javafx.scene.control.Label;
+import org.apache.log4j.Logger;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
-public class Client extends Thread {
+public class Client implements Runnable {
+    private static Logger log = Logger.getLogger(Client.class);
+
+
     private FXDataClient client;
     private volatile ServerStatus status;
     private volatile boolean fileStatus;
@@ -23,9 +39,10 @@ public class Client extends Thread {
     private volatile Label lblStatus;
     private volatile Label lblFileStatus;
     private volatile ObservableList<User> users;
-    private volatile ObservableList<User> orders;
     private volatile UserList userlist;
-    private volatile UserList orderlist;
+    private volatile ObservableMap<User, Game> rungameslist;
+    private volatile ObservableMap<User, ObservableList<Game>> runserverlist;
+    private ScheduledExecutorService executor;
 
 
     public Client(){
@@ -35,55 +52,38 @@ public class Client extends Thread {
                 .addConverterFactory(JacksonConverterFactory.create())
                 .build();
         client = retrofit.create(FXDataClient.class);
-
         status = null;
         lblStatus = null;
         lblFileStatus = null;
         games = new GameList();
         gamestatus = new GameStatusProperty();
         users = FXCollections.observableArrayList();
-        orders = FXCollections.observableArrayList();
+        users = FXCollections.observableArrayList();
         userlist = new UserList();
-        orderlist = new UserList();
+        userlist = new UserList();
         user = new User();
-
-        start();
+        rungameslist = FXCollections.observableHashMap();
+        runserverlist = FXCollections.observableHashMap();
+        //ExecutorService for the client updating
+        executor = Executors.newSingleThreadScheduledExecutor();
+        executor.scheduleAtFixedRate(this, 0, 500, TimeUnit.MILLISECONDS);
     }
 
     @Override
     public void run() {
-        //Ensure the preloader is shown at least 1.5 seconds.
-        try {
-            sleep(1500);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        //Close PreloaderStage after one successful connection to the Client-Application.
-        while(status == null && ApplicationManager.isRunning()) {
+        if(ApplicationManager.isRunning()){
+            updateStatusLabel();
             try {
                 update();
-                Platform.runLater(ApplicationManager::openLoginStage);
-                sleep(50);
-            } catch (Exception e) {
-                e.printStackTrace();
-                System.err.println("No client-application found.");
-            }
-        }
-
-        //Update all fields while any stage is open.
-        while(ApplicationManager.isRunning()){
-            try {
-                updateStatusLabel();
-                update();
-                sleep(50);
-            } catch (Exception e) {
+            } catch (IOException e) {
                 e.printStackTrace();
                 System.err.println("Client-application connection problems.");
-                if(e instanceof IOException){
-                    status.disconnected();
-                }
+                status = null;
+            } catch(Exception e) {
+                e.printStackTrace();
             }
+        } else {
+            executor.shutdown();
         }
     }
 
@@ -111,32 +111,16 @@ public class Client extends Thread {
         return this.users;
     }
 
-    public ObservableList<User> getOrderList(){
-        return this.orders;
-    }
-
-    public void sendUserData(String username, String gamepath, String order){
-        new Thread(() -> {
-            User userdata;
-            try {
-                userdata = new User(new ClientSettings());
-            } catch (IOException e) {
-                e.printStackTrace();
-                return;
-            }
-            userdata.setUsername(username);
-            userdata.setGamepath(gamepath);
-            userdata.setOrder(order);
-            try {
-                client.sendUser(userdata).execute();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }).start();
-    }
-
     public GameStatusProperty getGamestatusProperty(){
         return gamestatus;
+    }
+
+    public ObservableMap<User, Game> getRunGamesList(){
+        return rungameslist;
+    }
+
+    public ObservableMap<User, ObservableList<Game>> getRunServerList(){
+        return runserverlist;
     }
 
     public void startGame(Game game){
@@ -189,22 +173,75 @@ public class Client extends Thread {
         }).start();
     }
 
+    public void sendUserData(String username, String gamepath, String order){
+        new Thread(() -> {
+            User userdata;
+            try {
+                userdata = new User(new ClientSettings());
+            } catch (IOException e) {
+                e.printStackTrace();
+                return;
+            }
+            userdata.setUsername(username);
+            userdata.setGamepath(gamepath);
+            userdata.setOrder(order);
+            try {
+                client.sendUser(userdata).execute();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }).start();
+    }
+
+    public void sendFiles(User user, List<File> files){
+        new Thread(() -> {
+            try {
+                client.sendFiles(user, files).execute();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }).start();
+    }
+
+    public void stopDownloadUnzip(Game game){
+        new Thread(() -> {
+            try {
+                client.stopDownloadUnzip(game).execute();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }).start();
+    }
+
+    public void stopGame(Game game){
+        new Thread(() -> {
+            try {
+                client.stopGame(game).execute();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }).start();
+    }
+
     private void update() throws IOException {
         user = client.getUser().execute().body();
         if(ApplicationManager.getFocusedGame() != null){
             GameStatus newStatus = client.getGameStatus(ApplicationManager.getFocusedGame()).execute().body();
             assert newStatus != null;
-            gamestatus.downloading.setValue(newStatus.downloading);
-            gamestatus.unzipping.setValue(newStatus.unzipping);
-            gamestatus.download.setValue(newStatus.download);
-            gamestatus.update.setValue(newStatus.update);
-            gamestatus.version.setValue(newStatus.version);
-            gamestatus.playable.setValue(newStatus.playable);
-            gamestatus.downloadProgress.setValue(newStatus.downloadProgress);
-            gamestatus.unzipProgress.setValue(newStatus.unzipProgress);
+            gamestatus.downloading.setValue(newStatus.isDownloading());
+            gamestatus.unzipping.setValue(newStatus.isUnzipping());
+            gamestatus.running.setValue(newStatus.isRunning());
+            gamestatus.local.setValue(newStatus.isLocal());
+            gamestatus.update.setValue(newStatus.isUpdate());
+            gamestatus.version.setValue(newStatus.isVersion());
+            gamestatus.playable.setValue(newStatus.isPlayable());
+            gamestatus.downloadProgress.setValue(newStatus.getDownloadProgress());
+            gamestatus.unzipProgress.setValue(newStatus.getUnzipProgress());
+            gamestatus.downloadSpeed.setValue(newStatus.getDownloadSpeed());
         }
         updateUsers();
         updateGames();
+        updateRunningApplications();
         status = client.getStatus().execute().body();
         fileStatus = client.getFileStatus().execute().body();
     }
@@ -222,16 +259,13 @@ public class Client extends Thread {
     private void updateUsers() throws IOException {
         UserList list = client.getUserlist().execute().body();
         assert list != null;
-        if(!list.equals(orderlist)){
-            UserList temp = new UserList(list);
-            Platform.runLater(() -> orders.setAll(temp.toList()));
-        }
-        orderlist = new UserList(list);
-
-        list.remove(user);
         if(!list.equals(userlist)){
             UserList temp = new UserList(list);
-            Platform.runLater(() -> users.setAll(temp.toList()));
+            Platform.runLater(() -> {
+                users.setAll(temp.toList());
+                users.remove(user);
+                users.add(0, user);
+            });
         }
         userlist = new UserList(list);
     }
@@ -240,7 +274,9 @@ public class Client extends Thread {
         if(lblStatus == null)
             return;
         Platform.runLater(() -> {
-            if(status.isConnected())
+            if(status == null)
+                lblStatus.setText("Waiting for client application.");
+            else if(status.isConnected())
                 lblStatus.setText("Connected to server: " + status.getServerIP());
             else
                 lblStatus.setText("Waiting for server connection.");
@@ -256,14 +292,43 @@ public class Client extends Thread {
         });
     }
 
-    public void sendFiles(User user, List<File> files){
-        new Thread(() -> {
-            try {
-                client.sendFiles(user, files).execute();
-            } catch (IOException e) {
-                e.printStackTrace();
+    private void updateRunningApplications() throws IOException {
+        UserRunGamesList rungames = client.getUserRunGames().execute().body();
+        UserRunServerList runserver = client.getUserRunServer().execute().body();
+
+
+        rungames.keySet().forEach(key -> {
+            Game newValue = rungames.get(key).get(rungames.get(key).size() - 1);
+            Game oldValue = rungameslist.putIfAbsent(key, newValue);
+            if(oldValue != null && !newValue.equals(oldValue))
+                Platform.runLater(() -> rungameslist.put(key, newValue));
+        });
+        rungameslist.keySet().forEach(key -> {
+            if(rungames.get(key) == null)
+                Platform.runLater(() -> rungameslist.remove(key));
+        });
+
+        runserver.keySet().forEach(key -> {
+            if(runserverlist.containsKey(key)){
+                for(Game game : runserver.get(key)){
+                    if(!runserverlist.get(key).contains(game))
+                        Platform.runLater(() -> runserverlist.get(key).add(game));
+                }
+                for(Game game : runserverlist.get(key)){
+                    if(!runserver.get(key).contains(game))
+                        Platform.runLater(() -> runserverlist.get(key).remove(game));
+                }
+            } else {
+                ObservableList<Game> obsList = FXCollections.observableArrayList();
+                obsList.addAll(runserver.get(key));
+                Platform.runLater(() -> runserverlist.put(key, obsList));
             }
-        }).start();
+        });
+        runserverlist.keySet().forEach(key -> {
+            if(runserver.get(key) == null)
+                Platform.runLater(() -> runserverlist.remove(key));
+        });
+
     }
 
 }
