@@ -12,6 +12,7 @@ import client.monitor.ServerMonitor;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
+import com.sun.istack.internal.Nullable;
 import entities.game.Game;
 import entities.game.GameList;
 import entities.game.GameStatus;
@@ -37,15 +38,23 @@ import java.util.List;
 import static java.lang.Thread.sleep;
 
 /**
- * Creates the LANClient required for lanpartymanager usage.
+ * {@link LANClient} manages all communication with the <b>LANServer</b>. Also it handles the communication as an
+ * interface to the GUI and implements all needed back-end functionality.
+ * @author Levin Jeck
+ * @version 2.0
+ * @since 1.0
  */
 public class LANClient extends Client {
+    //Logging
     private static Logger log = Logger.getLogger(LANClient.class);
+    //Buffersizes
+    private static int writeBufferSize = 1048576,
+                       objectBufferSize = 1048576;
 
     private FileDropServer fileDropServer;
     private GameDownloadManager gameDownloadManager;
-    private volatile ServerStatus serverStatus;
     private ClientSettings settings;
+    private volatile ServerStatus serverStatus;
     private volatile User user;
     private volatile UserList users;
     private volatile GameList games;
@@ -56,11 +65,12 @@ public class LANClient extends Client {
 
 
     /**
-     * Creates and setup the client. Registering all needed listeners and classes for KryoNet. Loading the client
-     * settings, specified the object & write buffer, creates the user and starts the client.
+     * Creates the {@link LANClient} with a writebuffersize of {@value writeBufferSize} and a objectbuffersize of
+     * {@value objectBufferSize}. All listeners are registered. Loading the {@link ClientSettings}, starts the
+     * {@link LANClient} and starts searching for an open <b>LANServer</b>.
      */
     public LANClient(){
-        super(1048576, 1048576);
+        super(writeBufferSize, objectBufferSize);
         gameDownloadManager = new GameDownloadManager();
         gamemonitor = new GameMonitor(this);
         servermonitor = new ServerMonitor(this);
@@ -70,19 +80,17 @@ public class LANClient extends Client {
         //Register listener and classes to be send over KryoNet
         NetworkClassRegistrationHelper.registerClasses(this);
         registerListener();
-
         //Load client settings & user informations
         try {
             settings = new ClientSettings(true);
             user = new User(settings);
         } catch (Exception e) {
-            log.fatal("User creation was not possible.", e);
+            log.fatal("User creation was not possible.");
+            log.debug("User creation was not possible. CLIENTSETTINGS: " + settings + ", USER: " + user, e);
             System.exit(-1);
         }
-
         //Starts the server for file dropping function
         fileDropServer = new FileDropServer(user.getGamepath());
-
         //Starts the client
         new Thread(this).start();
         log.info("LANClient started.");
@@ -90,10 +98,11 @@ public class LANClient extends Client {
     }
 
     /**
-     * Connects the client to the LANServer if it is not connected.
+     * Tries to connect the {@link LANClient} with the <b>LANServer</b> if no connection is active.
      */
     private void connect(){
         new Thread(() -> {
+            //Amount of while loop passings
             int reconnects = 0;
             while(!isConnected()){
                 //Receiving server ip-address
@@ -103,12 +112,12 @@ public class LANClient extends Client {
                     try {
                         connect(500, serveraddress, settings.getServerTcp(), settings.getServerUdp());
                     } catch (IOException e) {
-                        log.error("Connection to server with ip-address '" + serveraddress.getHostAddress()
-                                + "' is not possible.", e);
+                        log.error("Can not connect to server.");
+                        log.debug("Can not connect to server. IP-ADDRESS: " + serveraddress.getHostAddress(), e);
                     }
                 } else {
                     reconnects++;
-                    log.warn("No LANServer is running for " + reconnects * 5 + " seconds. Wait for the server to go " +
+                    log.info("No LANServer is running for " + reconnects * 5 + " seconds. Wait for the server to go " +
                             "online.");
                 }
             }
@@ -116,7 +125,7 @@ public class LANClient extends Client {
     }
 
     /**
-     * Registers all needed listeners.
+     * Registers all listeners.
      */
     private void registerListener(){
         registerLoginListener();
@@ -130,7 +139,9 @@ public class LANClient extends Client {
     }
 
     /**
-     * Register listener for login and sends first informations to the server.
+     * Register listener for the server login. Sending {@link UserRunGamesList}, {@link UserRunServerList},
+     * {@link ImageDownloadRequest} and sets the <b>LANServer</b> ip-address to the {@link ServerStatus} and calls
+     * {@link ServerStatus#connected()}.
      */
     private void registerLoginListener(){
         addListener(new Listener() {
@@ -143,13 +154,14 @@ public class LANClient extends Client {
                 sendTCP(new ImageDownloadRequest(user, imagedownload.getPort()));
                 serverStatus.setServerIP(connection.getRemoteAddressTCP().getAddress().getHostAddress());
                 serverStatus.connected();
-                log.info("Successfully logged into the LANServer '" + serverStatus.getServerIP() + "'.");
+                log.info("Successfully logged into the LANServer.");
+                log.debug("Successfully logged into the LANServer. IP-ADDRESS: " + serverStatus.getServerIP());
             }
         });
     }
 
     /**
-     * Register listener for disconnect.
+     * Register listener for the server disconnect. Calls {@link ServerStatus#disconnected()} and {@link #connect()}.
      */
     private void registerDisconnectListener(){
         addListener(new Listener() {
@@ -157,13 +169,15 @@ public class LANClient extends Client {
             public void disconnected(Connection connection) {
                 serverStatus.disconnected();
                 log.info("Lost the connection to the LANServer.");
+                log.debug("Lost the connection to the LANServer. IP-ADDRESS: " + serverStatus.getServerIP());
+                serverStatus.setServerIP("");
                 connect();
             }
         });
     }
 
     /**
-     * Register listener for gamelists.
+     * Register listener if a {@link GamelistMessage} is received.
      */
     private void registerGamelistListener(){
         addListener(new Listener() {
@@ -172,14 +186,15 @@ public class LANClient extends Client {
                 if(object instanceof GamelistMessage){
                     GamelistMessage message = (GamelistMessage)object;
                     games = message.games;
-                    log.info("Received gamelist from the server '" + serverStatus.getServerIP() + "'.");
+                    log.info("Received a gamelist from the LANServer.");
+                    log.debug("Received a gamelist from the LANServer. IP-ADDRESS: " + serverStatus.getServerIP());
                 }
             }
         });
     }
 
     /**
-     * Register listener for userlists.
+     * Register listener if a {@link UserlistMessage} is received.
      */
     private void registerUserlistListener(){
         addListener(new Listener() {
@@ -188,14 +203,15 @@ public class LANClient extends Client {
                 if(object instanceof UserlistMessage){
                     UserlistMessage message = (UserlistMessage)object;
                     users = message.users;
-                    log.info("Received userlist from the server '" + serverStatus.getServerIP() + "'.");
+                    log.info("Received a userlist from the LANServer.");
+                    log.debug("Received a userlist from the LANServer. IP-ADDRESS: " + serverStatus.getServerIP());
                 }
             }
         });
     }
 
     /**
-     * Register listener for errors.
+     * Register listener if a {@link ErrorMessage} is received.
      */
     private void registerErrorListener(){
         addListener(new Listener() {
@@ -203,46 +219,46 @@ public class LANClient extends Client {
             public void received(Connection connection, Object object) {
                 if(object instanceof ErrorMessage){
                     ErrorMessage message = (ErrorMessage)object;
-                    log.error("message.error");
+                    log.error("Error from the LANServer: " + message.error);
                 }
             }
         });
     }
 
     /**
-     * Register listener for the list of running games of the users.
+     * Register listener if a {@link UserRunGamesList} is received.
      */
     private void registerUserRunGamesListener(){
         addListener(new Listener() {
             @Override
             public void received(Connection connection, Object object) {
                 if(object instanceof UserRunGamesList){
-                    UserRunGamesList runGamesList = (UserRunGamesList)object;
-                    rungameslist = runGamesList;
-                    log.info("Received userrungameslist from the server '" + serverStatus.getServerIP() + "'.");
+                    rungameslist = (UserRunGamesList)object;
+                    log.info("Received a userrungameslist from the LANServer.");
+                    log.debug("Received a userrungameslist from the LANServer. IP-ADDRESS: " + serverStatus.getServerIP());
                 }
             }
         });
     }
 
     /**
-     * Register listener for the list of running servers of the users.
+     * Register listener if a {@link UserRunServerList} is received.
      */
     private void registerUserRunServersListener(){
         addListener(new Listener() {
             @Override
             public void received(Connection connection, Object object) {
                 if(object instanceof UserRunServerList){
-                    UserRunServerList runServerList = (UserRunServerList)object;
-                    runserverlist = runServerList;
-                    log.info("Received userrunserverlist from the server '" + serverStatus.getServerIP() + "'.");
+                    runserverlist = (UserRunServerList)object;
+                    log.info("Received a userrunserverlist from the LANServer.");
+                    log.debug("Received a userrunserverlist from the LANServer. IP-ADDRESS: " + serverStatus.getServerIP());
                 }
             }
         });
     }
 
     /**
-     * Registers listener for stopping download messages.
+     * Registers listener if a {@link DownloadStopMessage} is received.
      */
     private void registerDownloadStopListener(){
         addListener(new Listener(){
@@ -250,14 +266,19 @@ public class LANClient extends Client {
             public void received(Connection connection, Object object) {
                 if(object instanceof DownloadStopMessage){
                     DownloadStopMessage message = (DownloadStopMessage)object;
-                    //If all gamedownloads should be stopped
+                    //If all gamedownloads should be stopped, User and Game are null
                     if(message.user == null && message.game == null){
-                        log.info("Server stopped all downloads.");
                         gameDownloadManager.stopAll();
+                        log.info("LANServer stopped all active downloads.");
+                        log.debug("LANServer stopped all active downloads. IP-ADDRESS: " + serverStatus.getServerIP() +
+                                "- USER: " + message.user + "- GAME: " + message.game);
                     }
-                    else if(message.user == null && message.game != null){
-                        log.info("Server stopped download of '" + message.game + "'.");
+                    //Else User is null and Game is the game to stop downloading
+                    else if(message.user == null){
                         gameDownloadManager.stop(message.game);
+                        log.info("LANServer stopped the active download of '" + message.game + "'.");
+                        log.debug("LANServer stopped the active download of '" + message.game + "'. IP-ADDRESS: "
+                                + serverStatus.getServerIP() + "- USER: " + message.user);
                     }
                 }
             }
@@ -265,43 +286,42 @@ public class LANClient extends Client {
     }
 
     /**
-     * @return status of the server.
+     * @return {@link ServerStatus} of the connected <b>LANServer</b>.
      */
     public ServerStatus getStatus(){
         return serverStatus;
     }
 
     /**
-     * @return user of this client.
+     * @return {@link User} of the {@link LANClient}.
      */
     public User getUser(){
         return user;
     }
 
     /**
-     * @return userlist from the server.
+     * @return {@link UserList} of the <b>LANServer</b>.
      */
     public UserList getUserList(){
         return users;
     }
 
     /**
-     * @return gamelist from the server.
+     * @return {@link GameList} of the <b>LANServer</b>.
      */
     public GameList getGames(){
         return games;
     }
 
     /**
-     * Generates the status of the specified game. Checks if its locally available, playable, version information
-     * can be determined, has to be updated and its download & unzip progress.
+     * Generates the {@link GameStatus} of a game. The local availability, the playability, the updatestatus, the running,
+     * the downloading/unzipping and progress fields are set.
      *
-     * @param game the status from this game will be generated
-     * @return status of the specified game
+     * @param game the game of which the {@link GameStatus} will be generated
+     * @return {@link GameStatus} of the game
      */
     public GameStatus getGameStatus(Game game){
         GameStatus gamestatus = new GameStatus();
-
         //Get uptodate state of the game
         int uptodate = game.isUptodate();
         switch(uptodate){
@@ -336,10 +356,11 @@ public class LANClient extends Client {
     }
 
     /**
-     * Updates the user information and send it to the server and downloads all covers again.
+     * Updates the {@link User} locally and syncs it with the <b>LANServer</b>. On every call an
+     * {@link ImageDownloadRequest} is made.
      *
-     * @param user user with new information, that should be changed
-     * @return true if any changes detected and successfully saved, false anything goes wrong.
+     * @param user new {@link User} object, which is used to copy all information to the current {@link User}
+     * @return <b>true</b> if any information changed and has been successfully updated and saved, else <b>false</b>
      */
     public boolean updateUser(User user) {
         try {
@@ -358,12 +379,13 @@ public class LANClient extends Client {
     }
 
     /**
-     * Downloads a game if it is not downloading already and there is enough free space on the disk where the gamepath
-     * leeds to.
+     * Downloading the {@link Game} from the <b>LANServer</b>, if it is not downloading already and if there is enough
+     * free space on the disk.
      *
-     * @param game game that should be downloaded.
-     * @return -1 if the game is downloading already, -2 if the client is not connected to the server, -3 if there is
-     * not enough free space on the disk, 0 if the download started successfully.
+     * @param game {@link Game} to download
+     * @return <b>-1</b> if the {@link Game} is downloading already, <b>-2</b> if the {@link LANClient} is not connected
+     * to the <b>LANServer</b>, <b>-3</b> if there is not enough free space on the disk, <b>0</b> if the download
+     * started successfully.
      */
     public int download(Game game){
         //Check if the game is downloading already
@@ -394,11 +416,64 @@ public class LANClient extends Client {
     }
 
     /**
-     * Starts a game if it is locally available and up-to-date, else it is downloaded first. After the game is started
-     * it is passed to the GameMonitor to keep track of the game process status.
+     * Starts the {@link Game} with the working directory of the {@code folderpath}. To pass any command-line arguments
+     * {@code parameters} can be used.
      *
-     * @param game game that should be started.
-     * @return true if the game has been successfully started, else it returns false.
+     * @param game {@link Game} to start a server or the {@code Game} itself
+     * @param folderpath path to the {@code game} folder
+     *                   TODO
+     * @param exepath relative path within the game folder of the exe.
+     * @param parameters command-line arguments that should be passed to the game starting.
+     * @return the process, which represents the started game.
+     * @throws IOException if an error occurs while starting the game
+     */
+    private Process startProcess(Game game, String folderpath, String exepath, String... parameters) throws IOException {
+        //Build command list for ProcessBuilder
+        List<String> commands = new ArrayList<>();
+        commands.add(folderpath + exepath);
+        commands.addAll(parseParameter(parameters));
+        //Set up ProcessBuilder
+        ProcessBuilder process = new ProcessBuilder(commands).inheritIO();
+        process.directory(new File(GameFolderHelper.getGameFolder(game.getExeFileRelative())));
+        //Start process
+        return process.start();
+    }
+
+    /**
+     * Parses the parameters passed to {@link #startProcess(Game, String, String, String...)} to solve server start
+     * bug of any game with server parameters starting without '-' or '+'.
+     *
+     * @param args parameters to be parsed.
+     * @return parsed paramters.
+     */
+    private List<String> parseParameter(String... args){
+        List<String> arguments = new ArrayList<>();
+        for(String arg : args){
+            List<Integer> pos = new ArrayList<>();
+
+            if(arg.trim().isEmpty())
+                continue;
+
+            //Space added cause of 'Call of Duty 4' bug can't finding the maps.
+            if(arg.startsWith("+") ||arg.startsWith("-")) {
+                arguments.add(arg + " ");
+                continue;
+            }
+
+            int first = arg.indexOf(" ");
+            arguments.add(arg.substring(0, first).trim());
+            arguments.add(arg.substring(first, arg.length() - 1).trim());
+
+        }
+        return arguments;
+    }
+
+    /**
+     * Starts the {@link Game} if it is locally available and up-to-date, else {@link #download(Game)} is called first.
+     * After the {@link Game} is started it is passed to the {@link GameMonitor}.
+     *
+     * @param game {@link Game} to start
+     * @return <b>true</b> if the {@link Game} has been successfully started, else <b>false</b>
      */
     public boolean startGame(Game game, boolean download){
         //Check if the game is up-to-date/locally available.
@@ -432,28 +507,7 @@ public class LANClient extends Client {
         return true;
     }
 
-    /**
-     * Starts the specified game within the working directory of the folderpath with the exepath. Command-Line arguments
-     * for the started game can be passed through parameters.
-     *
-     * @param game which should the game or a server be started.
-     * @param folderpath path of the root game folder.
-     * @param exepath relative path within the game folder of the exe.
-     * @param parameters command-line arguments that should be passed to the game starting.
-     * @return the process, which represents the started game.
-     * @throws IOException if an error occurs while starting the game
-     */
-    private Process startProcess(Game game, String folderpath, String exepath, String... parameters) throws IOException {
-        //Build command list for ProcessBuilder
-        List<String> commands = new ArrayList<>();
-        commands.add(folderpath + exepath);
-        commands.addAll(parseParameter(parameters));
-        //Set up ProcessBuilder
-        ProcessBuilder process = new ProcessBuilder(commands).inheritIO();
-        process.directory(new File(GameFolderHelper.getGameFolder(game.getExeFileRelative())));
-        //Start process
-        return process.start();
-    }
+
 
     /**
      * Sends the running games to the LANServer.
@@ -567,35 +621,6 @@ public class LANClient extends Client {
             return false;
         }
         return true;
-    }
-
-    /**
-     * Parses the parameters passed to {@link #startProcess(Game, String, String, String...)} to solve server start
-     * bug of any game with server parameters starting without '-' or '+'.
-     *
-     * @param args parameters to be parsed.
-     * @return parsed paramters.
-     */
-    private List<String> parseParameter(String... args){
-        List<String> arguments = new ArrayList<>();
-        for(String arg : args){
-            List<Integer> pos = new ArrayList<>();
-
-            if(arg.trim().isEmpty())
-                continue;
-
-            //Space added cause of 'Call of Duty 4' bug can't finding the maps.
-            if(arg.startsWith("+") ||arg.startsWith("-")) {
-                arguments.add(arg + " ");
-                continue;
-            }
-
-            int first = arg.indexOf(" ");
-            arguments.add(arg.substring(0, first).trim());
-            arguments.add(arg.substring(first, arg.length() - 1).trim());
-
-        }
-        return arguments;
     }
 
     /**
