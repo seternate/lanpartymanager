@@ -421,11 +421,10 @@ public class LANClient extends Client {
      *
      * @param game {@link Game} to start a server or the {@code Game} itself
      * @param folderpath path to the {@code game} folder
-     *                   TODO
-     * @param exepath relative path within the game folder of the exe.
-     * @param parameters command-line arguments that should be passed to the game starting.
-     * @return the process, which represents the started game.
-     * @throws IOException if an error occurs while starting the game
+     * @param exepath relative path of the exe to start within the {@code folderpath}
+     * @param parameters command-line arguments for the {@code game}
+     * @return {@link Process} of the started {@code game}
+     * @throws IOException if any error occurs while starting the {@code game}
      */
     private Process startProcess(Game game, String folderpath, String exepath, String... parameters) throws IOException {
         //Build command list for ProcessBuilder
@@ -440,11 +439,12 @@ public class LANClient extends Client {
     }
 
     /**
-     * Parses the parameters passed to {@link #startProcess(Game, String, String, String...)} to solve server start
-     * bug of any game with server parameters starting without '-' or '+'.
+     * Parses the parameters passed to {@link #startProcess(Game, String, String, String...)}. Solves a bug of passed
+     * command-line arguments, when calling {@link #startServer(Game, String, boolean)}, if the parameters starting
+     * without '-' or '+'.
      *
-     * @param args parameters to be parsed.
-     * @return parsed paramters.
+     * @param args parameters to be parsed
+     * @return parsed paramters
      */
     private List<String> parseParameter(String... args){
         List<String> arguments = new ArrayList<>();
@@ -507,27 +507,25 @@ public class LANClient extends Client {
         return true;
     }
 
-
-
     /**
-     * Sends the running games to the LANServer.
+     * Updates all running {@link Game} managed by the {@link GameMonitor} with the <b>LANServer</b>.
      */
     public void updateOpenGames(){
         sendTCP(new UserRunGameMessage(user, gamemonitor.getRunningProcesses()));
     }
 
     /**
-     * Sends the running servers to the LANServer.
+     * Updates all running {@link Game} managed by the {@link ServerMonitor} with the <b>LANServer</b>.
      */
     public void updateOpenServers(){
         sendTCP(new UserRunServerMessage(user, servermonitor.getRunningProcesses()));
     }
 
     /**
-     * Opens the exe file from the game at the explorer.
+     * Opens the folder of the {@code game} in the explorer.
      *
-     * @param game game that should be opened in the explorer.
-     * @return true if the explorer could be opened, else false.
+     * @param game {@link Game} to open in the explorer
+     * @return <b>true</b> if the explorer could be opened, else <b>false</b>
      */
     public boolean openExplorer(Game game){
         try {
@@ -540,12 +538,12 @@ public class LANClient extends Client {
     }
 
     /**
-     * Starts a game and connects it direct to the server with the given ip address, if the game is capable of direct
-     * connect through console-line arguments.
+     * Starts the {@code game} and connects direct to the server with the {@code ip}, if the {@code game} is capable
+     * of direct connect.
      *
-     * @param game game that should be started and connected to the server with the given ip.
-     * @param ip ip address of the server the game should connect to.
-     * @return true if the game STARTED properly, else false.
+     * @param game the {@link Game} of the server to connect to
+     * @param ip ip-address of the server
+     * @return <b>true</b> if the game started, else <b>false</b>
      */
     public boolean connectServer(Game game, String ip, boolean download){
         //Check if the game is up-to-date/locally available.
