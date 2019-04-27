@@ -1,6 +1,5 @@
 package client.download;
 
-
 import entities.game.Game;
 import entities.user.User;
 import helper.NetworkHelper;
@@ -14,8 +13,16 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 /**
- * Creates a new socket on an open port to listen for an incoming gamefile. Downloads the gamefile and extracts the
- * 7zip file after downloading. Also tracks the progress of the download and the extraction.
+ * {@code GameDownload} handles the download/extraction of a {@link Game}.
+ * <p>
+ *     Listens for the incoming {@code game} and saves to the {@code gamepath} of the {@code user}. After the download
+ *     finished the {@code game} gets extracted and the downloaded file is deleted. The {@code GameDownload} tracks the
+ *     process of the download and extraction. The download or extraction can be stopped by calling
+ *     {@link #stopDownloadUnzip()}.
+ * </p>
+ * @author Levin Jeck
+ * @version 1.0
+ * @since 1.0
  */
 public class GameDownload extends Thread {
     private static Logger log = Logger.getLogger(GameDownload.class);
@@ -32,10 +39,14 @@ public class GameDownload extends Thread {
 
 
     /**
-     * Creates the socket on a free port to listen for incoming gamefiles.
+     * Creates the {@code GameDownload} for the {@code game}.
+     * <p>
+     *     Opens a socket on any open port.
+     * </p>
      *
-     * @param game game to be downloaded.
-     * @param user user downloading the game.
+     * @param game {@link Game} to download
+     * @param user {@link User} downloading the {@code game}
+     * @since 1.0
      */
     public GameDownload(Game game, User user) {
         this.game = game;
@@ -58,9 +69,9 @@ public class GameDownload extends Thread {
     }
 
     /**
-     * {@inheritDoc}
-     * <br><br>
-     * {@link #getFileSizeAndConnect()} MUST be called first or {@link #run()} won't be called.
+     * {@link #getFileSizeAndConnect()} <b>MUST</b> be called first or the {@code Thread} won't start.
+     * @see Thread#start()
+     * @since 1.0
      */
     @Override
     public void start(){
@@ -71,6 +82,9 @@ public class GameDownload extends Thread {
         super.start();
     }
 
+    /**
+     * @since 1.0
+     */
     @Override
     public void run() {
         //Save incoming file and remove this GameDownload after finished
@@ -78,6 +92,7 @@ public class GameDownload extends Thread {
                 saveFile();
             } catch (Exception e) {
                 if(stop) {
+                    manager.remove(this);
                     return;
                 }
                 log.error("Error while saving/extracting the gamefile.", e);
@@ -87,16 +102,19 @@ public class GameDownload extends Thread {
     }
 
     /**
-     * This method MUST be called before saving the file. This is needed, because the client socket won't be connected
-     * to the server.
+     * This method <b>MUST</b> be called before calling {@link #start()}. This is needed to connect to the
+     * {@code LANServer} socket and get the filesize of the {@code game}.
      *
-     * @return the size of the downloaded gamefile [bytes].
+     * @return size of the gamefile [bytes]
+     * @since 1.0
      */
     public long getFileSizeAndConnect(){
+        //Try to connect to the serversocket while not connected
         while (!clientsocket.isConnected()) {
             try {
                 clientsocket = serversocket.accept();
                 DataInputStream dis = new DataInputStream(clientsocket.getInputStream());
+                //Read the size of the gamesize
                 gamesize = dis.readLong();
                 remaining = gamesize;
             } catch (IOException e) {
@@ -107,12 +125,15 @@ public class GameDownload extends Thread {
     }
 
     /**
-     * Receives the file from the LANServer. First stores the gamefile size and checks if enough free space is
-     * available on the disk specified by the gamepath, then downloads the game itself and updates the progress
-     * and speed information of the download. Also handles the extraction of the 7zip gamefile downloaded and deletes
-     * the 7zip file if the extraction was successful.
+     * Receives the gamefile from the {@code LANServer}.
+     * <p>
+     *     Downloads the gamefile and updates the progress and speed information of the download. Then handles the
+     *     extraction of the 7zip gamefile and deletes the 7zip file if the extraction was successful.
+     *     The download or extraction can be interrupted by calling {@link #stopDownloadUnzip()}.
+     * </p>
      *
      * @throws IOException if any error while reading or writing occurs an exception is thrown.
+     * @since 1.0
      */
     private void saveFile() throws IOException {
         //Get filename
@@ -184,89 +205,102 @@ public class GameDownload extends Thread {
     }
 
     /**
-     * Sets the manager for this gamefile download.
+     * Sets the {@link GameDownloadManager} for this {@code GameDownload}.
      *
-     * @param manager GameDownloadManager that should manage this gamefile download.
+     * @param manager {@code GameDownloadManager} to manage this {@code GameDownload}
+     * @since 1.0
      */
     void setManager(GameDownloadManager manager){
         this.manager = manager;
     }
 
     /**
-     * @return the downloaded game
+     * @return {@link Game} of this {@code GameDownload}
+     * @since 1.0
      */
     public Game getGame(){
         return game;
     }
 
     /**
-     * @return port of the server waiting to receive the game data.
+     * @return port of the {@code Socket} opened for the gamefile
+     * @since 1.0
      */
     public int getPort(){
         return port;
     }
 
     /**
-     * Stops the download or extraction of the gamefile.
+     * Stops the download or extraction of the {@code GameDownload}
+     * @since 1.0
      */
     public void stopDownloadUnzip(){
         stop = true;
     }
 
     /**
-     * @return true if the download and unzip thread should be stopped, else false.
+     * @return <b>true</b> if {@link #stopDownloadUnzip()} was called, else <b>false</b>
+     * @since 1.0
      */
     public boolean isStopped(){
         return stop;
     }
 
     /**
-     * Returns the progress of the download with a precision of 4 as decimal.
+     * Returns the progress of the download as a decimal. Range is from {@code 0} to {@code 1}. The decimal has a
+     * precision of 4 decimals.
      *
-     * @return progress of the download.
+     * @return progress of the download
+     * @since 1.0
      */
     public double getDownloadprogress(){
         return (double)Math.round(downloadprogress*10000.)/10000.;
     }
 
     /**
-     * @return remaining size of the gamefile to download [bytes].
+     * @return remaining size of the download [bytes]
+     * @since 1.0
      */
     public long getSizeRemaining(){
         return remaining;
     }
 
     /**
-     * Returns the current download speed after each send package. For average speed see {@link #getAverageDownloadspeed()}.
+     * Returns the downloadspeed for each package. For the average downloadspeed see {@link #getAverageDownloadspeed()}.
      *
-     * @return current download speed [bytes/second].
+     * @return current download speed [bytes/second]
+     * @since 1.0
      */
     public long getDownloadspeed(){
         return downloadspeed;
     }
 
     /**
-     * Returns the average download speed. For current speed see {@link #getDownloadspeed()}.
+     * Returns the average downloadspeed. For the downloadspeed for each package see {@link #getDownloadspeed()}.
      *
-     * @return average download speed [bytes/second].
+     * @return average downloadspeed [bytes/second]
+     * @since 1.0
      */
     public long getAverageDownloadspeed(){
         return averageDownloadspeed;
     }
 
     /**
-     * Returns the progress of the unzipping of the downloaded gamefile with a precision of 4 as decimal.
+     * Returns the progress of the extraction as a decimal. Range is from {@code 0} to {@code 1}. The decimal has a
+     * precision of 4 decimals.
      *
-     * @return progress of the unzipping.
+     * @return progress of the extraction
+     * @since 1.0
      */
     public double getUnzipprogress(){
         return (double)Math.round(unzipprogress*10000.)/10000.;
     }
 
     /**
-     * Only for SevenZipHelper to set the unzip progress.
+     * <b>ONLY</b> for {@link SevenZipHelper} to set the extraction progress.
      *
-     * @param progress progress of the unzipping.
+     * @param progress progress of the extraction
+     * @since 1.0
      */
     void setUnzipprogress(double progress){
         unzipprogress = progress;
