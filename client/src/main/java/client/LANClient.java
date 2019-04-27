@@ -47,9 +47,7 @@ import static java.lang.Thread.sleep;
  * @since 1.0
  */
 public class LANClient extends Client {
-    //Logging
     private static Logger log = Logger.getLogger(LANClient.class);
-    //Buffersizes
     private static int writeBufferSize = 1048576,
                        objectBufferSize = 1048576;
 
