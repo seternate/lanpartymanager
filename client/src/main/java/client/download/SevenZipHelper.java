@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
     Modified for needs of the project.
  */
 
-public final class SevenZipHelper {
+final class SevenZipHelper {
 
     static class ExtractionException extends Exception {
         private static final long serialVersionUID = -5108931481040742838L;
