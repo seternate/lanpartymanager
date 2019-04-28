@@ -8,8 +8,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
-//https://gist.github.com/borisbrodski/6120309
-@SuppressWarnings("ALL")
+/*
+    Source of this code: https://gist.github.com/borisbrodski/6120309
+    Modified for needs of the project.
+ */
+
 public final class SevenZipHelper {
 
     static class ExtractionException extends Exception {
