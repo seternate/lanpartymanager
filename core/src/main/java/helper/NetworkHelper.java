@@ -12,6 +12,7 @@ import java.util.Enumeration;
  */
 public abstract class NetworkHelper {
     private static Logger log = Logger.getLogger(NetworkHelper.class);
+    private static int filedropport = 1337;
 
 
     /**
@@ -54,6 +55,10 @@ public abstract class NetworkHelper {
             log.error("I/O error while detecting ip address of the host system", e);
         }
         return InetAddress.getLocalHost().getHostAddress();
+    }
+
+    public static int getFileDropPort(){
+        return filedropport;
     }
 
 }
