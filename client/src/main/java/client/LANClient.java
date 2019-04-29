@@ -43,7 +43,6 @@ import static java.lang.Thread.sleep;
  * </p>
  * @author Levin Jeck
  * @version 1.0
- * @see Client
  * @since 1.0
  */
 public class LANClient extends Client {
