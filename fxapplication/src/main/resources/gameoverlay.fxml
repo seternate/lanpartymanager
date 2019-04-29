@@ -60,12 +60,12 @@
             </ImageView>
             <ImageView fx:id="ivConnectServer" fitHeight="64.0" fitWidth="64.0" pickOnBounds="true" GridPane.rowIndex="3">
                <image>
-                  <Image url="@start_server.png" />
+                  <Image url="@connect_server.png" />
                </image>
             </ImageView>
             <ImageView fx:id="ivStartServer" fitHeight="64.0" fitWidth="64.0" pickOnBounds="true" GridPane.rowIndex="4">
                <image>
-                  <Image url="@connect_server.png" />
+                  <Image url="@start_server.png" />
                </image>
             </ImageView>
             <StackPane fx:id="spDownloadGame" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="1">
