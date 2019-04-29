@@ -39,7 +39,7 @@ public class GameProcess extends Thread{
             log.warn("Listening on the game process of '" + game + "' was interrupted.", e);
         }
         log.info("'" + game + "' has been closed with the exit value: " + process.exitValue());
-        monitor.update(this);
+        monitor.removeAndUpdate(this);
     }
 
     /**

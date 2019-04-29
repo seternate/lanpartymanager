@@ -23,7 +23,7 @@ public class ServerMonitor extends Monitor{
     }
 
     @Override
-    boolean update(GameProcess gameprocess) {
+    boolean removeAndUpdate(GameProcess gameprocess) {
         boolean removed;
         synchronized(this){
             removed = remove(gameprocess);

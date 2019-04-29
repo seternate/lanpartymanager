@@ -7,17 +7,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Abstract class for handling any GameProcess.
+ * {@code Monitor} manages {@link GameProcess}.
+ *
+ * @author Levin Jeck
+ * @version 1.0
+ * @since 1.0
  */
 public abstract class Monitor extends ArrayList<GameProcess> {
     LANClient client;
 
 
     /**
-     * Adds the gameprocess to the monitor and sets the process manager if the process is running.
+     * Adds the {@code gameProcess} to the {@code Monitor} and sets the {@code gameProcess} manager. If <b>false</b>
+     * is returned, the {@code gameProcess} is no longer running, while adding it.
      *
-     * @param gameProcess gameprocess to add to the monitor.
-     * @return true if the gameprocess is added to the monitor, else false.
+     * @param gameProcess {@link GameProcess} to be added
+     * @return <b>true</b> if the {@code gameProcess} is added to the monitor, else <b>false</b>
+     * @since 1.0
      */
     @Override
     public boolean add(GameProcess gameProcess) {
@@ -28,7 +34,8 @@ public abstract class Monitor extends ArrayList<GameProcess> {
     }
 
     /**
-     * @return List of all running gameprocess managed by this monitor.
+     * @return list of {@code games} of all running {@link GameProcess}
+     * @since 1.0
      */
     public List<Game> getRunningProcesses(){
         List<Game> games = new ArrayList<>();
@@ -39,12 +46,19 @@ public abstract class Monitor extends ArrayList<GameProcess> {
     }
 
     /**
-     * Removes the gameprocess from this monitor (thread-safe) and sends the new list of gameprocesses to the server.
+     * Removes the {@code gameProcess} and sends the updated list of {@link GameProcess} to the {@code LANServer}.
      *
-     * @param gameProcess gameprocess to remove from this monitor.
-     * @return true if this monitor contained the gameprocess and removed it.
+     * @param gameProcess {@link GameProcess} to remove
+     * @return <b>true</b> if {@code gameProcess} was removed
+     * @since 1.0
      */
-    abstract boolean update(GameProcess gameProcess);
+    abstract boolean removeAndUpdate(GameProcess gameProcess);
 
+    /**
+     * @param game {@link Game} to  be stopped
+     * @return <b>true</b> if the {@code game} was stopped
+     * @since 1.0
+     */
     public abstract boolean stop(Game game);
+
 }
