@@ -59,6 +59,12 @@ public abstract class Monitor extends ArrayList<GameProcess> {
      * @return <b>true</b> if the {@code game} was stopped
      * @since 1.0
      */
-    public abstract boolean stop(Game game);
+    public boolean stop(Game game){
+        for(GameProcess process : this){
+            if(process.getGame().equals(game))
+                return process.kill();
+        }
+        return false;
+    }
 
 }

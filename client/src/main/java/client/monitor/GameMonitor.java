@@ -1,7 +1,6 @@
 package client.monitor;
 
 import client.LANClient;
-import entities.game.Game;
 
 /**
  * {@code GameMonitor} manages {@link GameProcess} if just the game and no server is running.
@@ -15,7 +14,7 @@ public class GameMonitor extends Monitor {
     /**
      * Creates the {@code GameMonitor}.
      *
-     * @param client {@link LANClient} for this GameMonitor
+     * @param client {@link LANClient} for this {@code GameMonitor}
      * @since 1.0
      */
     public GameMonitor(LANClient client){
@@ -45,15 +44,6 @@ public class GameMonitor extends Monitor {
         if(removed)
             client.updateOpenGames();
         return removed;
-    }
-
-    @Override
-    public boolean stop(Game game){
-        for(GameProcess process : this){
-            if(process.getGame().equals(game))
-                return process.kill();
-        }
-        return false;
     }
 
 }
