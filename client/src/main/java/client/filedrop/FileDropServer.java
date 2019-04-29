@@ -1,5 +1,7 @@
 package client.filedrop;
 
+import helper.NetworkHelper;
+
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -30,7 +32,7 @@ public class FileDropServer extends Thread {
         downloading = false;
         this.path = path;
         try {
-            ss = new ServerSocket(1337);
+            ss = new ServerSocket(NetworkHelper.getFileDropPort());
             socket = new Socket();
             start();
         } catch (IOException e) {

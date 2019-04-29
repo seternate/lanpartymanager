@@ -709,17 +709,24 @@ public class LANClient extends Client {
         return gamemonitor.stop(game);
     }
 
-
-
-
-
-    //TODO
-
+    /**
+     * Send the {@code files} to the {@code user}.
+     *
+     * @param user {@link User} the {@code files} are sent to
+     * @param files list of {@link File} that are send to the {@code user}
+     * @return <b>false</b>
+     * @see FileDropClient
+     * @since 1.0
+     */
     public boolean sendFiles(User user, List<File> files){
         new FileDropClient(user, files);
         return false;
     }
 
+    /**
+     * @return <b>true</b> if any files are downloaded from the {@link FileDropServer}.
+     * @since 1.0
+     */
     public boolean getDropFileDownloadStatus(){
         return fileDropServer.isDownloading();
     }
