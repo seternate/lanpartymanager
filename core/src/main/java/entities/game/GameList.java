@@ -9,27 +9,33 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 /**
- * Loads a gamelist from properties files and saving it.
+ * {@code GameList} handles {@link Game}.
+ *
+ * @author Levin Jeck
+ * @version 1.0
+ * @since 1.0
  */
 public final class GameList extends ArrayList<Game> {
 
     /**
-     * This constructor has no implementation. Only for KryoNet.
+     * Creates the {@code GameList}.
+     *
+     * @since 1.0
      */
     public GameList(){ }
 
     /**
-     * Creates a game list of all properties within the propertyDirectory.
+     * Creates the {@code GameList} of all {@link Game} with a propertyfile within the {@code gamePropertyDirectory}.
      *
-     * @param propertyDirectory directory with all properties files to be loaded.
-     * @throws IOException if no properties files are found in the propertyDirectory or any problem loading the
-     *      properties files occur.
+     * @param gamePropertyDirectory relative path of the directory with all propertyfiles to be loaded
+     * @throws IOException if no properties files are found in the gamePropertyDirectory or any problem occurs while
+     *                      loading the propertyfiles
+     * @since 1.0
      */
-    public GameList(String propertyDirectory) throws IOException {
+    public GameList(String gamePropertyDirectory) throws IOException {
         super();
-
         //Get properties files directory
-        URL url = ClassLoader.getSystemResource(propertyDirectory);
+        URL url = ClassLoader.getSystemResource(gamePropertyDirectory);
         //Decode URL-encoded path
         File filePropertyDir = new File(java.net.URLDecoder.decode(url.getPath(), StandardCharsets.UTF_8.name()));
         //List all available files in the directory
@@ -37,10 +43,9 @@ public final class GameList extends ArrayList<Game> {
         //Check if there are any files in the directory, else throw exception
         if(fileProperties == null)
             throw new IOException("No files in the server properties directory.");
-
         //Iterate through all files in directory and load all properties files to a list
         for(File fileProperty : fileProperties){
-            //Just properties files should be add, except 'dummy'
+            //All properties files should be add, except 'dummy'
             if(fileProperty.getName().equals("dummy.properties") || !fileProperty.getName().endsWith(".properties"))
                 continue;
             //Load properties
@@ -51,17 +56,16 @@ public final class GameList extends ArrayList<Game> {
             //Add properties to list
             this.add(new Game(property));
         }
-
         //Throw a new exception if no properties files where found
         if(this.isEmpty())
             throw new IOException("No properties files in the server properties directory.");
     }
 
     /**
-     * Compares this gamelist with gamelist, if they have the exact same games.
+     * Compares the {@link Game} of this {@code GameList} with the {@code Game} of {@code gamelist}.
      *
-     * @param gamelist compared with this object
-     * @return true if they have the same games inside, else false
+     * @param gamelist {@link GameList} to be compared
+     * @return <b>true</b> if this {@code GameList} and {@code gamelist} have the same {@code Game}, else <b>false</b>
      */
     public boolean equals(GameList gamelist){
         //Return false if the size differs
@@ -73,11 +77,10 @@ public final class GameList extends ArrayList<Game> {
             for(int k = 0; k < gamelist.size(); k++){
                 //Return false if reached the end of gamelist without find any equal game, else check next game
                 //of this object until through this gamelist
-                if(!game.equals(gamelist.get(k)) && k == gamelist.size() - 1){
+                if(!game.equals(gamelist.get(k)) && k == gamelist.size() - 1)
                     return false;
-                }else if(game.equals(gamelist.get(k))){
+                else if(game.equals(gamelist.get(k)))
                     break;
-                }
             }
         }
         return true;
