@@ -19,7 +19,7 @@ import java.io.StringWriter;
  * @version 1.0
  * @since 1.0
  */
-public class UserKeySerializer extends JsonSerializer<User> {
+public final class UserKeySerializer extends JsonSerializer<User> {
     private ObjectMapper mapper = new ObjectMapper();
 
 

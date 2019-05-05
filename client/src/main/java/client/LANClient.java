@@ -375,8 +375,8 @@ public class LANClient extends Client {
             gamestatus.setDownloadProgress(gameDownload.getDownloadprogress());
             gamestatus.setDownloadSpeed(gameDownload.getAverageDownloadspeed()/1048576 + " MB/sec");
         }else{
-            gamestatus.setUnzipping(true);
-            gamestatus.setUnzipProgress(gameDownload.getUnzipprogress());
+            gamestatus.setExtracting(true);
+            gamestatus.setExtractionProgress(gameDownload.getUnzipprogress());
         }
         return gamestatus;
     }

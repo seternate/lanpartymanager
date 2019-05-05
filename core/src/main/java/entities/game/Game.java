@@ -16,7 +16,7 @@ import java.util.Properties;
  * @version 1.0
  * @since 1.0
  */
-public final class Game {
+public class Game {
 
     /**
      * {@code Version} handles the version-information of the {@link Game}.
@@ -25,7 +25,7 @@ public final class Game {
      * @version 1.0
      * @since 1.0
      */
-    public static class Version{
+    public final static class Version{
         public String format, file, query;
 
 

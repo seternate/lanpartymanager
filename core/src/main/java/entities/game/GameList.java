@@ -15,7 +15,7 @@ import java.util.*;
  * @version 1.0
  * @since 1.0
  */
-public final class GameList extends ArrayList<Game> {
+public class GameList extends ArrayList<Game> {
 
     /**
      * Creates the {@code GameList}.
