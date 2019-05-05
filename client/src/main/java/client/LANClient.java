@@ -70,6 +70,7 @@ public class LANClient extends Client {
      *     {@value objectBufferSize} is used, all listeners get registered. The {@link ClientSettings} are loaded,
      *     and the {@code LANClient} starts searching for an open {@code LANServer}.
      * </p>
+     *
      * @since 1.0
      */
     public LANClient(){
