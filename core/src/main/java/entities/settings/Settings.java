@@ -6,22 +6,32 @@ import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 
 /**
- * Load settings from a properties file.
+ * {@code Settings} loading and managing any settings within a {@code propertyfile}.
+ *
+ * @author Levin Jeck
+ * @version 1.0
+ * @since 1.0
  */
 public abstract class Settings extends Properties {
     public static final String SETTINGS = "settings/settings.properties";
 
     /**
-     * This constructor has no implementation. Only for KryoNet.
+     * Creates the {@code Settings}.
+     *
+     * @since 1.0
      */
     public Settings(){ }
 
     /**
-     * Load settings from the settings-file specified by SETTINGS.
+     * Creates the {@code Settings}.
+     * <p>
+     *     Load settings from {@value SETTINGS} if {@code loadSettings} is <b>true</b>. Else no settings are loaded.
+     * </p>
      *
-     * @param loadSettings if true loads the settings-file, else does nothing.
-     * @throws IOException if the settings-file while don't exist, is no file, any problem while reading occurs or
-     *                      serverudp/servertcp keys are missing.
+     * @param loadSettings <b>true</b> if the settings should be loaded, else <b>false</b>
+     * @throws IOException if {@code settings.properties} do not exist, any problem while reading occurs or
+     *                     serverudp/servertcp/username/gamepath keys are missing
+     * @since 1.0
      */
     public Settings(boolean loadSettings) throws IOException {
         super();
@@ -37,12 +47,10 @@ public abstract class Settings extends Properties {
         if(!settingsFile.isFile()){
             throw new FileNotFoundException("Resource specified by SETTINGS is no file.");
         }
-
         //Read settings properties
         InputStream istream = new FileInputStream(settingsFile);
         load(istream);
         istream.close();
-
         //Check settings file for udp and tcp key
         if(getProperty("serverudp") == null || getProperty("servertcp") == null){
             throw new NullPointerException("'serverudp' or/and 'servertcp' key is missing in the settings file.");
@@ -50,23 +58,26 @@ public abstract class Settings extends Properties {
     }
 
     /**
-     * @return udp-port of the server.
+     * @return UDP-Port of the {@code LANServer}
+     * @since 1.0
      */
     public int getServerUdp(){
         return Integer.valueOf(getProperty("serverudp"));
     }
 
     /**
-     * @return tcp-port of the server.
+     * @return TCP-Port of the {@code LANServer}
+     * @since 1.0
      */
     public int getServerTcp(){
         return Integer.valueOf(getProperty("servertcp"));
     }
 
     /**
-     * Saves all settings to the file specified in SETTINGS.
+     * Saves the settings to {@value SETTINGS}.
      *
-     * @throws IOException if any error occurs while saving to the properties file.
+     * @throws IOException if any error while saving the properties occurs
+     * @since 1.0
      */
     public void save() throws IOException {
         //Get settings-file specified by SETTINGS
@@ -76,4 +87,5 @@ public abstract class Settings extends Properties {
         store(ostream, "");
         ostream.close();
     }
+
 }
