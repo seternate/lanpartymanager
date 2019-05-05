@@ -11,6 +11,38 @@ import java.util.Properties;
  *     For the command-line argument for connecting to a server the wildcard '?' is used to be replaced with the
  *     ip-address of the lan-server joining to.
  * </p>
+ * <br>
+ * <p>
+ *     Example for a {@code Game} property file:
+ *     <br>
+ *     file.server = cod2.zip [filename on the LANServer]
+ *     <br>
+ *     exe.file = COD2MP_s.exe [path of the games exe-file]
+ *     <br>
+ *     exe.server = [empty if no special server-exe is needed]
+ *     <br>
+ *     exe.param = [command-line arguments for the normal game start]
+ *     <br>
+ *     exe.server.param = +set dedicated 1 +map mp_carentan [standard command-line arguments for the server start]
+ *     <br>
+ *     name = Call of Duty 2 [name of the game]
+ *     <br>
+ *     version.format = file [allowed: exe, file]
+ *     <br>
+ *     version.file = version.inf [file to determine the version-information from]
+ *     <br>
+ *     version.query = ExtVersion= [query to search the file for the version-information]
+ *     <br>
+ *     version = 1.3 [version of the game on the LANServer]
+ *     <br>
+ *     connect.direct = true
+ *     <br>
+ *     connect.param = +connect ? [command-line arguments if connecting to a server; '?' is the wildcard for the ip-address]
+ *     <br>
+ *     openserver = true
+ *     <br>
+ *     cover.url = [URL from the Web or any local used cover, else empty]
+ * </p>
  *
  * @author Levin Jeck
  * @version 1.0
@@ -168,7 +200,7 @@ public class Game {
     /**
      * Parses an path to an relative path. It adds '/' to the beginning.
      *
-     * @param relativePath
+     * @param relativePath relative path to parse
      * @return parsed relative path
      * @since 1.0
      */
