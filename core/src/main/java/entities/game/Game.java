@@ -165,6 +165,13 @@ public final class Game {
         this.openServer = openServer;
     }
 
+    /**
+     * Parses an path to an relative path. It adds '/' to the beginning.
+     *
+     * @param relativePath
+     * @return parsed relative path
+     * @since 1.0
+     */
     private String parsePath(String relativePath){
         if(relativePath.trim().isEmpty())
             return "";
@@ -174,54 +181,108 @@ public final class Game {
             return "/" + relativePath.trim();
     }
 
+    /**
+     * @return name of the {@code Game}
+     * @since 1.0
+     */
     public String getName(){
         return name;
     }
 
+    /**
+     * @return filename of the zipped {@code Game} on the {@code LANServer}
+     * @since 1.0
+     */
     public String getServerFileName(){
         return serverFileName;
     }
 
+    /**
+     * @return version of the {@code Game} on the {@code LANServer}
+     * @since 1.0
+     */
     public String getVersionServer(){
         return versionServer;
     }
 
+    /**
+     * @return the absolute path or the URL to the coverfile
+     * @since 1.0
+     */
     public String getCoverUrl(){
         return this.coverUrl;
     }
 
+    /**
+     * @return {@link Version} of the {@code Game} locally available
+     * @since 1.0
+     */
     public Version getVersion(){
         return version;
     }
 
+    /**
+     * @return relative path of the exe-file in the gamefolder
+     * @since 1.0
+     */
     public String getExeFileRelative() {
         return exeFileRelative;
     }
 
+    /**
+     * @return command-line arguments for the connection
+     * @since 1.0
+     */
     public String getConnectParam(){
         return connectParam;
     }
 
+    /**
+     * @return <b>true</b> if the {@code Game} can connect via command-line arguments, else <b>false</b>
+     * @since 1.0
+     */
     public boolean isConnectDirect(){
         return connectDirect;
     }
 
+    /**
+     * @return command-line arguments for the normal start of the {@code Game}
+     * @since 1.0
+     */
     public String getParam(){
         return param;
     }
 
+    /**
+     * @return relative path of the exe-file of the server in the gamefolder
+     * @since 1.0
+     */
     public String getExeServerRelative(){
         return exeServerRelative;
     }
 
+    /**
+     * @return command-line arguments for the start of a server of the {@code Game}
+     * @since 1.0
+     */
     public String getServerParam(){
         return serverParam;
     }
 
+    /**
+     * @return <b>true</b> if the {@code Game} can start a server via command-line arguments, else <b>false</b>
+     * @since 1.0
+     */
     public boolean isOpenServer(){
         return openServer;
     }
 
+    /**
+     * @return <b>-1</b> if the {@code Game} is not locally available, <b>-2</b> if no version can be determined,
+     *          <b>-3</b> if the local version is not equal with the version on the {@code LANServer}, <b>0</b> if the
+     *          local version is the same as the version on the {@code LANServer}
+     * @since 1.0
+     */
     public int isUptodate(){
         if(GameFolderHelper.getAbsolutePath(exeFileRelative) == null)
             return -1;
@@ -233,6 +294,16 @@ public final class Game {
             return 0;
     }
 
+    /**
+     * It checks for equal {@link #getName()}, {@link #getVersionServer()}, {@link #getConnectParam()},
+     * {@link #getExeFileRelative()}, {@link #getCoverUrl()}, {@link #getServerFileName()}, {@link #isConnectDirect()},
+     * {@link #getVersion()}, {@link #getExeServerRelative()}, {@link #getServerParam()}, {@link #getParam()} and
+     * {@link #isOpenServer()}.
+     *
+     * @param game {@link Game} to be checked for equality
+     * @return <b>true</b> if this {@code Game} equals the {@code game}
+     * @since 1.0
+     */
     public boolean equals(Game game){
         return name.equals(game.getName()) && versionServer.equals(game.getVersionServer()) && connectParam.equals(game.getConnectParam())
                 && exeFileRelative.equals(game.getExeFileRelative()) && coverUrl.equals(game.getCoverUrl())
@@ -248,10 +319,18 @@ public final class Game {
         return super.equals(o);
     }
 
+    /**
+     * @return version-number of he local {@code Game}
+     * @since 1.0
+     */
     private String getLocalVersion(){
         return GameInfoHelper.getVersion(this);
     }
 
+    /**
+     * @return {@link #getName()}
+     * @since 1.0
+     */
     @Override
     public String toString(){
         return name;
