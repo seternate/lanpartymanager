@@ -16,12 +16,32 @@ import requests.DownloadRequest;
 
 import java.util.ArrayList;
 
+/**
+ * {@code NetworkClassRegistrationHelper} handles the registration of the {@code Classes} to the {@link Client} and
+ * {@link Server}.
+ *
+ * @author Levin Jeck
+ * @version 1.0
+ * @since 1.0
+ */
 public abstract class NetworkClassRegistrationHelper {
 
+    /**
+     * Registers {@code Classes} to a {@link Server}.
+     *
+     * @param server {@code Server} to register {@code Classes to}
+     * @since 1.0
+     */
     public static void registerClasses(Server server){
         registerClasses(server.getKryo());
     }
 
+    /**
+     * Registers {@code Classes} to a {@link Client}.
+     *
+     * @param client {@code Client} to register {@code Classes} to
+     * @since 1.0
+     */
     public static void registerClasses(Client client){
         registerClasses(client.getKryo());
     }
