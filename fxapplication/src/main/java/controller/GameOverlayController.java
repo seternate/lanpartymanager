@@ -25,11 +25,9 @@ import org.apache.log4j.Logger;
 
 import java.util.Locale;
 
-/**
- * Controller class for the GameOverlay/Gametile of the games in the main stage.
- */
 class GameOverlayController {
     private static Logger log = Logger.getLogger(GameOverlayController.class);
+
 
     private ImageView gameTileImage;
     private Game game;
@@ -45,20 +43,11 @@ class GameOverlayController {
     private GridPane gpGameTile;
 
 
-    /**
-     * Constructs the GameOverlayController.
-     *
-     * @param gameTileImage - Cover image of the game shown in the gametile.
-     * @param game - Game which is represented by the gametile.
-     */
     public GameOverlayController(ImageView gameTileImage, Game game){
         this.game = game;
         this.gameTileImage = gameTileImage;
     }
 
-    /**
-     * Initialization of the GameOverlay.
-     */
     @FXML
     private void initialize(){
         log.info("Initializing gametileoverlay for '" + game + "'.");
@@ -202,12 +191,6 @@ class GameOverlayController {
         ivStartServer.addEventHandler(MouseEvent.MOUSE_EXITED, this::mouseExited);
     }
 
-    /**
-     * Hiding progressbar and downloadspeedlabel visibility if download or unzip status changing to false.
-     * Also changing the image of the download button.
-     *
-     * @param newValue - download or unzip status
-     */
     private void setDownloadbarVisibility(Boolean newValue) {
         if(!newValue){
             spDownloadGame.setVisible(false);
@@ -218,11 +201,6 @@ class GameOverlayController {
         }
     }
 
-    /**
-     * Starting image button animation.
-     *
-     * @param event - MouseEvent mouseentered for the image buttons.
-     */
     private void mouseEntered(MouseEvent event){
         if((event.getTarget().equals(ivConnectServer) && game.isConnectDirect()) || (event.getTarget().equals(ivStartServer) && game.isOpenServer())
                 || event.getTarget().equals(ivRunGame) || event.getTarget().equals(ivDownloadGame) || event.getTarget().equals(ivOpenExplorer)) {
@@ -232,11 +210,6 @@ class GameOverlayController {
         }
     }
 
-    /**
-     * Ending image button animation.
-     *
-     * @param event - MouseEvent mouseexited for the image buttons.
-     */
     private void mouseExited(MouseEvent event){
         if((event.getTarget().equals(ivConnectServer) && game.isConnectDirect()) || (event.getTarget().equals(ivStartServer) && game.isOpenServer())
                 || event.getTarget().equals(ivRunGame) || event.getTarget().equals(ivDownloadGame) || event.getTarget().equals(ivOpenExplorer)) {

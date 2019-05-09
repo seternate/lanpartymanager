@@ -11,12 +11,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.prefs.Preferences;
 
-/**
- * UserStage for showing the userlist of all connected users to the server except yourself showing from the main stage
- * button at the bottom.
- */
 public class UsersStage extends Stage {
-
 
     public UsersStage(){
         super();

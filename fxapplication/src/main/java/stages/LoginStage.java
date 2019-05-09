@@ -11,16 +11,10 @@ import org.apache.log4j.Logger;
 import java.io.IOException;
 import java.io.InputStream;
 
-/**
- * LoginStage class for the login window at the start and for the settings window accessed by the main stage.
- */
 public class LoginStage extends Stage {
     private static Logger log = Logger.getLogger(LoginStage.class);
 
 
-    /**
-     * Constructs the LoginStage for the specific use case.
-     */
     public LoginStage(){
         super();
         //Load FXML
@@ -49,9 +43,6 @@ public class LoginStage extends Stage {
         setResizable(false);
     }
 
-    /**
-     * Exit the whole application if the LoginStage is closed at the first login stage.
-     */
     @Override
     public void hide(){
         super.hide();

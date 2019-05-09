@@ -8,11 +8,9 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import org.apache.log4j.Logger;
 
-/**
- * Controller class of the login and settings stage.
- */
 public class LoginController {
     private static Logger log = Logger.getLogger(LoginController.class);
+
 
     @FXML
     private TextField txtfieldUsername, txtfieldGamepath;
@@ -22,9 +20,6 @@ public class LoginController {
     private Button btnFinish;
 
 
-    /**
-     * Initializing the LoginController.
-     */
     @FXML
     private void initialize(){
         log.info("Initializing.");
@@ -41,9 +36,6 @@ public class LoginController {
         }
     }
 
-    /**
-     * Button click listener.
-     */
     @FXML
     private void openMainStage(){
         //Opens MainStage if Stage is as LoginStage open
@@ -59,11 +51,6 @@ public class LoginController {
         }
     }
 
-    /**
-     * KeyPressed event listener.
-     *
-     * @param event KeyEvent that was fired.
-     */
     @FXML
     private void enter(KeyEvent event){
         if(event.getCode() == KeyCode.ENTER) {

@@ -2,13 +2,13 @@ package clientInterface;
 
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.SimpleStringProperty;
 
 public final class GameStatusProperty {
     public SimpleBooleanProperty playable, local, version, update, downloading, unzipping, running;
     public SimpleDoubleProperty downloadProgress, unzipProgress;
     public SimpleStringProperty downloadSpeed;
+
 
     public GameStatusProperty(){
         playable = new SimpleBooleanProperty(false);

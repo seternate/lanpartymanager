@@ -12,11 +12,8 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.io.InputStream;
 
-/**
- * ServerStartStage for opening a window with start parameters for the server. Those can be altered to configure the server.
- * Modal window.
- */
 public class ServerStartStage extends Stage {
+
     public ServerStartStage(Game game){
         super();
         FXMLLoader loader = new FXMLLoader(ClassLoader.getSystemResource("serverstart.fxml"));
@@ -34,4 +31,5 @@ public class ServerStartStage extends Stage {
         setTitle("Server - Setup");
         initModality(Modality.APPLICATION_MODAL);
     }
+
 }

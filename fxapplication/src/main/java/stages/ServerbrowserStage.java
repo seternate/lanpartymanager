@@ -1,6 +1,5 @@
 package stages;
 
-import controller.ApplicationManager;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -13,16 +12,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.prefs.Preferences;
 
-/**
- * Serverbrowser class for the serverbrowser window of the application.
- */
 public class ServerbrowserStage extends Stage {
     private static Logger log = Logger.getLogger(ServerbrowserStage.class);
 
 
-    /**
-     * Constructs the ServerbrowserStage.
-     */
     public ServerbrowserStage(){
         super();
         //Loading FXML
@@ -66,4 +59,5 @@ public class ServerbrowserStage extends Stage {
             log.info("Saved window size and position.");
         });
     }
+
 }

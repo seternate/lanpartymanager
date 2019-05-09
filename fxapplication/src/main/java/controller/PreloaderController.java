@@ -11,24 +11,17 @@ import org.apache.log4j.Logger;
 public class PreloaderController {
     private static Logger log = Logger.getLogger(PreloaderController.class);
 
+
     @FXML
     private Label lblStatus;
 
 
-    /**
-     * Initializing method.
-     */
     @FXML
     private void initialize(){
         log.info("Initializing PreloaderController.");
         animateText(lblStatus);
     }
 
-    /**
-     * Setup for the animation of the Label under the Loading GIF.
-     *
-     * @param label label that should be animated.
-     */
     private void animateText(Label label){
         final Animation animation = new Transition() {
             {
