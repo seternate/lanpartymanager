@@ -1,5 +1,12 @@
 package message;
 
+/**
+ * {@code ErrorMessage} is a class to send an errormessage.
+ *
+ * @author Levin Jeck
+ * @version 1.0
+ * @since 1.0
+ */
 public final class ErrorMessage {
     public static final String userNotLoggedIn = "User not logged in.",
                                userAlreadyLoggedIn = "User already logged in.",
@@ -7,11 +14,10 @@ public final class ErrorMessage {
                                noGameUpload = " is not uploading to ";
     public String error;
 
-
-    @SuppressWarnings("unused")
     public ErrorMessage(){ }
 
     public ErrorMessage(String error){
         this.error = error;
     }
+
 }
