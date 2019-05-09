@@ -1,0 +1,17 @@
+client
+client.download
+client.filedrop
+client.monitor
+deserialize
+entities.game
+entities.server
+entities.settings
+entities.user
+helper
+helper.kryo
+main
+message
+requests
+server
+server.upload
+springboot
