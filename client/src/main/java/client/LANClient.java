@@ -47,7 +47,7 @@ import static java.lang.Thread.sleep;
  */
 public class LANClient extends Client {
     private static Logger log = Logger.getLogger(LANClient.class);
-    private static int writeBufferSize = 1048576,
+    private static final int writeBufferSize = 1048576,
                        objectBufferSize = 1048576;
 
     private FileDropServer fileDropServer;
@@ -511,6 +511,7 @@ public class LANClient extends Client {
      * After the {@code game} is started it is passed to the {@link GameMonitor}.
      *
      * @param game {@link Game} to start
+     * @param download <b>true</b> if the {@code game} should be downloaded, if locally not available
      * @return <b>true</b> if the {@code game} has been successfully started, else <b>false</b>
      * @since 1.0
      */
@@ -587,6 +588,7 @@ public class LANClient extends Client {
      *
      * @param game the {@link Game} of the server to connect to
      * @param ip ip-address of the server
+     * @param download <b>true</b> if the {@code game} should be downloaded, if locally not available
      * @return <b>true</b> if the game started, else <b>false</b>
      * @since 1.0
      */
@@ -634,6 +636,7 @@ public class LANClient extends Client {
      *
      * @param game {@link Game} to start a server of
      * @param parameter server command-line arguments
+     * @param download <b>true</b> if the {@code game} should be downloaded, if locally not available
      * @return <b>true</b> if the server started, else <b>false</b>
      * @since 1.0
      */
