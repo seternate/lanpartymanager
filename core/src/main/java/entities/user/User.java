@@ -43,7 +43,7 @@ public final class User {
     }
 
     /**
-     * @return username of the {@User}
+     * @return username of the {@code User}
      * @since 1.0
      */
     public String getUsername(){

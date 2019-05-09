@@ -129,6 +129,7 @@ public class Game {
     /**
      * Creates the {@code Game} with the given {@code properties}.
      *
+     * @param properties property to build this {@code Game}
      * @since 1.0
      */
     public Game(Properties properties){

@@ -2,7 +2,7 @@ package entities.game;
 
 /**
  * {@code GameStatus} handles the status of an {@link Game}. Available information are the version, up-to-date state,
- * download- & extractionprogress.
+ * download- and extractionprogress.
  *
  * @author Levin Jeck
  * @version 1.0

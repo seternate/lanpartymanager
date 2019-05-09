@@ -16,7 +16,7 @@ import java.util.Enumeration;
  */
 public abstract class NetworkHelper {
     private static Logger log = Logger.getLogger(NetworkHelper.class);
-    private static int filedropport = 1337;
+    private static final int filedropport = 1337;
 
 
     /**
