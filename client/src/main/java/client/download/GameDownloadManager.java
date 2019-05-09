@@ -5,15 +5,21 @@ import entities.game.Game;
 import java.util.ArrayList;
 
 /**
- * Handles all GameDownloads of the LANClient.
+ * {@code GameDownloadManager} manages all added {@link GameDownload}.
+ *
+ * @author Levin Jeck
+ * @version 1.0
+ * @since 1.0
  */
 public class GameDownloadManager extends ArrayList<GameDownload>{
 
     /**
-     * Adds this GameDownloadManager to the GameDownload and the GameDownload to this GameDownloadManager.
+     * Adds the {@code gameDownload} to the {@code GameDownloadManager} and calls
+     * {@link GameDownload#setManager(GameDownloadManager)}.
      *
-     * @param gameDownload gameDownloaded that should be handled
-     * @return true if GameDownload has been added to the list, else false.
+     * @param gameDownload {@link GameDownload} to add
+     * @return <b>true</b> as in {@link ArrayList#add(Object)}
+     * @since 1.0
      */
     @Override
     public boolean add(GameDownload gameDownload){
@@ -22,8 +28,9 @@ public class GameDownloadManager extends ArrayList<GameDownload>{
     }
 
     /**
-     * @param game game to search for the download
-     * @return GameDownload if the game is downloading or null if the game is not downloading
+     * @param game {@link Game} to look for its {@code GameDownload}
+     * @return {@code null} if no {@code GameDownload} of the {@code game} can be found
+     * @since 1.0
      */
     public GameDownload getDownload(Game game){
         for(GameDownload download : this){
@@ -34,17 +41,20 @@ public class GameDownloadManager extends ArrayList<GameDownload>{
     }
 
     /**
-     * @param game game to find in the GameDownloadManager
-     * @return true if game is downloading, else false
+     * @param game {@link Game} to get the downloadstatus from
+     * @return <b>true</b> if the {@code game} is downloading, else <b>false</b>
+     * @since 1.0
      */
     public boolean isDownloading(Game game){
         return getDownload(game) != null;
     }
 
     /**
-     * Can be used to get the remaining size of the gamefiles that are currently downloaded.
+     * Adds up the remaining filesizes to download of all running {@link GameDownload}.
      *
-     * @return remaining download sizes of all running gamefile downloads [bytes].
+     * @return remaining size of all running {@code GameDownload} [bytes]
+     * @see GameDownload#getSizeRemaining()
+     * @since 1.0
      */
     public long getSizeRemaining(){
         long remaining = 0;
@@ -55,7 +65,9 @@ public class GameDownloadManager extends ArrayList<GameDownload>{
     }
 
     /**
-     * Stops all downloads.
+     * Stops the download/extraction of all running {@link GameDownload}.
+     *
+     * @since 1.0
      */
     public void stopAll(){
         for(GameDownload download : this)
@@ -63,9 +75,10 @@ public class GameDownloadManager extends ArrayList<GameDownload>{
     }
 
     /**
-     * Stops the download/unzip of the game.
+     * Stops the download/extraction of the {@code games} {@link GameDownload}.
      *
-     * @param game game to stop download/unzip.
+     * @param game {@link Game} to stop downloading or extracting
+     * @since 1.0
      */
     public void stop(Game game){
         this.getDownload(game).stopDownloadUnzip();

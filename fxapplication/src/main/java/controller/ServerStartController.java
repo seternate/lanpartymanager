@@ -8,7 +8,6 @@ import javafx.scene.input.KeyEvent;
 
 public class ServerStartController {
     private Game game;
-
     @FXML
     private TextArea txtParameters;
 
@@ -32,4 +31,5 @@ public class ServerStartController {
         if(event.getCode() == KeyCode.ENTER)
             startServer();
     }
+
 }

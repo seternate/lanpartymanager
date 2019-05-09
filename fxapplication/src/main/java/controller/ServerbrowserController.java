@@ -49,7 +49,6 @@ public class ServerbrowserController {
     private ListView<Game> lvGames;
 
 
-
     @FXML
     private void initialize(){
         ApplicationManager.getUserRunServers().addListener(new MapChangeListener<User, ObservableList<Game>>() {

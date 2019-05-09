@@ -11,16 +11,10 @@ import org.apache.log4j.Logger;
 import java.io.IOException;
 import java.io.InputStream;
 
-/**
- * PreloaderStage for the preloading splashscreen.
- */
 public class PreloaderStage extends Stage {
     private static Logger log = Logger.getLogger(PreloaderStage.class);
 
 
-    /**
-     * Constructs the PreloaderStage.
-     */
     public PreloaderStage(){
         super();
         //Load FXML

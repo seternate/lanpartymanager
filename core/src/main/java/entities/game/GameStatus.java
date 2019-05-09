@@ -1,16 +1,23 @@
 package entities.game;
 
 /**
- * Class for Client GUI communication about a games status on the system.
+ * {@code GameStatus} handles the status of an {@link Game}. Available information are the version, up-to-date state,
+ * download- and extractionprogress.
+ *
+ * @author Levin Jeck
+ * @version 1.0
+ * @since 1.0
  */
-public final class GameStatus {
-    private boolean playable, local, version, update, downloading, unzipping, running;
-    private double downloadProgress, unzipProgress;
+public class GameStatus {
+    private boolean playable, local, version, update, downloading, extracting, running;
+    private double downloadProgress, extractionProgress;
     private String downloadSpeed;
 
 
     /**
-     * Creates all fields in standard mode with false and 0.
+     * Creates the {@code GameStatus} with all fields set to {@code false} or {@code 0}.
+     *
+     * @since 1.0
      */
     public GameStatus(){
         playable = false;
@@ -18,90 +25,179 @@ public final class GameStatus {
         version = true;
         update = false;
         downloading = false;
-        unzipping = false;
+        extracting = false;
         running = false;
         downloadProgress = 0.;
-        unzipProgress = 0.;
+        extractionProgress = 0.;
         downloadSpeed = "";
     }
 
+    /**
+     * @return <b>true</b> if the {@link Game} is up-to-date, else <b>false</b>
+     * @since 1.0
+     */
     public boolean isPlayable() {
         return playable;
     }
 
+    /**
+     * @param playable <b>true</b> if the {@link Game} is up-to-date, else <b>false</b>
+     * @since 1.0
+     */
     public void setPlayable(boolean playable) {
         this.playable = playable;
     }
 
+    /**
+     * @return <b>true</b> if the {@link Game} is local available, else <b>false</b>
+     * @since 1.0
+     */
     public boolean isLocal() {
         return local;
     }
 
+    /**
+     * @param local <b>true</b> if the {@link Game} is local available, else <b>false</b>
+     * @since 1.0
+     */
     public void setLocal(boolean local) {
         this.local = local;
     }
 
+    /**
+     * @return <b>true</b> if the version of the {@link Game} can be determined, else <b>false</b>
+     * @since 1.0
+     */
     public boolean isVersion() {
         return version;
     }
 
+    /**
+     * @param version <b>true</b> if the version of the {@link Game} can be determined, else <b>false</b>
+     * @since 1.0
+     */
     public void setVersion(boolean version) {
         this.version = version;
     }
 
+    /**
+     * @return <b>true</b> if the {@link Game} has to be updated, else <b>false</b>
+     * @since 1.0
+     */
     public boolean isUpdate() {
         return update;
     }
 
+    /**
+     * @param update <b>true</b> if the {@link Game} has to be updated, else <b>false</b>
+     * @since 1.0
+     */
     public void setUpdate(boolean update) {
         this.update = update;
     }
 
+    /**
+     * @return <b>true</b> if the {@link Game} is downloading, else <b>false</b>
+     * @since 1.0
+     */
     public boolean isDownloading() {
         return downloading;
     }
 
+    /**
+     * @param downloading <b>true</b> if the {@link Game} is downloading, else <b>false</b>
+     * @since 1.0
+     */
     public void setDownloading(boolean downloading) {
         this.downloading = downloading;
     }
 
-    public boolean isUnzipping() {
-        return unzipping;
+    /**
+     * @return <b>true</b> if the {@link Game} is extracting, else <b>false</b>
+     * @since 1.0
+     */
+    public boolean isExtracting() {
+        return extracting;
     }
 
-    public void setUnzipping(boolean unzipping) {
-        this.unzipping = unzipping;
+    /**
+     * @param extracting <b>true</b> if the {@link Game} is extracting, else <b>false</b>
+     * @since 1.0
+     */
+    public void setExtracting(boolean extracting) {
+        this.extracting = extracting;
     }
 
+    /**
+     * @return progress of the download in a range from {@code 0} to {@code 1}
+     * @since 1.0
+     */
     public double getDownloadProgress() {
         return downloadProgress;
     }
 
+    /**
+     * @param downloadProgress progress of the download in a range from {@code 0} to {@code 1}
+     * @since 1.0
+     */
     public void setDownloadProgress(double downloadProgress) {
+        if(downloadProgress > 1.)
+            downloadProgress = 1.;
+        else if(downloadProgress < 0.)
+            downloadProgress = 0.;
         this.downloadProgress = downloadProgress;
     }
 
-    public double getUnzipProgress() {
-        return unzipProgress;
+    /**
+     * @return progress of the extraction in a range from {@code 0} to {@code 1}
+     * @since 1.0
+     */
+    public double getExtractionProgress() {
+        return extractionProgress;
     }
 
-    public void setUnzipProgress(double unzipProgress) {
-        this.unzipProgress = unzipProgress;
+    /**
+     * @param extractionProgress progress of the download in a range from {@code 0} to {@code 1}
+     * @since 1.0
+     */
+    public void setExtractionProgress(double extractionProgress) {
+        if(extractionProgress > 1.)
+            extractionProgress = 1.;
+        else if(extractionProgress < 0.)
+            extractionProgress = 0.;
+        this.extractionProgress = extractionProgress;
     }
 
+    /**
+     * @return average downloadspeed of the download
+     * @since 1.0
+     */
     public String getDownloadSpeed(){
         return downloadSpeed;
     }
 
+    /**
+     * @param downloadSpeed average downloadspeed of the download
+     * @since 1.0
+     */
     public void setDownloadSpeed(String downloadSpeed){
         this.downloadSpeed = downloadSpeed;
     }
 
+    /**
+     * @return <b>true</b> if the {@link Game} is running, else <b>false</b>
+     * @since 1.0
+     */
     public boolean isRunning() {
         return running;
     }
 
+    /**
+     * @param running <b>true</b> if the {@link Game} is running, else <b>false</b>
+     * @since 1.0
+     */
     public void setRunning(boolean running) {
         this.running = running;
     }
+
 }

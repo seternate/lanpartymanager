@@ -22,11 +22,9 @@ import org.apache.log4j.Logger;
 import java.io.File;
 import java.io.IOException;
 
-/**
- * Controller class of the MainStage.
- */
 public class MainController {
     private static Logger log = Logger.getLogger(MainController.class);
+
 
     public volatile Game focusedGame;
     @FXML
@@ -37,9 +35,6 @@ public class MainController {
     private ImageView ivUsers, ivSettings, ivOrder, ivServerbrowser;
 
 
-    /**
-     * Initializing the MainController.
-     */
     @FXML
     private void initialize(){
         log.info("Initializing.");
@@ -58,9 +53,6 @@ public class MainController {
         updateGamePane();
     }
 
-    /**
-     * Add handler for all buttons on the MainStage.
-     */
     private void addButtonHandler(){
         //Show UserStage with all connected users
         ivUsers.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
@@ -84,9 +76,6 @@ public class MainController {
         log.info("Added all button listener.");
     }
 
-    /**
-     * Updates the gametilepane of the MainStage.
-     */
     public void updateGamePane(){
         //Get all games
         GameList games = ApplicationManager.getGames();
@@ -111,12 +100,6 @@ public class MainController {
         log.info("Updated the gametilepane.");
     }
 
-    /**
-     * Builds the gametile-Node for the tilepane.
-     *
-     * @param game game that should be represented by the gametile.
-     * @return the gametile as a node.
-     */
     private Node gameTile(Game game){
         //Create background imageview of the gametile
         ImageView gameTileImage = new ImageView(getGameCover(game));
@@ -146,13 +129,6 @@ public class MainController {
         return gameTile;
     }
 
-    /**
-     * Determine the image used for the gametileimage. If a local gamecover is available it is used, else the web
-     * gamecover is used. If no web game cover is specified a dummy cover is used as gamecoverimage for the gametile.
-     *
-     * @param game the game which cover should be returned
-     * @return the image used for the gametileimage
-     */
     private Image getGameCover(Game game) {
         File coverpath = new File(ApplicationManager.getGamepath() + "/images");
         if(coverpath.listFiles() != null){
@@ -172,13 +148,6 @@ public class MainController {
         return new Image(ClassLoader.getSystemResource("dummycover.jpg").toString(),true);
     }
 
-    /**
-     * Loading the FXML of the gametileoverlay.
-     *
-     * @param gameTileImage ImageView with the image of the gametile.
-     * @param game the game of which the gametile is created.
-     * @return A VBox with the loaded FXML of the gameoverlay or null if an error occurs.
-     */
     private VBox gameTileOverlay(ImageView gameTileImage, Game game){
         //Loading FXML
         FXMLLoader loader = new FXMLLoader(ClassLoader.getSystemResource("gameoverlay.fxml"));

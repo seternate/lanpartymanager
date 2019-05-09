@@ -20,6 +20,7 @@ public class OrderController {
     @FXML
     private TextField txtOrder;
 
+
     @FXML
     private void initialize(){
         tcUser.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getUsername()));
@@ -67,4 +68,5 @@ public class OrderController {
         if(event.getCode() == KeyCode.ENTER)
             ApplicationManager.setOrder(txtOrder.getText());
     }
+
 }

@@ -62,13 +62,11 @@ public class UsersController {
 
     private static Logger log = Logger.getLogger(UsersController.class);
 
+
     @FXML
     private ListView<User> lvUsers;
 
 
-    /**
-     * Initializing UserController.
-     */
     @FXML
     private void initialize(){
         log.info("Initializing.");

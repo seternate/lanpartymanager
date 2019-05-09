@@ -13,9 +13,9 @@ import javafx.scene.input.MouseEvent;
 
 public class ServerConnectController {
     private Game game;
-
     @FXML
     private ListView<User> lvUsers;
+
 
     public ServerConnectController(Game game){
         this.game = game;
@@ -47,4 +47,6 @@ public class ServerConnectController {
             }
         });
     }
+
 }
+

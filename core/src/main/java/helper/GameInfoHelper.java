@@ -12,8 +12,23 @@ import java.io.FileNotFoundException;
 import java.util.Objects;
 import java.util.Scanner;
 
+/**
+ * {@code GameInfoHelper} is a helper class to determine the local version of a {@link Game}. Either the version is
+ * available through the executable or a file with the version in it.
+ *
+ * @author Levin Jeck
+ * @version 1.0
+ * @since 1.0
+ */
 public abstract class GameInfoHelper {
 
+    /**
+     * Returns the local version of the {@code game}.
+     *
+     * @param game {@link Game} to get version from
+     * @return version of the {@code game}
+     * @since 1.0
+     */
     public static String getVersion(Game game){
         switch(game.getVersion().format){
             case "file": return getVersionFile(game.getExeFileRelative(), game.getVersion().file, game.getVersion().query);

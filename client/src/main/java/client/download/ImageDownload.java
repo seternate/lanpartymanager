@@ -12,11 +12,14 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 /**
- * Handles the download for all game images.
+ * {@code ImageDownload} handles the download of all {@code Images} served by the {@code LANServer}.
+ *
+ * @author Levin Jeck
+ * @version 1.0
+ * @since 1.0
  */
 public class ImageDownload extends Thread {
     private static Logger log = Logger.getLogger(ImageDownload.class);
-
 
     private Socket clientsocket;
     private ServerSocket serversocket;
@@ -25,9 +28,13 @@ public class ImageDownload extends Thread {
 
 
     /**
-     * Creates the ImageDownload object.
+     * Creates the {@code ImageDownload}.
+     * <p>
+     *     A new {@link Socket} on an free port is opened for the download. Then {@link #start()} is called.
+     * </p>
      *
-     * @param user user that downloads the images.
+     * @param user {@link User} who downloads the {@code Images}
+     * @since 1.0
      */
     public ImageDownload(User user){
         clientsocket = new Socket();
@@ -44,8 +51,12 @@ public class ImageDownload extends Thread {
         start();
     }
 
+    /**
+     * @since 1.0
+     */
     @Override
     public void run(){
+        //Tries to connect the socket until a connection is made
         while (!clientsocket.isConnected()) {
             try {
                 clientsocket = serversocket.accept();
@@ -57,9 +68,10 @@ public class ImageDownload extends Thread {
     }
 
     /**
-     * Saves all images to the gamepath of the user.
+     * Downloads and saves all {@code Images} to the {@code gamepath}.
      *
-     * @throws IOException if any IO-Error occurs.
+     * @throws IOException if any IO-Error occurs
+     * @since 1.0
      */
     private void saveImages() throws IOException {
         //Open inputstream
@@ -100,7 +112,8 @@ public class ImageDownload extends Thread {
     }
 
     /**
-     * @return port this ImageDownload listens to for incoming images.
+     * @return {@code port} of the {@link Socket} for the incoming {@code Images}
+     * @since 1.0
      */
     public int getPort(){
         return port;

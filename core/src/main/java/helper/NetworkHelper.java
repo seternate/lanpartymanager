@@ -8,14 +8,20 @@ import java.util.Collections;
 import java.util.Enumeration;
 
 /**
- * Helper class to find any free port on the system.
+ * {@code NetworkHelper} is a helper class to find free ports, the ip-address and the filedrop port of the system.
+ *
+ * @author Levin Jeck
+ * @version 1.0
+ * @since 1.0
  */
 public abstract class NetworkHelper {
     private static Logger log = Logger.getLogger(NetworkHelper.class);
+    private static final int filedropport = 1337;
 
 
     /**
-     * @return a free port of the system or -1 on any failure.
+     * @return <b>-1</b> if no free port was found, else a free port
+     * @since 1.0
      */
     public static int getOpenPort(){
         ServerSocket socket;
@@ -38,6 +44,13 @@ public abstract class NetworkHelper {
         return port;
     }
 
+    /**
+     * Filters out any local ip-addresses, which causes problems to find {@code gameservers} (e.g. Virtual Machine).
+     *
+     * @return local ip-address of the system
+     * @throws UnknownHostException if any error occurs
+     * @since 1.0
+     */
     public static String getIPAddress() throws UnknownHostException {
         try {
             Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
@@ -54,6 +67,14 @@ public abstract class NetworkHelper {
             log.error("I/O error while detecting ip address of the host system", e);
         }
         return InetAddress.getLocalHost().getHostAddress();
+    }
+
+    /**
+     * @return filedrop port of {@value filedropport}
+     * @since 1.0
+     */
+    public static int getFileDropPort(){
+        return filedropport;
     }
 
 }

@@ -229,14 +229,14 @@ public class Client implements Runnable {
             GameStatus newStatus = client.getGameStatus(ApplicationManager.getFocusedGame()).execute().body();
             assert newStatus != null;
             gamestatus.downloading.setValue(newStatus.isDownloading());
-            gamestatus.unzipping.setValue(newStatus.isUnzipping());
+            gamestatus.unzipping.setValue(newStatus.isExtracting());
             gamestatus.running.setValue(newStatus.isRunning());
             gamestatus.local.setValue(newStatus.isLocal());
             gamestatus.update.setValue(newStatus.isUpdate());
             gamestatus.version.setValue(newStatus.isVersion());
             gamestatus.playable.setValue(newStatus.isPlayable());
             gamestatus.downloadProgress.setValue(newStatus.getDownloadProgress());
-            gamestatus.unzipProgress.setValue(newStatus.getUnzipProgress());
+            gamestatus.unzipProgress.setValue(newStatus.getExtractionProgress());
             gamestatus.downloadSpeed.setValue(newStatus.getDownloadSpeed());
         }
         updateUsers();

@@ -8,9 +8,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
-//https://gist.github.com/borisbrodski/6120309
-@SuppressWarnings("ALL")
-public final class SevenZipHelper {
+/*
+    Source of this code: https://gist.github.com/borisbrodski/6120309
+    Modified for needs of the project.
+ */
+
+final class SevenZipHelper {
 
     static class ExtractionException extends Exception {
         private static final long serialVersionUID = -5108931481040742838L;
@@ -127,8 +130,6 @@ public final class SevenZipHelper {
             if (!isFolder) {
                 switch (extractAskMode) {
                     case EXTRACT:
-                        //System.out.println("Unzipped: " + ((double)Math.round(unzipProgress*1000))/10. + "% from " + download.game.getName());
-                        //System.out.println("Extracted " + path);
                         if(gameDownload.isStopped())
                             throw new SevenZipException("STOPPED BY USER!");
                         break;
@@ -276,4 +277,5 @@ public final class SevenZipHelper {
         }
         return result ;
     }
+
 }

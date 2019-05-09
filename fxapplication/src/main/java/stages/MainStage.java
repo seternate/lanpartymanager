@@ -15,18 +15,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.prefs.Preferences;
 
-/**
- * MainStage class for the main window of the application.
- */
 public class MainStage extends Stage {
     private static Logger log = Logger.getLogger(MainStage.class);
+
 
     private MainController controller;
 
 
-    /**
-     * Constructs the MainStage.
-     */
     public MainStage(){
         super();
         //Loading FXML
@@ -71,9 +66,6 @@ public class MainStage extends Stage {
         });
     }
 
-    /**
-     * Called if any new game received from the server and reloads the gametiles in the main window.
-     */
     public void updateRoot(){
         log.info("Update gamepane.");
         controller.updateGamePane();
@@ -81,16 +73,10 @@ public class MainStage extends Stage {
         setWidth(getWidth()+1);
     }
 
-    /**
-     * @return Game of the gametile, which is currently focused in the main window.
-     */
     public Game getFocusedGame(){
         return controller.focusedGame;
     }
 
-    /**
-     * Hides all windows if main stage is closed, so the application terminates correctly.
-     */
     @Override
     public void hide() {
         log.info("Application closing.");
