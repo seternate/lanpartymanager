@@ -25,7 +25,6 @@ public class ServerConnectController {
     private void initialize(){
         ObservableList<User> userlist = FXCollections.observableArrayList(ApplicationManager.getUserslist());
         FXCollections.copy(userlist, ApplicationManager.getUserslist());
-        userlist.add(ApplicationManager.getUser());
         lvUsers.setItems(userlist);
         lvUsers.setCellFactory(c -> new ListCell<User>(){
             @Override
