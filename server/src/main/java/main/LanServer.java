@@ -92,7 +92,7 @@ public final class LanServer {
                         download = Integer.valueOf(inputs[1]) - 1;
                         stopDownload(download);
                     } catch(Exception e) {
-                        log.warn("Wrong argument provided for 'user'. Please use 'users' for an existing user number.");
+                        log.warn("Wrong argument provided for 'download-stop'. Please use 'downloads' for an existing user number.");
                         log.debug(e);
                     }
                 }
