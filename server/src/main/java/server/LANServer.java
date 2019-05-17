@@ -26,7 +26,11 @@ import java.net.BindException;
 import java.util.*;
 
 /**
- * Creates the LANServer required for lanpartymanager usage.
+ * {@code LANServer} manages all the communication with the {@code LANClient} and the game organisation.
+ *
+ * @author Levin Jeck
+ * @version 1.0
+ * @since 1.0
  */
 public class LANServer extends Server {
     private static Logger log = Logger.getLogger(LANServer.class);
