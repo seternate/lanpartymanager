@@ -167,7 +167,7 @@ public class LANServer extends Server {
      * @return number of open games from the user.
      */
     public int getOpenGamesSize(User user){
-        return userrungames.get(user).size();
+        return userrungames.get(user) == null ? 0 : userrungames.get(user).size();
     }
 
     /**
@@ -175,7 +175,7 @@ public class LANServer extends Server {
      * @return number of open servers from the user.
      */
     public int getOpenServersSize(User user){
-        return userrunservers.get(user).size();
+        return userrunservers.get(user) == null ? 0 : userrunservers.get(user).size();
     }
 
     /**
