@@ -12,7 +12,11 @@ import java.io.File;
 import java.util.Scanner;
 
 /**
- * Class that starts the LAN server for the lanpartymanager.
+ * {@code LanServer} starts the {@link LANServer} and console I/O.
+ *
+ * @author Levin Jeck
+ * @version 1.0
+ * @since 1.0
  */
 public final class LanServer {
     private static Logger log = Logger.getLogger(LanServer.class);
@@ -20,9 +24,8 @@ public final class LanServer {
 
 
     /**
-     * Main-method.
-     *
      * @param args Command-line arguments
+     * @since 1.0
      */
     public static void main(String[] args) {
         //Startup sequence. Get folder with zipped game files from the user.
@@ -41,6 +44,8 @@ public final class LanServer {
 
     /**
      * Listen on user inputs in a new {@link Thread}.
+     *
+     * @since 1.0
      */
     private static void userInput(){
         new Thread(() -> {
@@ -111,7 +116,9 @@ public final class LanServer {
     }
 
     /**
-     * Prints all game names with a preceded number.
+     * Prints all {@link Game} names with a preceded number.
+     *
+     * @since 1.0
      */
     private static void printGames(){
         for(int i = 0; i < server.getGames().size(); i++){
@@ -120,11 +127,12 @@ public final class LanServer {
     }
 
     /**
-     * Prints details of a game. Printed are the name, filename on the server, version, command-line arguments,
+     * Prints details of a {@link Game}. Printed are the name, filename on the server, version, command-line arguments,
      * connection command-line arguments, server command-line arguments, .exe file name, server .exe file name,
      * direct ip connection, open server, size of the game file [bytes].
      *
-     * @param gamenumber game that should be printed in detail.
+     * @param gamenumber number of the {@link Game} to print (see {@link #printGames()})
+     * @since 1.0
      */
     private static void printGamesDetails(int gamenumber){
         Game game = server.getGames().get(gamenumber);
@@ -143,7 +151,9 @@ public final class LanServer {
     }
 
     /**
-     * Prints all user names with a preceded number and the amount of open games and servers.
+     * Prints all {@link User} names with a preceded number and the amount of open games and servers.
+     *
+     * @since 1.0
      */
     private static void printUsers(){
         if(server.getUsers().isEmpty())
@@ -157,9 +167,10 @@ public final class LanServer {
     }
 
     /**
-     * Prints details of a user. Printed are the name, ip-address, gamepath, order, open games, open servers.
+     * Prints details of a {@link User}. Printed are the name, ip-address, gamepath, order, open games, open servers.
      *
-     * @param usernumber user that should be printed in detail.
+     * @param usernumber number of the {@link User} to print (see {@link #printUsers()})
+     * @since 1.0
      */
     private static void printUsersDetails(int usernumber){
         User user = server.getUsers().get(usernumber);
@@ -190,7 +201,10 @@ public final class LanServer {
     }
 
     /**
-     * Prints running downloads. Printed are the user, game, upload progress, average upload speed in MByte/second.
+     * Prints running {@code Downloads}. Printed are the user, game, upload progress, average upload speed in
+     * MByte/second.
+     *
+     * @since 1.0
      */
     private static void printDownloads(){
         if(server.getUploads().isEmpty())
@@ -204,9 +218,21 @@ public final class LanServer {
     }
 
     /**
-     * Loop until the user enters a directory.
+     * Stops a download.
      *
-     * @return {@link File} of the entered directory.
+     * @param download number to be stopped (see {@link #printDownloads()})
+     * @since 1.0
+     */
+    private static void stopDownload(int download){
+        GameUpload upload = server.getUploads().get(download);
+        server.stopUpload(upload);
+    }
+
+    /**
+     * Loops until the user enters a directory.
+     *
+     * @return {@link File} of the entered directory
+     * @since 1.0
      */
     private static File getGameFolder(){
         File gamedirectory;
@@ -224,13 +250,4 @@ public final class LanServer {
         return gamedirectory;
     }
 
-    /**
-     * Stops a download.
-     *
-     * @param download download number to be stopped.
-     */
-    private static void stopDownload(int download){
-        GameUpload upload = server.getUploads().get(download);
-        server.stopUpload(upload);
-    }
 }
