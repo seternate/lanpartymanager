@@ -17,7 +17,7 @@ import java.util.List;
 
 public class ServerConnectController {
     private Game game;
-    private ObservableList<User> users = FXCollections.observableArrayList(getUserWithOpenServer());
+    private ObservableList<User> users;
     @FXML
     private ListView<User> lvUsers;
 
@@ -28,7 +28,7 @@ public class ServerConnectController {
 
     @FXML
     private void initialize(){
-
+        users = FXCollections.observableArrayList(getUserWithOpenServer());
         ApplicationManager.getUserRunServers().addListener(new MapChangeListener<User, ObservableList<Game>>() {
             @Override
             public void onChanged(Change<? extends User, ? extends ObservableList<Game>> change) {
@@ -61,7 +61,7 @@ public class ServerConnectController {
         List<User> userlist = new ArrayList<>();
         ApplicationManager.getUserRunServers().forEach((user, gamelist) -> {
             for(Game g : gamelist){
-                if(g.equals(game))
+                if(g != null && g.equals(game))
                     userlist.add(user);
             }
         });
