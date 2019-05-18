@@ -3,6 +3,7 @@ package controller;
 import entities.game.Game;
 import entities.user.User;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.MapChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
@@ -29,10 +30,26 @@ public class ServerConnectController {
     @FXML
     private void initialize(){
         users = FXCollections.observableArrayList(getUserWithOpenServer());
+        ApplicationManager.getUserRunServers().forEach((user, gamelist) -> {
+            gamelist.addListener(new ListChangeListener<Game>() {
+                @Override
+                public void onChanged(Change<? extends Game> c) {
+                    users.setAll(getUserWithOpenServer());
+                }
+            });
+        });
         ApplicationManager.getUserRunServers().addListener(new MapChangeListener<User, ObservableList<Game>>() {
             @Override
             public void onChanged(Change<? extends User, ? extends ObservableList<Game>> change) {
-                users.setAll(getUserWithOpenServer());
+                if(change.wasAdded()) {
+                    users.setAll(getUserWithOpenServer());
+                    change.getValueAdded().addListener(new ListChangeListener<Game>() {
+                        @Override
+                        public void onChanged(Change<? extends Game> c) {
+                            users.setAll(getUserWithOpenServer());
+                        }
+                    });
+                }
             }
         });
         lvUsers.setItems(users);
