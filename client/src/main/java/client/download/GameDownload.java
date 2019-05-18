@@ -17,7 +17,7 @@ import java.net.Socket;
  * <p>
  *     Listens for the incoming {@code game} and saves to the {@code gamepath} of the {@code user}. After the download
  *     finished the {@code game} gets extracted and the downloaded file is deleted. The {@code GameDownload} tracks the
- *     process of the download and extraction. The download or extraction can be stopped by calling
+ *     progress of the download and extraction. The download or extraction can be stopped by calling
  *     {@link #stopDownloadUnzip()}.
  * </p>
  * @author Levin Jeck

@@ -103,6 +103,7 @@ public class LANClient extends Client {
 
     /**
      * Tries to connect with the {@code LANServer} repetitive, if no connection is active.
+     *
      * @since 1.0
      */
     private void connect(){
@@ -131,6 +132,7 @@ public class LANClient extends Client {
 
     /**
      * Registers all listeners.
+     *
      * @since 1.0
      */
     private void registerListener(){
@@ -151,6 +153,7 @@ public class LANClient extends Client {
      *     {@link ImageDownloadRequest} and sets the {@code LANServer} ip-address to the {@link ServerStatus} and calls
      *     {@link ServerStatus#connected()}.
      * </p>
+     *
      * @since 1.0
      */
     private void registerLoginListener(){
@@ -175,6 +178,7 @@ public class LANClient extends Client {
      * <p>
      *     Calls {@link ServerStatus#disconnected()} and {@link #connect()}.
      * </p>
+     *
      * @since 1.0
      */
     private void registerDisconnectListener(){
@@ -192,6 +196,7 @@ public class LANClient extends Client {
 
     /**
      * Register listener if a {@link GamelistMessage} is received.
+     *
      * @since 1.0
      */
     private void registerGamelistListener(){
@@ -210,6 +215,7 @@ public class LANClient extends Client {
 
     /**
      * Register listener if a {@link UserlistMessage} is received.
+     *
      * @since 1.0
      */
     private void registerUserlistListener(){
@@ -228,6 +234,7 @@ public class LANClient extends Client {
 
     /**
      * Register listener if a {@link ErrorMessage} is received.
+     *
      * @since 1.0
      */
     private void registerErrorListener(){
@@ -244,6 +251,7 @@ public class LANClient extends Client {
 
     /**
      * Register listener if a {@link UserRunGamesList} is received.
+     *
      * @since 1.0
      */
     private void registerUserRunGamesListener(){
@@ -261,6 +269,7 @@ public class LANClient extends Client {
 
     /**
      * Register listener if a {@link UserRunServerList} is received.
+     *
      * @since 1.0
      */
     private void registerUserRunServersListener(){
@@ -278,6 +287,7 @@ public class LANClient extends Client {
 
     /**
      * Registers listener if a {@link DownloadStopMessage} is received.
+     *
      * @since 1.0
      */
     private void registerDownloadStopListener(){

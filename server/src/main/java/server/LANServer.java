@@ -26,7 +26,11 @@ import java.net.BindException;
 import java.util.*;
 
 /**
- * Creates the LANServer required for lanpartymanager usage.
+ * {@code LANServer} manages all the communication with the {@code LANClient} and the game organisation.
+ *
+ * @author Levin Jeck
+ * @version 1.0
+ * @since 1.0
  */
 public class LANServer extends Server {
     private static Logger log = Logger.getLogger(LANServer.class);
@@ -37,7 +41,7 @@ public class LANServer extends Server {
     private volatile UserRunGamesList userrungames;
     private volatile UserRunServerList userrunservers;
     private File gamedirectory;
-    private volatile GameUploadManager gameUploadManager;
+    private volatile GameUploadManager gameuploadmanager;
 
 
     /**
@@ -47,16 +51,25 @@ public class LANServer extends Server {
      *
      * @param gamedirectory directory, where all 7zip files from the games can be found.
      */
+    /**
+     * Creates the {@code LANServer}.
+     * <p>
+     *     All listeners and classes for KryoNet get registered. The {@link ServerSettings} are loaded, the server port
+     *     gets binded, the gamelist gets loaded. It is for a valid gamepath checked.
+     * </p>
+     *
+     * @param gamedirectory directory, where all packed gamefiles are
+     * @since 1.0
+     */
     public LANServer(File gamedirectory){
         super();
         users = new UserList();
-        gameUploadManager = new GameUploadManager();
+        gameuploadmanager = new GameUploadManager();
         userrungames = new UserRunGamesList();
         userrunservers = new UserRunServerList();
         //Register listener and classes to be send over KryoNet
         NetworkClassRegistrationHelper.registerClasses(this);
         registerListener();
-
         //Load server settings
         Settings settings = null;
         try {
@@ -65,7 +78,6 @@ public class LANServer extends Server {
             log.fatal("Error while creating server settings.", e);
             System.exit(-1);
         }
-
         //Bind server port
         try {
             bind(settings.getServerTcp(), settings.getServerUdp());
@@ -76,7 +88,6 @@ public class LANServer extends Server {
                 System.exit(-2);
             }
         }
-
         //Load game list
         try {
             games = new GameList(GAMEPROPERTIES);
@@ -84,7 +95,6 @@ public class LANServer extends Server {
             log.fatal("Error while creating game list from property files.", e);
             System.exit(-3);
         }
-
         //Check gamedirectory to be an valid directory
         if(!gamedirectory.isDirectory()) {
             log.fatal("Entered gamepath '" + gamedirectory.getAbsolutePath() + "' isn't a directory or don't exist.");
@@ -103,9 +113,10 @@ public class LANServer extends Server {
     }
 
     /**
-     * Recreates the server with the same gamedirectory and starts it.
+     * Restarts the server with the same gamedirectory and starts it.
      *
-     * @param server that should be recreated
+     * @param server {@code LANServer} to restart
+     * @since 1.0
      */
     private LANServer(LANServer server){
         this(server.gamedirectory);
@@ -119,29 +130,35 @@ public class LANServer extends Server {
     }
 
     /**
-     * Restarts the server and stops all running gameuploads.
+     * Restarts the server and stops all running {@link GameUpload}.
      *
-     * @return the new LANServer.
+     * @return restarted {@code LanServer}
+     * @since 1.0
      */
     public LANServer restart(){
+        //Message all clients to stop the download
         for(Connection connection : getConnections()){
             connection.sendTCP(new DownloadStopMessage());
         }
         stop();
         close();
-        this.gameUploadManager.stopAll();
+        //Stops all uploads
+        this.gameuploadmanager.stopAll();
         return new LANServer(this);
     }
 
     /**
-     * @return List of all games on the server.
+     * @return list of all available {@link Game}
+     * @since 1.0
      */
     public GameList getGames(){
         return games;
     }
 
     /**
-     * Reloads the gamelist and sends it to all connect users.
+     * Reloads the {@link GameList} and sends it to all connected {@link User}.
+     *
+     * @since 1.0
      */
     public void reloadGames(){
         //Recreating the gamelist
@@ -156,50 +173,56 @@ public class LANServer extends Server {
     }
 
     /**
-     * @return List of all logged in users.
+     * @return list of all logged in {@link User}
+     * @since 1.0
      */
     public List<User> getUsers(){
         return users.toList();
     }
 
     /**
-     * @param user the user to determine the open games.
-     * @return number of open games from the user.
+     * @param user {@link User} to check the open {@link Game}
+     * @return amount of open {@code Game}
+     * @since 1.0
      */
     public int getOpenGamesSize(User user){
         return userrungames.get(user) == null ? 0 : userrungames.get(user).size();
     }
 
     /**
-     * @param user the user to determine the open servers.
-     * @return number of open servers from the user.
+     * @param user {@link User} to check the open servers of the {@link Game}
+     * @return amount of open {@code server}
+     * @since 1.0
      */
     public int getOpenServersSize(User user){
         return userrunservers.get(user) == null ? 0 : userrunservers.get(user).size();
     }
 
     /**
-     * @param user the user to get the open games from
-     * @return list with all open games from the user
+     * @param user {@link User} to check the open {@link Game}
+     * @return list of all open {@code Game} from the {@code user}
+     * @since 1.0
      */
     public List<Game> getOpenGames(User user){
         return userrungames.get(user);
     }
 
     /**
-     * @param user the user to get the open servers from
-     * @return list with all open servers from the user
+     * @param user {@link User} to check the open servers of the {@link Game}
+     * @return list of all open {@code servers} from the {@code user}
+     * @since 1.0
      */
     public List<Game> getOpenServers(User user){
         return userrunservers.get(user);
     }
 
     /**
-     * Logs a user in the server, saves his informations and send him the gamelist and new userlist to all connected
-     * users.
+     * Logs the {@code user} in the {@code LANServer} and sends the {@link GameList} to the {@code user}. To all
+     * connected {@link User} the new {@link UserList} is send.
      *
-     * @param connection of the user who want's to get logged in.
-     * @param user requested a log in.
+     * @param connection connection ID of the {@code user}
+     * @param user {@link User}, who requested the log in
+     * @since 1.0
      */
     private void loginPlayer(Connection connection, User user){
         //Check if user is logged in already
@@ -219,10 +242,12 @@ public class LANServer extends Server {
     }
 
     /**
-     * Updates a users informations if anything changes and sends the updated userlist to all connected users.
+     * Updates the information of the {@code user} if anything changed and sends the updated {@link UserList} to all
+     * connected {@link User}.
      *
-     * @param connection of the user who has send an user update.
-     * @param user user who sends the user update.
+     * @param connection connection ID of the {@code user}
+     * @param user {@link User}, who requested the update
+     * @since 1.0
      */
     private void playerUpdate(Connection connection, User user){
         if(users.containsKey(connection.getID()) && !users.get(connection.getID()).equals(user)){
@@ -249,7 +274,9 @@ public class LANServer extends Server {
     }
 
     /**
-     * Registers all needed listeners.
+     * Registers all listeners.
+     *
+     * @since 1.0
      */
     private void registerListener(){
         registerLoginListener();
@@ -262,7 +289,9 @@ public class LANServer extends Server {
     }
 
     /**
-     * Registers the listener for new login attempts.
+     * Registers listener for new login attempts.
+     *
+     * @since 1.0
      */
     private void registerLoginListener(){
         addListener(new Listener() {
@@ -277,7 +306,9 @@ public class LANServer extends Server {
     }
 
     /**
-     * Registers the listener for user updates.
+     * Registers listener for {@link User} updates.
+     *
+     * @since 1.0
      */
     private void registerUserupdateListener(){
         addListener(new Listener() {
@@ -292,7 +323,9 @@ public class LANServer extends Server {
     }
 
     /**
-     * Registers the listener for download requests.
+     * Registers listener for download requests.
+     *
+     * @since 1.0
      */
     private void registerDownloadListener(){
         addListener(new Listener() {
@@ -314,7 +347,7 @@ public class LANServer extends Server {
                         connection.sendTCP(new ErrorMessage(ErrorMessage.gameNotOnServer + request.game));
                     } else {
                         //Send game to the user and add the upload to the upload manager
-                        gameUploadManager.add(new GameUpload(request.port, gamedirectory, request.game,
+                        gameuploadmanager.add(new GameUpload(request.port, gamedirectory, request.game,
                                 users.get(connection.getID())));
                     }
                 }
@@ -327,7 +360,7 @@ public class LANServer extends Server {
                         connection.sendTCP(new ErrorMessage(ErrorMessage.userNotLoggedIn));
                         return;
                     }
-                    GameUpload upload = gameUploadManager.get(message.user, message.game);
+                    GameUpload upload = gameuploadmanager.getUpload(message.user, message.game);
                     if(upload == null)
                         connection.sendTCP(new ErrorMessage(message.game + ErrorMessage.noGameUpload + message.user));
                     else
@@ -338,7 +371,9 @@ public class LANServer extends Server {
     }
 
     /**
-     * Register the listener for disconnects and updating all lists of connected users on disconnect.
+     * Register listener for disconnects.
+     *
+     * @since 1.0
      */
     private void registerDisconnectListener(){
         addListener(new Listener() {
@@ -362,7 +397,9 @@ public class LANServer extends Server {
     }
 
     /**
-     * Registers the listener for change on users open games.
+     * Registers listener for change on {@link User} open games.
+     *
+     * @since 1.0
      */
     private void registerUserRunGameListener(){
         addListener(new Listener() {
@@ -390,7 +427,9 @@ public class LANServer extends Server {
     }
 
     /**
-     * Registers the listener for change on users open servers.
+     * Registers listener for change on {@link User} open servers.
+     *
+     * @since 1.0
      */
     private void registerUserRunServerListener(){
         addListener(new Listener() {
@@ -419,6 +458,8 @@ public class LANServer extends Server {
 
     /**
      * Registers the listener for cover downloads.
+     *
+     * @since 1.0
      */
     private void registerImageDownloadListener(){
         addListener(new Listener() {
@@ -443,24 +484,26 @@ public class LANServer extends Server {
     }
 
     /**
-     * @return GameUploadManager of all running uploads.
+     * @since 1.0
      */
     public GameUploadManager getUploads(){
-        return gameUploadManager;
+        return gameuploadmanager;
     }
 
     /**
-     * @return the gamedirectory, where all zipped gamefiles are.
+     * @return gamedirectory, where all packed gamefiles are
+     * @since 1.0
      */
     public File getGamedirectory(){
         return gamedirectory;
     }
 
     /**
-     * Searches for the connection of a user.
+     * Searches for the {@link Connection} of the {@code user}.
      *
-     * @param user the user which connection should be found.
-     * @return the connection of the user or null if no connection can be found.
+     * @param user {@link User}, which {@code Connection} should be found
+     * @return {@code Connection} of the {@code user} or {@code null} if no {@code Connection} found
+     * @since 1.0
      */
     private Connection getConnection(User user){
         for(Connection connection : getConnections()){
@@ -471,9 +514,10 @@ public class LANServer extends Server {
     }
 
     /**
-     * Stops a gameupload.
+     * Stops the {@code upload}.
      *
-     * @param upload gameupload to be stopped.
+     * @param upload {@link GameUpload} to be stopped
+     * @since 1.0
      */
     public void stopUpload(GameUpload upload){
         getConnection(upload.getUser()).sendTCP(new DownloadStopMessage(null, upload.getGame()));

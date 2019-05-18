@@ -3,6 +3,8 @@ package controller;
 import entities.game.Game;
 import entities.user.User;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
+import javafx.collections.MapChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -11,8 +13,12 @@ import javafx.scene.control.ListView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ServerConnectController {
     private Game game;
+    private ObservableList<User> users;
     @FXML
     private ListView<User> lvUsers;
 
@@ -23,10 +29,30 @@ public class ServerConnectController {
 
     @FXML
     private void initialize(){
-        ObservableList<User> userlist = FXCollections.observableArrayList(ApplicationManager.getUserslist());
-        FXCollections.copy(userlist, ApplicationManager.getUserslist());
-        userlist.add(ApplicationManager.getUser());
-        lvUsers.setItems(userlist);
+        users = FXCollections.observableArrayList(getUserWithOpenServer());
+        ApplicationManager.getUserRunServers().forEach((user, gamelist) -> {
+            gamelist.addListener(new ListChangeListener<Game>() {
+                @Override
+                public void onChanged(Change<? extends Game> c) {
+                    users.setAll(getUserWithOpenServer());
+                }
+            });
+        });
+        ApplicationManager.getUserRunServers().addListener(new MapChangeListener<User, ObservableList<Game>>() {
+            @Override
+            public void onChanged(Change<? extends User, ? extends ObservableList<Game>> change) {
+                if(change.wasAdded()) {
+                    users.setAll(getUserWithOpenServer());
+                    change.getValueAdded().addListener(new ListChangeListener<Game>() {
+                        @Override
+                        public void onChanged(Change<? extends Game> c) {
+                            users.setAll(getUserWithOpenServer());
+                        }
+                    });
+                }
+            }
+        });
+        lvUsers.setItems(users);
         lvUsers.setCellFactory(c -> new ListCell<User>(){
             @Override
             protected void updateItem(User item, boolean empty){
@@ -46,6 +72,17 @@ public class ServerConnectController {
                 }
             }
         });
+    }
+
+    private List<User> getUserWithOpenServer(){
+        List<User> userlist = new ArrayList<>();
+        ApplicationManager.getUserRunServers().forEach((user, gamelist) -> {
+            for(Game g : gamelist){
+                if(g != null && g.equals(game))
+                    userlist.add(user);
+            }
+        });
+        return userlist;
     }
 
 }
