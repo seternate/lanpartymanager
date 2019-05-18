@@ -10,7 +10,11 @@ import java.io.IOException;
 import java.net.Socket;
 
 /**
- * Handles the upload for all game images.
+ * {@code ImageUpload} handles the upload of all {@code Images} served by the {@code LANServer}.
+ *
+ * @author Levin Jeck
+ * @version 1.0
+ * @since 1.0
  */
 public class ImageUpload extends Thread {
     private static Logger log = Logger.getLogger(ImageUpload.class);
@@ -23,11 +27,15 @@ public class ImageUpload extends Thread {
 
 
     /**
-     * Creates the ImageUpload object.
+     * Creates the {@code ImageUpload}.
+     * <p>
+     *     A new {@link Socket} on an free port is opened for the upload. Then {@link #start()} is called.
+     * </p>
      *
-     * @param port port that is opened from the user.
-     * @param user user that wants to download the images.
-     * @param imagepath path of the images.
+     * @param port port, opened by the {@code user}
+     * @param user {@link User}, who requested the upload of the {@code Images}
+     * @param imagepath path of the images
+     * @since 1.0
      */
     public ImageUpload(int port, User user, File imagepath){
         this.ipaddress = user.getIpAddress();
@@ -44,6 +52,9 @@ public class ImageUpload extends Thread {
         start();
     }
 
+    /**
+     * @since 1.0
+     */
     @Override
     public void run(){
         try {
@@ -55,9 +66,10 @@ public class ImageUpload extends Thread {
     }
 
     /**
-     * Sends all images. First sends the amount of files, then the filesize, filename and the images.
+     * Sends all {@code Images}. First the amount of files, then the filesizes, filename and imagefile are send.
      *
-     * @throws IOException if any IO-Error occurs.
+     * @throws IOException if any IO-Error occurs
+     * @since 1.0
      */
     private void sendImages() throws IOException {
         //Open outputstream
