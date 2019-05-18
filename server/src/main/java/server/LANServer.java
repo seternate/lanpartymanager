@@ -360,7 +360,7 @@ public class LANServer extends Server {
                         connection.sendTCP(new ErrorMessage(ErrorMessage.userNotLoggedIn));
                         return;
                     }
-                    GameUpload upload = gameuploadmanager.get(message.user, message.game);
+                    GameUpload upload = gameuploadmanager.getUpload(message.user, message.game);
                     if(upload == null)
                         connection.sendTCP(new ErrorMessage(message.game + ErrorMessage.noGameUpload + message.user));
                     else
