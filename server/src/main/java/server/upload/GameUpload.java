@@ -11,7 +11,14 @@ import java.io.IOException;
 import java.net.Socket;
 
 /**
- * Creates a new socket and transfers a gamefile to a user. Also tracks the send progress.
+ * {@code GameUpload} handles the upload of a {@link Game} to a {@link User}.
+ * <p>
+ *     The {@code GameUpload} tracks the progress of the upload. The Upload can be stopped by calling
+ *     {@link #stopUpload()}.
+ * </p>
+ * @author Levin Jeck
+ * @version 1.0
+ * @since 1.0
  */
 public class GameUpload extends Thread{
     private static Logger log = Logger.getLogger(GameUpload.class);
@@ -28,12 +35,16 @@ public class GameUpload extends Thread{
 
 
     /**
-     * Creates a socket for the gamefile and starts sending the gamefile to the user.
+     * Creates the {@code GameUpload} for the {@code user} to download the {@code game}.
+     * <p>
+     *     Opens a socket on the open {@code port}.
+     * </p>
      *
-     * @param port port, which is opened on the users machine for this download.
-     * @param gamepath 7zip file of the game.
-     * @param game game, which gets uploaded.
-     * @param user user, which requested to download the game.
+     * @param port port, which is used on the {@code user} machine for the upload
+     * @param gamepath packed gamefile of the {@code game}
+     * @param game {@link Game}, which gets uploaded
+     * @param user {@link User}, which requested to upload the {@code game}
+     * @since 1.0
      */
     public GameUpload(int port, File gamepath, Game game, User user) {
         this.ipaddress = user.getIpAddress();
@@ -70,19 +81,24 @@ public class GameUpload extends Thread{
     }
 
     /**
-     * Sets the manager for this gamefile transfer.
+     * Sets the {@link GameUploadManager} for this {@code GameUpload}.
      *
-     * @param manager GameUploadManager that should manage this gamefile transfer.
+     * @param manager {@code GameUploadManager} to manage this {@code GameUpload}
+     * @since 1.0
      */
     void setManager(GameUploadManager manager){
         this.manager = manager;
     }
 
     /**
-     * Sends the file to the user. First writes the gamefile size, then sends the game itself and updates the progress
-     * and speed information of the upload.
+     * Sends the gamefile to the {@code LANClient}.
+     * <p>
+     *     First sends the gamefile size, then the gamefile itself. Updates the progress and speed information of the
+     *     upload.
+     * </p>
      *
      * @throws IOException if any error while reading or writing occurs an exception is thrown.
+     * @since 1.0
      */
     private void sendGame() throws IOException {
         //Open outputstream
@@ -133,50 +149,59 @@ public class GameUpload extends Thread{
     }
 
     /**
-     * Returns the progress of the upload to the user with a precision of 4 as decimal.
+     * Returns the progress of the upload as a decimal. Range is from {@code 0} to {@code 1}. The decimal has a
+     * precision of 4 decimals.
      *
-     * @return progress of the upload.
+     * @return progress of the upload
+     * @since 1.0
      */
     public double getProgress(){
         return (double)Math.round(progress*10000.)/10000.;
     }
 
     /**
-     * Returns the current upload speed after each send package. For average speed see {@link #getAverageUploadspeed()}.
+     * Returns the uploadspeed for each package. For the average uploadspeed see {@link #getAverageUploadspeed()}.
      *
-     * @return current upload speed [bytes/second].
+     * @return current uploadspeed speed [bytes/second]
+     * @since 1.0
      */
     public long getUploadspeed(){
         return uploadspeed;
     }
 
     /**
-     * Returns the average upload speed. For current speed see {@link #getUploadspeed()}.
+     * Returns the average uploadspeed. For the uploadspeed for each package see {@link #getUploadspeed()}.
      *
-     * @return average upload speed [bytes/second].
+     * @return average uploadspeed [bytes/second]
+     * @since 1.0
      */
     public long getAverageUploadspeed(){
         return averageUploadspeed;
     }
 
     /**
-     * @return user who started the upload.
+     * @return {@code User}, who requested the upload
+     * @since 1.0
      */
     public User getUser(){
         return user;
     }
 
     /**
-     * @return game which is uploaded.
+     * @return {@code Game}, which is uploaded
+     * @since 1.0
      */
     public Game getGame(){
         return game;
     }
 
     /**
-     * Stop the upload.
+     * Stops the upload.
+     *
+     * @since 1.0
      */
     public void stopUpload(){
         stop = true;
     }
+
 }
