@@ -3,7 +3,7 @@ package main;
 import client.LANClient;
 import com.esotericsoftware.minlog.Log;
 import controller.ApplicationManager;
-import helper.kryo.NoKryoLogging;
+import helper.kryo.KryoLogging;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import org.springframework.boot.SpringApplication;
@@ -36,7 +36,7 @@ public class LanClient extends Application {
      */
     public static void main(String[] args) {
         //Disable all logging for KryoNet
-        Log.setLogger(new NoKryoLogging());
+        Log.setLogger(new KryoLogging());
         //Create the LANClient
         client = new LANClient();
         //Start the SpingApplication

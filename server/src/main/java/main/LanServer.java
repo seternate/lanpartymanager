@@ -3,7 +3,7 @@ package main;
 import com.esotericsoftware.minlog.Log;
 import entities.game.Game;
 import entities.user.User;
-import helper.kryo.NoKryoLogging;
+import helper.kryo.KryoLogging;
 import org.apache.log4j.Logger;
 import server.LANServer;
 import server.upload.GameUpload;
@@ -33,7 +33,7 @@ public final class LanServer {
         File gamepath = getGameFolder();
 
         //Turn off KryoNet logging
-        Log.setLogger(new NoKryoLogging());
+        Log.setLogger(new KryoLogging());
         //Start Server
         server = new LANServer(gamepath);
         server.start();
