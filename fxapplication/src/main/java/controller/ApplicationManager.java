@@ -86,7 +86,9 @@ public class ApplicationManager {
     }
 
     public static boolean isRunning(){
-        return preloaderStage.isShowing() || loginStage.isShowing() || mainStage.isShowing();
+        return (preloaderStage != null && preloaderStage.isShowing())
+                || (loginStage != null && loginStage.isShowing())
+                || (mainStage != null && mainStage.isShowing());
     }
 
     public static boolean isPreloader(){
