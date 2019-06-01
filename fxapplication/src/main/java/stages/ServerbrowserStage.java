@@ -25,7 +25,7 @@ public class ServerbrowserStage extends Stage {
             setScene(new Scene(rootNode));
         } catch (IOException e) {
             log.fatal("Problem loading serverbrowser.fxml.", e);
-            System.exit(-3);
+            System.exit(-4);
         }
         //Loading icon
         InputStream icon = ClassLoader.getSystemResourceAsStream("icon.png");
