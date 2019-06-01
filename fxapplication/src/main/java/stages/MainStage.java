@@ -79,7 +79,6 @@ public class MainStage extends Stage {
 
     @Override
     public void hide() {
-        log.info("Application closing.");
         super.hide();
         ApplicationManager.closeAllMainStages();
     }
