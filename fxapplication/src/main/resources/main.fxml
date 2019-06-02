@@ -27,36 +27,36 @@
             </Label>
          </children>
       </HBox>
-      <ImageView fx:id="ivSettings" fitHeight="150.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true" StackPane.alignment="BOTTOM_RIGHT">
+      <ImageView fx:id="ivSettings" fitHeight="150.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true" StackPane.alignment="BOTTOM_RIGHT">
          <image>
-            <Image url="@config_icon.png" />
+            <Image url="@config.png" />
          </image>
          <StackPane.margin>
-            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+            <Insets bottom="5.0" right="5.0" top="5.0" />
          </StackPane.margin>
       </ImageView>
-      <ImageView fx:id="ivUsers" fitHeight="150.0" fitWidth="44.0" pickOnBounds="true" preserveRatio="true" StackPane.alignment="BOTTOM_RIGHT">
+      <ImageView fx:id="ivUsers" fitHeight="150.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true" StackPane.alignment="BOTTOM_RIGHT">
          <image>
-            <Image url="@user_icon.png" />
+            <Image url="@user.png" />
          </image>
          <StackPane.margin>
-            <Insets right="42.0" />
+            <Insets bottom="5.0" right="50.0" />
          </StackPane.margin>
       </ImageView>
-      <ImageView fx:id="ivOrder" fitHeight="150.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true" StackPane.alignment="BOTTOM_RIGHT">
+      <ImageView fx:id="ivOrder" fitHeight="150.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true" StackPane.alignment="BOTTOM_RIGHT">
          <image>
-            <Image url="@food-icon-vector-27.jpg" />
+            <Image url="@food.png" />
          </image>
          <StackPane.margin>
-            <Insets bottom="7.0" right="90.0" />
+            <Insets bottom="5.0" right="95.0" />
          </StackPane.margin>
       </ImageView>
-      <ImageView fx:id="ivServerbrowser" fitHeight="150.0" fitWidth="45.0" pickOnBounds="true" preserveRatio="true" StackPane.alignment="BOTTOM_RIGHT">
+      <ImageView fx:id="ivServerbrowser" fitHeight="150.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true" StackPane.alignment="BOTTOM_RIGHT">
          <image>
-            <Image url="@serverbrowser_icon.png" />
+            <Image url="@serverbrowser.png" />
          </image>
          <StackPane.margin>
-            <Insets right="122.0" />
+            <Insets bottom="5.0" right="140.0" />
          </StackPane.margin>
       </ImageView>
       <ScrollPane fx:id="spMain" hbarPolicy="NEVER">
