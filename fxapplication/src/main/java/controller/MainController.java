@@ -51,6 +51,15 @@ public class MainController {
         spMain.setFitToWidth(true);
         //Create the gamepane
         updateGamePane();
+        //Mouseover effect for buttons
+        ivUsers.addEventHandler(MouseEvent.MOUSE_ENTERED, this::mouseEntered);
+        ivSettings.addEventHandler(MouseEvent.MOUSE_ENTERED, this::mouseEntered);
+        ivOrder.addEventHandler(MouseEvent.MOUSE_ENTERED, this::mouseEntered);
+        ivServerbrowser.addEventHandler(MouseEvent.MOUSE_ENTERED, this::mouseEntered);
+        ivUsers.addEventHandler(MouseEvent.MOUSE_EXITED, this::mouseExited);
+        ivSettings.addEventHandler(MouseEvent.MOUSE_EXITED, this::mouseExited);
+        ivOrder.addEventHandler(MouseEvent.MOUSE_EXITED, this::mouseExited);
+        ivServerbrowser.addEventHandler(MouseEvent.MOUSE_EXITED, this::mouseExited);
     }
 
     private void addButtonHandler(){
@@ -159,6 +168,30 @@ public class MainController {
             log.fatal("Problem loading gameoverlay.fxml.", e);
         }
         return null;
+    }
+
+    private void mouseEntered(MouseEvent event){
+        ImageView imageView = (ImageView)event.getTarget();
+        if(imageView.equals(ivOrder))
+            imageView.setImage(new Image(ClassLoader.getSystemResource("food_mo.png").toString(), true));
+        else if(imageView.equals(ivServerbrowser))
+            imageView.setImage(new Image(ClassLoader.getSystemResource("serverbrowser_mo.png").toString(), true));
+        else if(imageView.equals(ivSettings))
+            imageView.setImage(new Image(ClassLoader.getSystemResource("config_mo.png").toString(), true));
+        else if(imageView.equals(ivUsers))
+            imageView.setImage(new Image(ClassLoader.getSystemResource("user_mo.png").toString(), true));
+    }
+
+    private void mouseExited(MouseEvent event){
+        ImageView imageView = (ImageView)event.getTarget();
+        if(imageView.equals(ivOrder))
+            imageView.setImage(new Image(ClassLoader.getSystemResource("food.png").toString(), true));
+        else if(imageView.equals(ivServerbrowser))
+            imageView.setImage(new Image(ClassLoader.getSystemResource("serverbrowser.png").toString(), true));
+        else if(imageView.equals(ivSettings))
+            imageView.setImage(new Image(ClassLoader.getSystemResource("config.png").toString(), true));
+        else if(imageView.equals(ivUsers))
+            imageView.setImage(new Image(ClassLoader.getSystemResource("user.png").toString(), true));
     }
 
 }
