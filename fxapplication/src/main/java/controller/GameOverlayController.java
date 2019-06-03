@@ -189,6 +189,12 @@ class GameOverlayController {
         ivOpenExplorer.addEventHandler(MouseEvent.MOUSE_EXITED, this::mouseExited);
         ivConnectServer.addEventHandler(MouseEvent.MOUSE_EXITED, this::mouseExited);
         ivStartServer.addEventHandler(MouseEvent.MOUSE_EXITED, this::mouseExited);
+        //Grey Serverstart and Serverconnect if not available
+        if(!game.isConnectDirect())
+            ivConnectServer.setImage(new Image(ClassLoader.getSystemResource("serverconnect_md.png").toString(), true));
+        if(!game.isOpenServer())
+            ivStartServer.setImage(new Image(ClassLoader.getSystemResource("serverplay_md.png").toString(), true));
+
     }
 
     private void setDownloadbarVisibility(Boolean newValue) {
