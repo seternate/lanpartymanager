@@ -195,7 +195,7 @@ class GameOverlayController {
         if(!newValue){
             spDownloadGame.setVisible(false);
             lblDownloadSpeed.setVisible(false);
-            ivDownloadGame.setImage(new Image(ClassLoader.getSystemResource("download_game.png").toString(), true));
+            ivDownloadGame.setImage(new Image(ClassLoader.getSystemResource("serverdownload.png").toString(), true));
         } else {
             ivDownloadGame.setImage(new Image(ClassLoader.getSystemResource("close.png").toString(), true));
         }
@@ -204,18 +204,34 @@ class GameOverlayController {
     private void mouseEntered(MouseEvent event){
         if((event.getTarget().equals(ivConnectServer) && game.isConnectDirect()) || (event.getTarget().equals(ivStartServer) && game.isOpenServer())
                 || event.getTarget().equals(ivRunGame) || event.getTarget().equals(ivDownloadGame) || event.getTarget().equals(ivOpenExplorer)) {
-            ((ImageView) event.getTarget()).setStyle("-fx-effect: dropshadow(gaussian, gray, 12.5, 0.15, 0, 0);");
-            ((ImageView) event.getTarget()).fitHeightProperty().bind(gpGameTile.heightProperty().divide(4.9));
-            ((ImageView) event.getTarget()).fitWidthProperty().bind(gpGameTile.heightProperty().divide(4.9));
+            ImageView imageView = (ImageView)event.getTarget();
+            if(imageView.equals(ivRunGame))
+                imageView.setImage(new Image(ClassLoader.getSystemResource("play_mo.png").toString(), true));
+            else if(imageView.equals(ivDownloadGame))
+                imageView.setImage(new Image(ClassLoader.getSystemResource("serverdownload_mo.png").toString(), true));
+            else if(imageView.equals(ivOpenExplorer))
+                imageView.setImage(new Image(ClassLoader.getSystemResource("folder_mo.png").toString(), true));
+            else if(imageView.equals(ivConnectServer))
+                imageView.setImage(new Image(ClassLoader.getSystemResource("serverconnect_mo.png").toString(), true));
+            else if(imageView.equals(ivStartServer))
+                imageView.setImage(new Image(ClassLoader.getSystemResource("serverplay_mo.png").toString(), true));
         }
     }
 
     private void mouseExited(MouseEvent event){
         if((event.getTarget().equals(ivConnectServer) && game.isConnectDirect()) || (event.getTarget().equals(ivStartServer) && game.isOpenServer())
                 || event.getTarget().equals(ivRunGame) || event.getTarget().equals(ivDownloadGame) || event.getTarget().equals(ivOpenExplorer)) {
-            ((ImageView)event.getTarget()).setStyle("-fx-effect: null;");
-            ((ImageView)event.getTarget()).fitHeightProperty().bind(gpGameTile.heightProperty().divide(5));
-            ((ImageView) event.getTarget()).fitWidthProperty().bind(gpGameTile.heightProperty().divide(5));
+            ImageView imageView = (ImageView)event.getTarget();
+            if(imageView.equals(ivRunGame))
+                imageView.setImage(new Image(ClassLoader.getSystemResource("play.png").toString(), true));
+            else if(imageView.equals(ivDownloadGame))
+                imageView.setImage(new Image(ClassLoader.getSystemResource("serverdownload.png").toString(), true));
+            else if(imageView.equals(ivOpenExplorer))
+                imageView.setImage(new Image(ClassLoader.getSystemResource("folder.png").toString(), true));
+            else if(imageView.equals(ivConnectServer))
+                imageView.setImage(new Image(ClassLoader.getSystemResource("serverconnect.png").toString(), true));
+            else if(imageView.equals(ivStartServer))
+                imageView.setImage(new Image(ClassLoader.getSystemResource("serverplay.png").toString(), true));
         }
     }
 
