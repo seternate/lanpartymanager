@@ -31,6 +31,7 @@ class GameOverlayController {
 
     private ImageView gameTileImage;
     private Game game;
+    private GameStatusProperty gameStatus;
     @FXML
     private ImageView ivRunGame, ivDownloadGame, ivOpenExplorer, ivConnectServer, ivStartServer;
     @FXML
@@ -52,7 +53,7 @@ class GameOverlayController {
     private void initialize(){
         log.info("Initializing gametileoverlay for '" + game + "'.");
         //Getting the gamestatus variable to listen to for listener implementation for downloading and unzipping.
-        GameStatusProperty gameStatus = ApplicationManager.getGamestatusProperty();
+        gameStatus = ApplicationManager.getGamestatusProperty();
         //Set the gamename and gameversion label
         lblGamename.setText(game.getName());
         lblVersion.setText(game.getVersionServer());
@@ -211,10 +212,14 @@ class GameOverlayController {
         if((event.getTarget().equals(ivConnectServer) && game.isConnectDirect()) || (event.getTarget().equals(ivStartServer) && game.isOpenServer())
                 || event.getTarget().equals(ivRunGame) || event.getTarget().equals(ivDownloadGame) || event.getTarget().equals(ivOpenExplorer)) {
             ImageView imageView = (ImageView)event.getTarget();
-            if(imageView.equals(ivRunGame))
+            if(imageView.equals(ivRunGame) && !gameStatus.running.get())
                 imageView.setImage(new Image(ClassLoader.getSystemResource("play_mo.png").toString(), true));
-            else if(imageView.equals(ivDownloadGame))
+            else if(imageView.equals(ivRunGame) && gameStatus.running.get())
+                imageView.setImage(new Image(ClassLoader.getSystemResource("close_mo.png").toString(), true));
+            else if(imageView.equals(ivDownloadGame) && !gameStatus.downloading.get())
                 imageView.setImage(new Image(ClassLoader.getSystemResource("serverdownload_mo.png").toString(), true));
+            else if(imageView.equals(ivDownloadGame) && gameStatus.downloading.get())
+                imageView.setImage(new Image(ClassLoader.getSystemResource("close_mo.png").toString(), true));
             else if(imageView.equals(ivOpenExplorer))
                 imageView.setImage(new Image(ClassLoader.getSystemResource("folder_mo.png").toString(), true));
             else if(imageView.equals(ivConnectServer))
@@ -228,10 +233,14 @@ class GameOverlayController {
         if((event.getTarget().equals(ivConnectServer) && game.isConnectDirect()) || (event.getTarget().equals(ivStartServer) && game.isOpenServer())
                 || event.getTarget().equals(ivRunGame) || event.getTarget().equals(ivDownloadGame) || event.getTarget().equals(ivOpenExplorer)) {
             ImageView imageView = (ImageView)event.getTarget();
-            if(imageView.equals(ivRunGame))
+            if(imageView.equals(ivRunGame) && !gameStatus.running.get())
                 imageView.setImage(new Image(ClassLoader.getSystemResource("play.png").toString(), true));
-            else if(imageView.equals(ivDownloadGame))
+            else if(imageView.equals(ivRunGame) && gameStatus.running.get())
+                imageView.setImage(new Image(ClassLoader.getSystemResource("close.png").toString(), true));
+            else if(imageView.equals(ivDownloadGame) && !gameStatus.downloading.get())
                 imageView.setImage(new Image(ClassLoader.getSystemResource("serverdownload.png").toString(), true));
+            else if(imageView.equals(ivDownloadGame) && gameStatus.downloading.get())
+                imageView.setImage(new Image(ClassLoader.getSystemResource("close.png").toString(), true));
             else if(imageView.equals(ivOpenExplorer))
                 imageView.setImage(new Image(ClassLoader.getSystemResource("folder.png").toString(), true));
             else if(imageView.equals(ivConnectServer))
