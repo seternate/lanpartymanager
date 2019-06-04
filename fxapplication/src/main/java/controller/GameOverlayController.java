@@ -127,8 +127,8 @@ class GameOverlayController {
             @Override
             public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
                 if(!newValue) {
-                    Platform.runLater(() -> lblGamename.setTextFill(Paint.valueOf("dimgray")));
-                    Platform.runLater(() -> lblVersion.setTextFill(Paint.valueOf("dimgray")));
+                    Platform.runLater(() -> lblGamename.setTextFill(Paint.valueOf("grey")));
+                    Platform.runLater(() -> lblVersion.setTextFill(Paint.valueOf("grey")));
                 } else {
                     Platform.runLater(() -> lblGamename.setTextFill(Paint.valueOf("black")));
                     Platform.runLater(() -> lblVersion.setTextFill(Paint.valueOf("black")));
@@ -149,13 +149,19 @@ class GameOverlayController {
             public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
                 if(newValue) {
                     Platform.runLater(() -> {
-                        ivRunGame.setImage(new Image(ClassLoader.getSystemResource("close.png").toString(), true));
+                        if(ivRunGame.hoverProperty().get())
+                            ivRunGame.setImage(new Image(ClassLoader.getSystemResource("close_mo.png").toString(), true));
+                        else
+                            ivRunGame.setImage(new Image(ClassLoader.getSystemResource("close.png").toString(), true));
                         Tooltip.install(ivRunGame, new Tooltip("Exit game"));
                     });
 
                 } else {
                     Platform.runLater(() -> {
-                        ivRunGame.setImage(new Image(ClassLoader.getSystemResource("play.png").toString(), true));
+                        if(ivRunGame.hoverProperty().get())
+                            ivRunGame.setImage(new Image(ClassLoader.getSystemResource("play_mo.png").toString(), true));
+                        else
+                            ivRunGame.setImage(new Image(ClassLoader.getSystemResource("play.png").toString(), true));
                         Tooltip.install(ivRunGame, new Tooltip("Start game"));
                     });
                 }
@@ -210,9 +216,15 @@ class GameOverlayController {
         if(!newValue){
             spDownloadGame.setVisible(false);
             lblDownloadSpeed.setVisible(false);
-            ivDownloadGame.setImage(new Image(ClassLoader.getSystemResource("serverdownload.png").toString(), true));
+            if(ivDownloadGame.hoverProperty().get())
+                ivDownloadGame.setImage(new Image(ClassLoader.getSystemResource("serverdownload_mo.png").toString(), true));
+            else
+                ivDownloadGame.setImage(new Image(ClassLoader.getSystemResource("serverdownload.png").toString(), true));
         } else {
-            ivDownloadGame.setImage(new Image(ClassLoader.getSystemResource("close.png").toString(), true));
+            if(ivDownloadGame.hoverProperty().get())
+                ivDownloadGame.setImage(new Image(ClassLoader.getSystemResource("close_mo.png").toString(), true));
+            else
+                ivDownloadGame.setImage(new Image(ClassLoader.getSystemResource("close.png").toString(), true));
         }
     }
 
@@ -224,9 +236,9 @@ class GameOverlayController {
                 imageView.setImage(new Image(ClassLoader.getSystemResource("play_mo.png").toString(), true));
             else if(imageView.equals(ivRunGame) && gameStatus.running.get())
                 imageView.setImage(new Image(ClassLoader.getSystemResource("close_mo.png").toString(), true));
-            else if(imageView.equals(ivDownloadGame) && !gameStatus.downloading.get())
+            else if(imageView.equals(ivDownloadGame) && !gameStatus.downloading.get() && !gameStatus.unzipping.get())
                 imageView.setImage(new Image(ClassLoader.getSystemResource("serverdownload_mo.png").toString(), true));
-            else if(imageView.equals(ivDownloadGame) && gameStatus.downloading.get())
+            else if(imageView.equals(ivDownloadGame) && (gameStatus.downloading.get() || gameStatus.unzipping.get()))
                 imageView.setImage(new Image(ClassLoader.getSystemResource("close_mo.png").toString(), true));
             else if(imageView.equals(ivOpenExplorer))
                 imageView.setImage(new Image(ClassLoader.getSystemResource("folder_mo.png").toString(), true));
@@ -245,9 +257,9 @@ class GameOverlayController {
                 imageView.setImage(new Image(ClassLoader.getSystemResource("play.png").toString(), true));
             else if(imageView.equals(ivRunGame) && gameStatus.running.get())
                 imageView.setImage(new Image(ClassLoader.getSystemResource("close.png").toString(), true));
-            else if(imageView.equals(ivDownloadGame) && !gameStatus.downloading.get())
+            else if(imageView.equals(ivDownloadGame) && !gameStatus.downloading.get() && !gameStatus.unzipping.get())
                 imageView.setImage(new Image(ClassLoader.getSystemResource("serverdownload.png").toString(), true));
-            else if(imageView.equals(ivDownloadGame) && gameStatus.downloading.get())
+            else if(imageView.equals(ivDownloadGame) && (gameStatus.downloading.get() || gameStatus.unzipping.get()))
                 imageView.setImage(new Image(ClassLoader.getSystemResource("close.png").toString(), true));
             else if(imageView.equals(ivOpenExplorer))
                 imageView.setImage(new Image(ClassLoader.getSystemResource("folder.png").toString(), true));
