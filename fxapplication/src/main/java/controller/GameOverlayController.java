@@ -147,10 +147,18 @@ class GameOverlayController {
         gameStatus.running.addListener(new ChangeListener<Boolean>() {
             @Override
             public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-                if(newValue)
-                    Platform.runLater(() -> ivRunGame.setImage(new Image(ClassLoader.getSystemResource("close.png").toString(), true)));
-                else
-                    Platform.runLater(() -> ivRunGame.setImage(new Image(ClassLoader.getSystemResource("play.png").toString(), true)));
+                if(newValue) {
+                    Platform.runLater(() -> {
+                        ivRunGame.setImage(new Image(ClassLoader.getSystemResource("close.png").toString(), true));
+                        Tooltip.install(ivRunGame, new Tooltip("Exit game"));
+                    });
+
+                } else {
+                    Platform.runLater(() -> {
+                        ivRunGame.setImage(new Image(ClassLoader.getSystemResource("play.png").toString(), true));
+                        Tooltip.install(ivRunGame, new Tooltip("Start game"));
+                    });
+                }
             }
         });
         //Label fontsizing
