@@ -67,11 +67,14 @@ public class ClientSettings extends Settings {
                 }
                 log.info("Changed default gamepath '" + getGamepath() + "' to '" + newPath.toString() + "'.");
                 setGamepath(newPath.toString());
+                save();
             }
         }
         //Proper gamepath formation
-        if(!getGamepath().endsWith("/"))
+        if(!getGamepath().endsWith("/")) {
             setGamepath(getGamepath() + "/");
+            save();
+        }
     }
 
     /**
