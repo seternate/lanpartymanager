@@ -179,8 +179,14 @@ public class GameDownload extends Thread {
         dis.close();
         clientsocket.close();
         serversocket.close();
+        //Deleting the arachive if the download was stopped
         if(stop) {
             log.info("Download of '" + game + "' was stopped.");
+            File file = new File(gamepath);
+            if(file.delete())
+                log.info("'" + file.getAbsolutePath() + "' was deleted due to interrupted download.");
+            else
+                log.error("Can not delete '" + file.getAbsolutePath() + "' due to interrupted download.");
             return;
         }
         log.info("Download of '" + game + "' ended successfully - "
@@ -191,6 +197,9 @@ public class GameDownload extends Thread {
         try {
             new SevenZipHelper(gamepath, this.gamepath, false, null, this).extract();
             log.info("Unzipping of '" + game + "' finished successfully.");
+        } catch (SevenZipHelper.ExtractionException e) {
+            log.error("Unzipping of '" + game + "' to '" + gamepath + "' failed.", e);
+        } finally {
             //Delete 7zip file from the download
             File file = new File(gamepath);
             if(!file.delete())
@@ -198,8 +207,6 @@ public class GameDownload extends Thread {
             else {
                 log.info("Deleted 7zip file of '" + game + "'.");
             }
-        } catch (SevenZipHelper.ExtractionException e) {
-            log.error("Unzipping of '" + game + "' to '" + gamepath + "' failed.", e);
         }
 
     }
