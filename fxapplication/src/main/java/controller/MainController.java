@@ -42,9 +42,10 @@ public class MainController {
         ApplicationManager.setServerStatusLabel(lblStatus);
         ApplicationManager.setFileStatusLabel(lblFileStatus);
         //Create the tooltips for the buttons
-        Tooltip.install(ivUsers, new Tooltip("Connected users"));
+        Tooltip.install(ivUsers, new Tooltip("Open userlist"));
         Tooltip.install(ivSettings, new Tooltip("Open settings"));
-        Tooltip.install(ivOrder, new Tooltip("Open ordering table"));
+        Tooltip.install(ivOrder, new Tooltip("Open food-ordering"));
+        Tooltip.install(ivServerbrowser, new Tooltip("Open serverbrowser"));
         //Add all handlers to the buttons
         addButtonHandler();
         //Settings for the Scrollpane
