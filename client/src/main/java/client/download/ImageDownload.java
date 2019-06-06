@@ -4,10 +4,7 @@ import entities.user.User;
 import helper.NetworkHelper;
 import org.apache.log4j.Logger;
 
-import java.io.DataInputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -68,7 +65,7 @@ public class ImageDownload extends Thread {
     }
 
     /**
-     * Downloads and saves all {@code Images} to the {@code gamepath}.
+     * Deletes all previous downloaded {@code Images} first, then downloads and saves all {@code Images} to the {@code gamepath}.
      *
      * @throws IOException if any IO-Error occurs
      * @since 1.0
@@ -78,17 +75,26 @@ public class ImageDownload extends Thread {
         DataInputStream dis = new DataInputStream(clientsocket.getInputStream());
         //Create buffer [1MByte]
         byte[] buffer = new byte[1048576];
-
+        //Reads number of images to be downloaded
         int files = dis.readInt();
-
+        //Get filename
+        File imagepath = new File(this.gamepath, "images");
+        if(imagepath.exists()){
+            File[] imagelist = imagepath.listFiles(pathname -> pathname.isFile());
+            //Delete old images
+            for(File image : imagelist){
+                if(!image.delete())
+                    log.error("Can not delete the image: " + image.getAbsolutePath());
+                log.info("Deleted image: " + image.getAbsolutePath());
+            }
+        } else {
+            if(imagepath.mkdirs())
+                log.info("Created the image folder: " + imagepath);
+        }
         log.info("Started download of game images.");
         for(int i = 0; i < files; i++){
             //Get file size
             long filesize = dis.readLong();
-            //Get filename
-            File imagepath = new File(this.gamepath, "images");
-            if(!imagepath.exists())
-                imagepath.mkdirs();
             File coverfile = new File(imagepath, dis.readUTF());
             //Open Fileoutputstream
             FileOutputStream fos = new FileOutputStream(coverfile, false);
