@@ -223,6 +223,16 @@ public class Client implements Runnable {
         }).start();
     }
 
+    public void stopGamesAndServers(){
+        new Thread(() -> {
+            try{
+                client.stopGamesAndServers().execute();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }).start();
+    }
+
     private void update() throws IOException {
         user = client.getUser().execute().body();
         if(ApplicationManager.getFocusedGame() != null){

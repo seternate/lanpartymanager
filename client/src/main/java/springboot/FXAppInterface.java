@@ -16,7 +16,7 @@ import java.util.List;
  * {@code FXAppInterface} is the {@link RestController} of the {@link SpringApplication} for any {@code FXGui} requests.
  *
  * @author Levin Jeck
- * @version 1.0
+ * @version 1.2
  * @since 1.0
  */
 @RestController
@@ -176,6 +176,15 @@ public class FXAppInterface {
     @RequestMapping(value = "/stopgame", method = RequestMethod.POST)
     public Boolean stopGame(@RequestBody Game game){
         return client.stopGame(game);
+    }
+
+    /**
+     * @see LANClient#stopGamesAndServers()
+     * @since 1.2
+     */
+    @RequestMapping(value = "/stopgamesandservers", method = RequestMethod.POST)
+    public Boolean stopGamesAndServers(){
+        return client.stopGamesAndServers();
     }
 
 }

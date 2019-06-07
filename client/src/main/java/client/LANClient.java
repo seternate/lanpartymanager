@@ -42,7 +42,7 @@ import static java.lang.Thread.sleep;
  *     It handles the communication as an interface to the GUI and implements all needed back-end functionality.
  * </p>
  * @author Levin Jeck
- * @version 1.0
+ * @version 1.2
  * @since 1.0
  */
 public class LANClient extends Client {
@@ -720,6 +720,16 @@ public class LANClient extends Client {
      */
     public boolean stopGame(Game game){
         return gamemonitor.stop(game);
+    }
+
+    /**
+     * Kills all running {@code games} and {@code servers}.
+     *
+     * @return always true
+     * @since 1.2
+     */
+    public boolean stopGamesAndServers(){
+        return gamemonitor.stopAll() && servermonitor.stopAll();
     }
 
     /**

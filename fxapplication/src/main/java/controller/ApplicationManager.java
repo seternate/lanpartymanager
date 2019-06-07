@@ -82,6 +82,7 @@ public class ApplicationManager {
         loginStage.hide();
         orderStage.hide();
         serverbrowserStage.hide();
+        client.stopGamesAndServers();
         System.exit(0);
     }
 

@@ -67,4 +67,7 @@ public interface FXDataClient {
     @POST("stopgame")
     Call<Boolean> stopGame(@Body Game game);
 
+    @POST("stopgamesandservers")
+    Call<Boolean> stopGamesAndServers();
+
 }
