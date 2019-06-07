@@ -79,8 +79,10 @@ class GameOverlayController {
             if(event.getButton() == MouseButton.PRIMARY) {
                 if (!gameStatus.downloading.getValue() && !gameStatus.unzipping.getValue())
                     ApplicationManager.downloadGame(game);
-                else
+                else {
                     ApplicationManager.stopDownloadUnzip(game);
+                    lblDownloadbar.setText("Stopping ...");
+                }
             }
             event.consume();
         });
@@ -214,6 +216,7 @@ class GameOverlayController {
 
     private void setDownloadbarVisibility(Boolean newValue) {
         if(!newValue){
+            Tooltip.install(ivDownloadGame, new Tooltip("Download game"));
             spDownloadGame.setVisible(false);
             lblDownloadSpeed.setVisible(false);
             if(ivDownloadGame.hoverProperty().get())
@@ -221,6 +224,7 @@ class GameOverlayController {
             else
                 ivDownloadGame.setImage(new Image(ClassLoader.getSystemResource("serverdownload.png").toString(), true));
         } else {
+            Tooltip.install(ivDownloadGame, new Tooltip("Stop download/extraction"));
             if(ivDownloadGame.hoverProperty().get())
                 ivDownloadGame.setImage(new Image(ClassLoader.getSystemResource("close_mo.png").toString(), true));
             else
