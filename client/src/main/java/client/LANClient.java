@@ -503,7 +503,7 @@ public class LANClient extends Client {
                 continue;
 
             //Space added cause of 'Call of Duty 4' bug can't finding the maps.
-            if(arg.startsWith("+") ||arg.startsWith("-")) {
+            if(arg.startsWith("+") || arg.startsWith("-")) {
                 arguments.add(arg + " ");
                 continue;
             }
