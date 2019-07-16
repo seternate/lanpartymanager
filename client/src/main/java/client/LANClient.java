@@ -475,7 +475,7 @@ public class LANClient extends Client {
         if(launchServer)
             commands.add(folderpath + game.getExeServerRelative());
         else
-            commands.add(folderpath + game.getExeServerRelative());
+            commands.add(folderpath + game.getExeFileRelative());
         commands.addAll(parseParameter(parameters));
         //Set up ProcessBuilder
         ProcessBuilder process = new ProcessBuilder(commands).inheritIO();
