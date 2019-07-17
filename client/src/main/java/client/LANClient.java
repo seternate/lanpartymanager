@@ -549,6 +549,8 @@ public class LANClient extends Client {
         try {
             gameprocess = startProcess(game, false, game.getParam());
             gamemonitor.add(new GameProcess(game, gameprocess));
+            if(!game.isOpenServer() && game.isConnectDirect())
+                servermonitor.add(new GameProcess(game, gameprocess));
         } catch (Exception e) {
             log.error("Can not launch the game '" + game + "'.", e);
             return false;
