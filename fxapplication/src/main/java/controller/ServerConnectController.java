@@ -42,7 +42,6 @@ public class ServerConnectController {
             @Override
             public void onChanged(Change<? extends User, ? extends ObservableList<Game>> change) {
                 if(change.wasAdded()) {
-                    users.setAll(getUserWithOpenServer());
                     change.getValueAdded().addListener(new ListChangeListener<Game>() {
                         @Override
                         public void onChanged(Change<? extends Game> c) {
@@ -50,6 +49,7 @@ public class ServerConnectController {
                         }
                     });
                 }
+                users.setAll(getUserWithOpenServer());
             }
         });
         lvUsers.setItems(users);
