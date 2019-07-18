@@ -633,7 +633,7 @@ public class LANClient extends Client {
         Process gameprocess;
         try {
             String connectparameter = game.getConnectParam().replace("?", ip);
-            gameprocess = startProcess(game, true, game.getParam(), connectparameter);
+            gameprocess = startProcess(game, false, game.getParam(), connectparameter);
             gamemonitor.add(new GameProcess(game, gameprocess));
         } catch (IOException e) {
             log.error("Can not connect the game '" + game + "' to '" + ip + "'.", e);
