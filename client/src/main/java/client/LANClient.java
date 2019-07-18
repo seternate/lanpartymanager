@@ -509,6 +509,10 @@ public class LANClient extends Client {
             }
 
             int first = arg.indexOf(" ");
+            if(first == -1) {
+                arguments.add(arg);
+                continue;
+            }
             arguments.add(arg.substring(0, first).trim());
             arguments.add(arg.substring(first, arg.length() - 1).trim());
 
