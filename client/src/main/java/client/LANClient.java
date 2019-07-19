@@ -499,23 +499,10 @@ public class LANClient extends Client {
     private List<String> parseParameter(String... args){
         List<String> arguments = new ArrayList<>();
         for(String arg : args){
-            if(arg.trim().isEmpty())
-                continue;
-
-            //Space added cause of 'Call of Duty 4' bug can't finding the maps.
-            if(arg.startsWith("+") || arg.startsWith("-")) {
-                arguments.add(arg + " ");
-                continue;
+            String[] args_raw = arg.split(" ");
+            for(String arg_raw : args_raw){
+                arguments.add(arg_raw.trim());
             }
-
-            int first = arg.indexOf(" ");
-            if(first == -1) {
-                arguments.add(arg);
-                continue;
-            }
-            arguments.add(arg.substring(0, first).trim());
-            arguments.add(arg.substring(first, arg.length() - 1).trim());
-
         }
         return arguments;
     }
