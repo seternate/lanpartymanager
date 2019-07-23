@@ -69,8 +69,6 @@ public class MainStage extends Stage {
     public void updateRoot(){
         log.info("Update gamepane.");
         controller.updateGamePane();
-        //Needed for correct resizing of the labels.
-        setWidth(getWidth()+1);
     }
 
     public Game getFocusedGame(){

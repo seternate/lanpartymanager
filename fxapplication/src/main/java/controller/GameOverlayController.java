@@ -176,6 +176,8 @@ class GameOverlayController {
             lblGamename.setFont(Font.font("System", FontWeight.BOLD, fontSize));
             lblVersion.setFont(Font.font("System", FontWeight.BOLD, fontSize));
         });
+        lblGamename.setFont(Font.font("System", FontWeight.BOLD, gameTileImage.fitHeightProperty().doubleValue()/17.0));
+        lblVersion.setFont(Font.font("System", FontWeight.BOLD, gameTileImage.fitHeightProperty().doubleValue()/17.0));
         //Hiding downloadbar and downloadspeedlabel
         spDownloadGame.setVisible(false);
         lblDownloadSpeed.setVisible(false);
@@ -184,6 +186,8 @@ class GameOverlayController {
             lblDownloadbar.setFont(Font.font("System", FontWeight.NORMAL, newValue.doubleValue()*0.5/5));
             lblDownloadSpeed.setFont(Font.font("System", FontWeight.NORMAL, newValue.doubleValue()*0.25/5));
         });
+        lblDownloadbar.setFont(Font.font("System", FontWeight.NORMAL, gpGameTile.heightProperty().doubleValue()*0.5/5));
+        lblDownloadSpeed.setFont(Font.font("System", FontWeight.NORMAL, gpGameTile.heightProperty().doubleValue()*0.25/5));
         //Set the button sizing
         ivRunGame.fitHeightProperty().bind(gpGameTile.heightProperty().divide(5));
         ivDownloadGame.fitHeightProperty().bind(gpGameTile.heightProperty().divide(5));
