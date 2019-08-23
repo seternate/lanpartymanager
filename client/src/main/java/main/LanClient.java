@@ -6,9 +6,6 @@ import controller.ApplicationManager;
 import helper.kryo.KryoLogging;
 import javafx.application.Application;
 import javafx.stage.Stage;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.ComponentScan;
 
 /**
  * {@code LanClient} creates the {@link LANClient} and launches the {@code FXGui}.
