@@ -1,7 +1,9 @@
 package controller;
 
+import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
@@ -9,42 +11,50 @@ import javafx.scene.input.KeyEvent;
 import org.apache.log4j.Logger;
 
 public class LoginController extends Controller{
-    private static Logger log = Logger.getLogger(LoginController.class);
 
     @FXML
     private TextField txtfieldUsername, txtfieldGamepath;
     @FXML
     private Label lblStatus;
-    @FXML
-    private Button btnFinish;
+    private ChangeListener<Boolean> statusListener;
 
 
     @FXML
     private void initialize(){
-        log.info("Initializing.");
-        //Setting the text for the username and gamepath textfields
-        txtfieldUsername.setText(ApplicationManager.getUsername());
-        txtfieldGamepath.setText(ApplicationManager.getGamepath());
-        ApplicationManager.setServerStatusLabel(lblStatus);
-        log.info("Setting up 'LoginStage'.");
+        txtfieldUsername.setText(getClient().getUser().getUsername());
+        txtfieldGamepath.setText(getClient().getUser().getGamepath());
+        if(getClient().getStatus().isConnected())
+            lblStatus.setText("Connected to server: " + getClient().getStatus().getServerIP());
+        else
+            lblStatus.setText("Waiting for server connection.");
+        statusListener = new ChangeListener<Boolean>() {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                if(newValue)
+                    Platform.runLater(() -> lblStatus.setText("Connected to server: " + getClient().getStatus().getServerIP()));
+                else
+                    Platform.runLater(() -> lblStatus.setText("Waiting for server connection."));
+            }
+        };
+        getClient().getStatus().getConnectedProperty().addListener(statusListener);
     }
 
     @FXML
     private void openMainStage(){
-        log.info("Open MainStage.");
-        ApplicationManager.openMainStage(txtfieldUsername.getText().trim(), txtfieldGamepath.getText().trim());
+        String username = txtfieldUsername.getText().trim();
+        String gamepath = txtfieldGamepath.getText().trim();
+        ApplicationManager.openMainStage(username, gamepath);
     }
 
     @FXML
     private void enter(KeyEvent event){
-        if(event.getCode() == KeyCode.ENTER) {
-            log.info("'Enter' was pressed.");
+        if(event.getCode() == KeyCode.ENTER)
             openMainStage();
-        }
     }
 
     @Override
     public void shutdown() {
-
+        getClient().getStatus().getConnectedProperty().removeListener(statusListener);
     }
+
 }

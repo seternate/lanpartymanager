@@ -8,7 +8,6 @@ import org.apache.log4j.Logger;
 public class PreloaderStage extends Stage {
 
     public PreloaderStage(){
-        super();
         initStyle(StageStyle.UNDECORATED);
         setResizable(false);
         setTitle("Lanpartymanager - Splash");

@@ -171,7 +171,8 @@ public class LANClient extends Client {
     }
 
     //TODO
-    public void loginServer(){
+    public void loginServer(String username, String gamepath){
+        updateUser(username, gamepath);
         sendTCP(new LoginMessage(user));
         sendTCP(new UserRunGameMessage(user, gamemonitor.getRunningProcesses()));
         sendTCP(new UserRunServerMessage(user, servermonitor.getRunningProcesses()));
@@ -419,6 +420,13 @@ public class LANClient extends Client {
             log.warn("Could not updated user information.", e);
         }
         return false;
+    }
+
+    public boolean updateUser(String username, String gamepath){
+        User user = getUser();
+        user.setUsername(username);
+        user.setGamepath(gamepath);
+        return updateUser(user);
     }
 
     /**

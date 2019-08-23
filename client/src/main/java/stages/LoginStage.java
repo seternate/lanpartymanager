@@ -5,7 +5,6 @@ import org.apache.log4j.Logger;
 public class LoginStage extends Stage {
 
     public LoginStage(){
-        super();
         setTitle("Lanpartymanager - Login");
         setResizable(false);
     }
@@ -18,6 +17,12 @@ public class LoginStage extends Stage {
     @Override
     public String getFXML() {
         return "login.fxml";
+    }
+
+    @Override
+    public void hide() {
+        super.hide();
+        getController().shutdown();
     }
 
 }

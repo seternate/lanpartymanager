@@ -11,8 +11,6 @@ import javafx.util.Duration;
 import org.apache.log4j.Logger;
 
 public class PreloaderController extends Controller{
-    private static Logger log = Logger.getLogger(PreloaderController.class);
-
 
     @FXML
     private Label lblStatus;
@@ -27,10 +25,8 @@ public class PreloaderController extends Controller{
         animation = new Transition() {
             {
                 setCycleDuration(Duration.millis(cycleDuration));
-                log.info("Animation cycle duration: " + cycleDuration);
                 setCycleCount(Animation.INDEFINITE);
                 play();
-                log.info("Animation started.");
             }
 
             protected void interpolate(double frac) {
@@ -43,12 +39,10 @@ public class PreloaderController extends Controller{
                     lblStatus.setText("Waiting for server " + "...".substring(0, n));
             }
         };
-        log.info("Started animation.");
     }
 
     @FXML
     private void closeButtonClicked(){
-        log.info("User clicked the close button.");
         Platform.exit();
     }
 
@@ -56,20 +50,17 @@ public class PreloaderController extends Controller{
     private void closeButtonMouseEntered(){
         Image closeMouseOver = new Image(ClassLoader.getSystemResource("close_mo.png").toString(), true);
         closeButton.setImage(closeMouseOver);
-        log.info("Mouse entered close button.");
     }
 
     @FXML
     private void closeButtonMouseExited(){
         Image closeMouseOver = new Image(ClassLoader.getSystemResource("close_white.png").toString(), true);
         closeButton.setImage(closeMouseOver);
-        log.info("Mouse exited close button.");
     }
 
     @Override
     public void shutdown(){
         animation.stop();
-        log.info("Animation stopped.");
     }
 
     public int getCycleDuration(){

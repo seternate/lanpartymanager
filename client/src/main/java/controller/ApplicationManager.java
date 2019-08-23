@@ -24,6 +24,7 @@ public class ApplicationManager {
     private static PreloaderStage preloaderStage;
     private static LoginStage loginStage;
     private static MainStage mainStage;
+    private static SettingsStage settingsStage;
     private static UsersStage usersStage;
     private static OrderStage orderStage;
     private static ServerbrowserStage serverbrowserStage;
@@ -55,28 +56,7 @@ public class ApplicationManager {
                 loginOpener.cancel();
             }
         }, preloaderStage.getAnimationCycleDuration());
-        //TODO: Delete
-        client = new Client();
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     public static void openLoginStage(){
         loginStage = new LoginStage();
@@ -85,15 +65,26 @@ public class ApplicationManager {
     }
 
     public static void openMainStage(String username, String gamepath){
-        client.sendUserData(username, gamepath, getUser().getOrder());
+        LanClient.client.loginServer(username, gamepath);
         mainStage = new MainStage();
+        settingsStage = new SettingsStage();
         usersStage = new UsersStage();
         orderStage = new OrderStage();
         serverbrowserStage = new ServerbrowserStage();
         mainStage.show();
         loginStage.hide();
-        loginStage = new LoginStage();
     }
+
+
+
+
+
+
+
+
+
+
+
 
     public static void showUsers(){
         if(usersStage.isShowing())
@@ -155,15 +146,15 @@ public class ApplicationManager {
     }
 
     public static String getUsername(){
-        return client.getUser().getUsername();
+        return LanClient.client.getUser().getUsername();
     }
 
     public static String getGamepath(){
-        return client.getUser().getGamepath();
+        return LanClient.client.getUser().getGamepath();
     }
 
     public static void setServerStatusLabel(Label lblStatus){
-        client.setServerStatusLabel(lblStatus);
+        //client.setServerStatusLabel(lblStatus);
     }
 
     public static void saveSettings(String username, String gamepath){
@@ -259,7 +250,7 @@ public class ApplicationManager {
     }
 
     public static void setFileStatusLabel(Label lblFileStatus){
-        client.setFileStatusLabel(lblFileStatus);
+        //client.setFileStatusLabel(lblFileStatus);
     }
 
 }
