@@ -1,4 +1,7 @@
-package entities.server;
+package client;
+
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 
 /**
  * {@code ServerStatus} handles the status of the {@code LANServer}. Available information are the connection-status and
@@ -9,7 +12,7 @@ package entities.server;
  * @since 1.0
  */
 public class ServerStatus {
-    private boolean connected;
+    private BooleanProperty connected;
     private String serverIP;
 
     /**
@@ -18,7 +21,7 @@ public class ServerStatus {
      * @since 1.0
      */
     public ServerStatus(){
-        connected = false;
+        connected = new SimpleBooleanProperty(false);
         serverIP = null;
     }
 
@@ -27,7 +30,7 @@ public class ServerStatus {
      * @since 1.0
      */
     public boolean isConnected(){
-        return connected;
+        return connected.get();
     }
 
     /**
@@ -36,7 +39,7 @@ public class ServerStatus {
      * @since 1.0
      */
     public void connected(){
-        connected = true;
+        connected.set(true);
     }
 
     /**
@@ -45,7 +48,7 @@ public class ServerStatus {
      * @since 1.0
      */
     public void disconnected(){
-        connected = false;
+        connected.set(false);
     }
 
     /**
@@ -62,6 +65,10 @@ public class ServerStatus {
      */
     public String getServerIP(){
         return serverIP;
+    }
+
+    public BooleanProperty getConnectedProperty(){
+        return connected;
     }
 
 }

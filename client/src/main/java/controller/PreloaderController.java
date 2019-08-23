@@ -10,7 +10,7 @@ import javafx.scene.image.ImageView;
 import javafx.util.Duration;
 import org.apache.log4j.Logger;
 
-public class PreloaderController {
+public class PreloaderController extends Controller{
     private static Logger log = Logger.getLogger(PreloaderController.class);
 
 
@@ -18,13 +18,12 @@ public class PreloaderController {
     private Label lblStatus;
     @FXML
     private ImageView closeButton;
+    private int cycleDuration = 3000;
     private Animation animation;
 
 
     @FXML
     private void initialize(){
-        int cycleDuration = 3000;
-
         animation = new Transition() {
             {
                 setCycleDuration(Duration.millis(cycleDuration));
@@ -38,9 +37,9 @@ public class PreloaderController {
                 //Calculate number between 0 and 3
                 int n = Math.round(3 * (float)frac);
                 //Show status text for waiting connection
-                if(ApplicationManager.getServerStatus() == null)
-                    lblStatus.setText("Waiting for client " + "...".substring(0, n));
-                else if(!ApplicationManager.getServerStatus().isConnected())
+                if(getClient().getStatus().isConnected())
+                    lblStatus.setText("Loading " + "...".substring(0, n));
+                else
                     lblStatus.setText("Waiting for server " + "...".substring(0, n));
             }
         };
@@ -67,9 +66,14 @@ public class PreloaderController {
         log.info("Mouse exited close button.");
     }
 
+    @Override
     public void shutdown(){
         animation.stop();
         log.info("Animation stopped.");
+    }
+
+    public int getCycleDuration(){
+        return cycleDuration;
     }
 
 }

@@ -1,0 +1,136 @@
+.root
+{
+    -fx-base: #2E2E2E;
+}
+.close, .minimize
+{
+    -fx-border-color: #3D3D3D #3D3D3D #3D3D3D #3D3D3D;
+    -fx-border-radius: 1;
+}
+/*
+	PANE STUFF
+*/
+.pane, .hbox, .vbox, .content, .text-area
+{
+    -fx-background-color: #2E2E2E;
+    -fx-background-radius: 0;
+}
+.pane > .label, .text-area, .hbox > .label, .vbox > .label
+{
+    -fx-text-fill: #B3A9A3;
+}
+.label
+{
+    -fx-text-fill: white;
+    -fx-font: bold 16 System;
+}
+/*
+	BUTTON STUFF
+*/
+.button
+{
+    -fx-background-radius: 0 0 0 0;
+    -fx-background-color: #2E2E2E;
+    -fx-text-fill: #B3A9A3;
+}
+.button:hover
+{
+    -fx-background-color: #454545;
+}
+.list-view
+{
+    -fx-background-color: #2E2E2E;
+}
+.list-view:vertical,  .list-cell
+{
+    -fx-background-color: #333333;
+    -fx-text-fill: white;
+    -fx-font: 14 System;
+    -fx-border-radius: 0;
+    -fx-background-insets: 0;
+
+}
+.list-cell:hover
+{
+    -fx-background-color: #F0544C;
+}
+.list-cell:empty {
+    -fx-opacity: 0;
+}
+/*
+	TAB STUFF
+*/
+.text-field
+{
+    -fx-background-color: #2E2E2E;
+    -fx-text-fill: white;
+    -fx-background-radius: 0;
+    -fx-accent: #F0544C;
+}
+.spinner, .increment-arrow-button, .decrement-arrow-button
+{
+    -fx-background-color: #2E2E2E;
+    -fx-text-fill: white;
+    -fx-background-radius: 0;
+}
+.spinner > .text-field
+{
+    -fx-background-color: #2E2E2E;
+    -fx-text-fill: white;
+    -fx-background-radius: 0;
+}
+.scroll-pane
+{
+    -fx-background-color:transparent;
+}
+.scroll-bar
+{
+    -fx-background-color: #3D3D3D;
+    -fx-color: #2E2E2E;
+    -fx-background-radius: 0;
+}
+.scroll-bar .slider
+{
+    -fx-background-color: #2E2E2E;
+}
+.scroll-bar:hover .slider
+{
+    -fx-background-color: #2E2E2E;
+}
+.cell
+{
+    -fx-background-color: #2E2E2E;
+    -fx-text-fill: white;
+    -fx-cell-size: 24px;
+    -fx-alignment: center;
+}
+.cell:hover
+{
+    -fx-background-color: #454545;
+}
+.cell:selected
+{
+    -fx-background-color: #828282;
+}
+.menu-item:focused, .menu-item:hover
+{
+    -fx-background-color: #2E2E2E;
+}
+.menu-item > .label
+{
+    -fx-text-fill: white;
+    -fx-font: 12 System;
+}
+.table-column > .label
+{
+    -fx-text-fill: white;
+    -fx-font: bold 14 System;
+}
+.table-row-cell:empty
+{
+    -fx-opacity: 0;
+}
+.table-view
+{
+    -fx-background-color: #2E2E2E;
+}

@@ -1,6 +1,7 @@
 package stages;
 
 import controller.ApplicationManager;
+import controller.PreloaderController;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -38,6 +39,7 @@ public class PreloaderStage extends Stage {
         setResizable(false);
         //Set title
         setTitle("Lanpartymanager - Splash");
+        setOnHiding(e -> ((PreloaderController)loader.getController()).shutdown());
     }
 
     @Override
