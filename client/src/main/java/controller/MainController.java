@@ -2,9 +2,11 @@ package controller;
 
 import entities.game.Game;
 import entities.game.GameList;
+import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.HPos;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -13,46 +15,44 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
-import org.apache.log4j.Logger;
+import javafx.scene.input.ScrollEvent;
+import javafx.scene.layout.*;
 
-import java.io.File;
 import java.io.IOException;
 
-public class MainController {
-    private static Logger log = Logger.getLogger(MainController.class);
+public class MainController extends Controller{
 
-
-    public volatile Game focusedGame;
     @FXML
-    private ScrollPane spMain;
+    private StackPane spMain;
     @FXML
-    private Label lblStatus, lblFileStatus;
+    private ScrollPane spServers, spGames;
+    @FXML
+    private Label lblStatus;
     @FXML
     private ImageView ivUsers, ivSettings, ivOrder, ivServerbrowser;
+    private ChangeListener<Boolean> statusListener;
 
 
     @FXML
     private void initialize(){
-        log.info("Initializing.");
-        //Set the labels for the client to update
-        ApplicationManager.setServerStatusLabel(lblStatus);
-        ApplicationManager.setFileStatusLabel(lblFileStatus);
-        //Create the tooltips for the buttons
+        addButtonHandler();
+        updateGamePane();
+        updateServerBrowserPane();
+        if(getClient().getStatus().isConnected())
+            lblStatus.setText("Connected to server: " + getClient().getStatus().getServerIP());
+        else
+            lblStatus.setText("Waiting for server connection.");
+        statusListener = (observable, oldValue, newValue) -> {
+            if(newValue)
+                Platform.runLater(() -> lblStatus.setText("Connected to server: " + getClient().getStatus().getServerIP()));
+            else
+                Platform.runLater(() -> lblStatus.setText("Waiting for server connection."));
+        };
+        getClient().getStatus().getConnectedProperty().addListener(statusListener);
         Tooltip.install(ivUsers, new Tooltip("Open userlist"));
         Tooltip.install(ivSettings, new Tooltip("Open settings"));
         Tooltip.install(ivOrder, new Tooltip("Open food-ordering"));
         Tooltip.install(ivServerbrowser, new Tooltip("Open serverbrowser"));
-        //Add all handlers to the buttons
-        addButtonHandler();
-        //Settings for the Scrollpane
-        spMain.setFitToWidth(true);
-        //Create the gamepane
-        updateGamePane();
-        //Mouseover effect for buttons
         ivUsers.addEventHandler(MouseEvent.MOUSE_ENTERED, this::mouseEntered);
         ivSettings.addEventHandler(MouseEvent.MOUSE_ENTERED, this::mouseEntered);
         ivOrder.addEventHandler(MouseEvent.MOUSE_ENTERED, this::mouseEntered);
@@ -64,17 +64,14 @@ public class MainController {
     }
 
     private void addButtonHandler(){
-        //Show UserStage with all connected users
         ivUsers.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
             if(event.getButton() == MouseButton.PRIMARY)
                 ApplicationManager.showUsers();
         });
-        //Show LoginStage in SettingStage mode
         ivSettings.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
             if(event.getButton() == MouseButton.PRIMARY)
                 ApplicationManager.showSettings();
         });
-        //Show the food order table
         ivOrder.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
             if(event.getButton() == MouseButton.PRIMARY)
                 ApplicationManager.showOrder();
@@ -83,51 +80,58 @@ public class MainController {
             if(event.getButton() == MouseButton.PRIMARY)
                 ApplicationManager.showServerBrowser();
         });
-        log.info("Added all button listener.");
+
+    }
+
+    private void updateServerBrowserPane(){
+        //TODO: GameList mit allen offenen Servern, dazu noch Tooltip mit Spieler der ihn geöffnet hat
+        //TODO: nicht anzeigen wenn keine Server vorhanden sind
+        GameList games = getClient().getGames();
+        GridPane serverGridPane = new GridPane();
+        serverGridPane.setVgap(30);
+        serverGridPane.minHeightProperty().bind(spMain.heightProperty().divide(5));
+        for(int i = 0; i < games.size(); i++){
+            ImageView imageView = new ImageView(ControllerHelper.getIcon(games.get(i)));
+            imageView.setPreserveRatio(true);
+            imageView.fitHeightProperty().bind(spMain.heightProperty().divide(5));
+            serverGridPane.addRow(0, imageView);
+        }
+        spServers.minHeightProperty().bind(spMain.heightProperty().divide(5).multiply(1.05));
+        spServers.setOnScroll(new EventHandler<ScrollEvent>() {
+            @Override
+            public void handle(ScrollEvent event) {
+                System.out.println(event.getDeltaY());
+                spServers.setHvalue(spServers.getHvalue() - event.getDeltaY() / (1.5*Math.abs(event.getDeltaY())*games.size()));
+            }
+        });
+        spServers.setContent(serverGridPane);
     }
 
     public void updateGamePane(){
-        //Get all games
-        GameList games = ApplicationManager.getGames();
-        //Pane for gametiles
-        GridPane tilePane = new GridPane();
-        //Setting the gaps between the gametiles
-        tilePane.setHgap(20);
-        tilePane.setVgap(30);
-        //Create for every game a gametile
+        GameList games = getClient().getGames();
+        GridPane gameGridPane = new GridPane();
+        gameGridPane.setHgap(15);
+        gameGridPane.setVgap(15);
         for(int i = 0; i < games.size(); i++){
             Node gameTile = gameTile(games.get(i));
-            /*
-                Order the gametiles in rows of 3
-                Add some settings for the gametiles on the tilepane
-             */
-            tilePane.addRow(i/3, gameTile);
-            GridPane.setHgrow(gameTile, Priority.ALWAYS);
-            GridPane.setHalignment(gameTile, HPos.CENTER);
+            gameGridPane.addRow(i/5, gameTile);
+            //GridPane.setHgrow(gameTile, Priority.ALWAYS);
+            //GridPane.setHalignment(gameTile, HPos.CENTER);
         }
-        //Add the gametilepane with all gametile to the scrollpane of the MainStage
-        spMain.setContent(tilePane);
-        log.info("Updated the gametilepane.");
+        spGames.setContent(gameGridPane);
     }
 
     private Node gameTile(Game game){
-        //Create background imageview of the gametile
-        ImageView gameTileImage = new ImageView(getGameCover(game));
+        ImageView gameTileImage = new ImageView(ControllerHelper.getCover(game));
         gameTileImage.setPreserveRatio(false);
-        //Imageview resizing
-        gameTileImage.fitWidthProperty().bind(spMain.widthProperty().divide(3.5));
-        gameTileImage.fitHeightProperty().bind(spMain.widthProperty().multiply(0.4));
-        //Creates the gametileoverlay with the imageview as background of the game
+        gameTileImage.fitWidthProperty().bind(spGames.widthProperty().divide(5).subtract(60/5 + 1));
+        gameTileImage.fitHeightProperty().bind(gameTileImage.fitWidthProperty().divide(0.725));
         VBox gameTileOverlay = gameTileOverlay(gameTileImage, game);
         gameTileOverlay.prefHeightProperty().bind(gameTileImage.fitHeightProperty());
         gameTileOverlay.prefWidthProperty().bind(gameTileImage.fitWidthProperty());
-        //Hide the gametile overlay until mouse over event occurs
         gameTileOverlay.setVisible(false);
-        //Create the Stackpane holding the gametileimage and the overlay
         StackPane gameTile = new StackPane(gameTileImage, gameTileOverlay);
-        //Add the eventhandlers for showing and updating the gametile information
         gameTile.addEventHandler(MouseEvent.MOUSE_ENTERED, event -> {
-            focusedGame = game;
             gameTile.getChildren().get(1).setVisible(true);
             event.consume();
         });
@@ -135,38 +139,16 @@ public class MainController {
             gameTile.getChildren().get(1).setVisible(false);
             event.consume();
         });
-        log.info("Created the gametile of '" + game + "'");
         return gameTile;
     }
 
-    private Image getGameCover(Game game) {
-        File coverpath = new File(ApplicationManager.getGamepath() + "/images");
-        if(coverpath.listFiles() != null){
-            for(File cover : coverpath.listFiles()){
-                int index = cover.getName().lastIndexOf(".");
-                if(cover.getName().substring(0, index).equals(game.getName())) {
-                    log.info("Local cover of '" + game + "' found.");
-                    return new Image("file:" + cover.getAbsolutePath(), true);
-                }
-            }
-        }
-        if(!game.getCoverUrl().isEmpty()) {
-            log.info("Web cover used, because there is no local cover for '" + game + "'.");
-            return new Image(game.getCoverUrl(), true);
-        }
-        log.error("No local or web cover found for '" + game + "'. Using dummy cover.");
-        return new Image(ClassLoader.getSystemResource("dummycover.jpg").toString(),true);
-    }
-
     private VBox gameTileOverlay(ImageView gameTileImage, Game game){
-        //Loading FXML
         FXMLLoader loader = new FXMLLoader(ClassLoader.getSystemResource("gameoverlay.fxml"));
-        //Setting the controller of the gametileoverlay
         loader.setController(new GameOverlayController(gameTileImage, game));
         try {
             return loader.load();
         } catch (IOException e) {
-            log.fatal("Problem loading gameoverlay.fxml.", e);
+
         }
         return null;
     }
@@ -195,4 +177,8 @@ public class MainController {
             imageView.setImage(new Image(ClassLoader.getSystemResource("user.png").toString(), true));
     }
 
+    @Override
+    public void shutdown() {
+        getClient().getStatus().getConnectedProperty().removeListener(statusListener);
+    }
 }

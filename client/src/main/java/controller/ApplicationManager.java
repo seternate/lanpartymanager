@@ -1,6 +1,5 @@
 package controller;
 
-import client.ServerStatus;
 import clientInterface.Client;
 import clientInterface.GameStatusProperty;
 import entities.game.Game;
@@ -11,7 +10,6 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
-import javafx.scene.control.Label;
 import main.LanClient;
 import stages.*;
 
@@ -30,6 +28,7 @@ public class ApplicationManager {
     private static ServerbrowserStage serverbrowserStage;
     private static ServerStartStage serverstartstage;
     private static ServerConnectStage serverconnectstage;
+    //TODO
     private static Client client;
 
 
@@ -67,24 +66,13 @@ public class ApplicationManager {
     public static void openMainStage(String username, String gamepath){
         LanClient.client.loginServer(username, gamepath);
         mainStage = new MainStage();
-        settingsStage = new SettingsStage();
-        usersStage = new UsersStage();
-        orderStage = new OrderStage();
-        serverbrowserStage = new ServerbrowserStage();
+        //settingsStage = new SettingsStage();
+        //usersStage = new UsersStage();
+        //orderStage = new OrderStage();
+        //serverbrowserStage = new ServerbrowserStage();
         mainStage.show();
         loginStage.hide();
     }
-
-
-
-
-
-
-
-
-
-
-
 
     public static void showUsers(){
         if(usersStage.isShowing())
@@ -114,14 +102,13 @@ public class ApplicationManager {
             serverbrowserStage.show();
     }
 
-    public static void closeAllMainStages(){
-        usersStage.hide();
-        loginStage.hide();
-        orderStage.hide();
-        serverbrowserStage.hide();
-        client.stopGamesAndServers();
-        System.exit(0);
-    }
+
+
+
+
+
+
+
 
     public static boolean isRunning(){
         return (preloaderStage != null && preloaderStage.isShowing())
@@ -129,21 +116,8 @@ public class ApplicationManager {
                 || (mainStage != null && mainStage.isShowing());
     }
 
-    public static boolean isPreloader(){
-        return preloaderStage.isShowing();
-    }
 
-    public static boolean isMainstage(){
-        return mainStage != null;
-    }
 
-    public static ServerStatus getServerStatus(){
-        return client.getServerStatus();
-    }
-
-    public static boolean isConnected(){
-        return client.getServerStatus().isConnected();
-    }
 
     public static String getUsername(){
         return LanClient.client.getUser().getUsername();
@@ -153,9 +127,6 @@ public class ApplicationManager {
         return LanClient.client.getUser().getGamepath();
     }
 
-    public static void setServerStatusLabel(Label lblStatus){
-        //client.setServerStatusLabel(lblStatus);
-    }
 
     public static void saveSettings(String username, String gamepath){
         client.sendUserData(username, gamepath, getUser().getOrder());
@@ -201,7 +172,7 @@ public class ApplicationManager {
     }
 
     public static Game getFocusedGame(){
-        return mainStage == null ? null : mainStage.getFocusedGame();
+        return mainStage == null ? null : null;
     }
 
     public static GameStatusProperty getGamestatusProperty(){
@@ -211,7 +182,6 @@ public class ApplicationManager {
     public static void updateMainstageRoot(){
         if(mainStage == null)
             return;
-        mainStage.updateRoot();
     }
 
     public static void startServer(Game game, String parameters){
@@ -230,7 +200,7 @@ public class ApplicationManager {
     }
 
     public static ObservableMap<User, ObservableList<Game>> getUserRunServers(){
-        return client.getRunServerList();
+        return null;
     }
 
     public static void stopGame(Game game){
@@ -247,10 +217,6 @@ public class ApplicationManager {
 
     public static void sendFiles(User user, List<File> files){
         client.sendFiles(user, files);
-    }
-
-    public static void setFileStatusLabel(Label lblFileStatus){
-        //client.setFileStatusLabel(lblFileStatus);
     }
 
 }

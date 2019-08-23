@@ -48,10 +48,8 @@ class GameOverlayController {
 
     @FXML
     private void initialize(){
-        log.info("Initializing gametileoverlay for '" + game + "'.");
-        //Getting the gamestatus variable to listen to for listener implementation for downloading and unzipping.
+        /*
         gameStatus = ApplicationManager.getGamestatusProperty();
-        //Set the gamename and gameversion label
         lblGamename.setText(game.getName());
         lblVersion.setText(game.getVersionServer());
         //Install all tooltips
@@ -213,6 +211,8 @@ class GameOverlayController {
         if(!game.isOpenServer())
             ivStartServer.setImage(new Image(ClassLoader.getSystemResource("serverplay_md.png").toString(), true));
 
+
+         */
     }
 
     private void setDownloadbarVisibility(Boolean newValue) {
