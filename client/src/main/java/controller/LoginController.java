@@ -8,7 +8,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import org.apache.log4j.Logger;
 
 public class LoginController extends Controller{
 
@@ -27,14 +26,11 @@ public class LoginController extends Controller{
             lblStatus.setText("Connected to server: " + getClient().getStatus().getServerIP());
         else
             lblStatus.setText("Waiting for server connection.");
-        statusListener = new ChangeListener<Boolean>() {
-            @Override
-            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-                if(newValue)
-                    Platform.runLater(() -> lblStatus.setText("Connected to server: " + getClient().getStatus().getServerIP()));
-                else
-                    Platform.runLater(() -> lblStatus.setText("Waiting for server connection."));
-            }
+        statusListener = (observable, oldValue, newValue) -> {
+            if(newValue)
+                Platform.runLater(() -> lblStatus.setText("Connected to server: " + getClient().getStatus().getServerIP()));
+            else
+                Platform.runLater(() -> lblStatus.setText("Waiting for server connection."));
         };
         getClient().getStatus().getConnectedProperty().addListener(statusListener);
     }
