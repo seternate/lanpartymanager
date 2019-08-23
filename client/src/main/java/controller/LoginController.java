@@ -8,9 +8,8 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import org.apache.log4j.Logger;
 
-public class LoginController {
+public class LoginController extends Controller{
     private static Logger log = Logger.getLogger(LoginController.class);
-
 
     @FXML
     private TextField txtfieldUsername, txtfieldGamepath;
@@ -26,29 +25,14 @@ public class LoginController {
         //Setting the text for the username and gamepath textfields
         txtfieldUsername.setText(ApplicationManager.getUsername());
         txtfieldGamepath.setText(ApplicationManager.getGamepath());
-        if(!ApplicationManager.isMainstage()) {
-            ApplicationManager.setServerStatusLabel(lblStatus);
-            log.info("Setting up 'LoginStage'.");
-        } else {
-            lblStatus.setText("");
-            btnFinish.setText("Save");
-            log.info("Setting up 'SettingStage'.");
-        }
+        ApplicationManager.setServerStatusLabel(lblStatus);
+        log.info("Setting up 'LoginStage'.");
     }
 
     @FXML
     private void openMainStage(){
-        //Opens MainStage if Stage is as LoginStage open
-        if(ApplicationManager.getServerStatus() != null && ApplicationManager.isConnected()
-                && !ApplicationManager.isMainstage()) {
-            log.info("Open MainStage.");
-            ApplicationManager.openMainStage(txtfieldUsername.getText().trim(), txtfieldGamepath.getText().trim());
-            //Saves the settings if the Stage is as SettingsStage open
-        } else if(ApplicationManager.getServerStatus() != null && ApplicationManager.isConnected()
-                && ApplicationManager.isMainstage()) {
-            log.info("Save settings.");
-            ApplicationManager.saveSettings(txtfieldUsername.getText().trim(), txtfieldGamepath.getText().trim());
-        }
+        log.info("Open MainStage.");
+        ApplicationManager.openMainStage(txtfieldUsername.getText().trim(), txtfieldGamepath.getText().trim());
     }
 
     @FXML
@@ -59,4 +43,8 @@ public class LoginController {
         }
     }
 
+    @Override
+    public void shutdown() {
+
+    }
 }

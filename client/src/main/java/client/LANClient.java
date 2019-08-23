@@ -12,7 +12,6 @@ import client.monitor.ServerMonitor;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
-import controller.ApplicationManager;
 import entities.game.Game;
 import entities.game.GameList;
 import entities.game.GameStatus;
@@ -160,17 +159,22 @@ public class LANClient extends Client {
         addListener(new Listener() {
             @Override
             public void connected(Connection connection) {
-                sendTCP(new LoginMessage(user));
-                sendTCP(new UserRunGameMessage(user, gamemonitor.getRunningProcesses()));
-                sendTCP(new UserRunServerMessage(user, servermonitor.getRunningProcesses()));
+                //TODO
                 ImageDownload imagedownload = new ImageDownload(user);
-                sendTCP(new ImageDownloadRequest(user, imagedownload.getPort()));
+                sendTCP(new ImageDownloadRequest(user.getIpAddress(), imagedownload.getPort()));
                 serverStatus.setServerIP(connection.getRemoteAddressTCP().getAddress().getHostAddress());
                 serverStatus.connected();
                 log.info("Successfully logged into the LANServer.");
                 log.debug("Successfully logged into the LANServer. IP-ADDRESS: " + serverStatus.getServerIP());
             }
         });
+    }
+
+    //TODO
+    public void loginServer(){
+        sendTCP(new LoginMessage(user));
+        sendTCP(new UserRunGameMessage(user, gamemonitor.getRunningProcesses()));
+        sendTCP(new UserRunServerMessage(user, servermonitor.getRunningProcesses()));
     }
 
     /**
@@ -407,7 +411,7 @@ public class LANClient extends Client {
             if(this.user.update(user)) {
                 //Send new user to the server
                 ImageDownload imagedownload = new ImageDownload(user);
-                sendTCP(new ImageDownloadRequest(user, imagedownload.getPort()));
+                sendTCP(new ImageDownloadRequest(user.getIpAddress(), imagedownload.getPort()));
                 sendTCP(new UserupdateMessage(user));
                 return true;
             }

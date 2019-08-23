@@ -468,7 +468,7 @@ public class LANServer extends Server {
                 if(object instanceof ImageDownloadRequest){
                     ImageDownloadRequest request = (ImageDownloadRequest)object;
                     //Send covers to the user
-                    new ImageUpload(request.port, users.get(connection.getID()), new File(gamedirectory, "images"));
+                    new ImageUpload(request.port, request.ip, new File(gamedirectory, "images"));
                 }
             }
         });

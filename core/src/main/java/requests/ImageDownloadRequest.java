@@ -10,13 +10,13 @@ import entities.user.User;
  * @since 1.0
  */
 public final class ImageDownloadRequest {
-    public User user;
+    public String ip;
     public int port;
 
     public ImageDownloadRequest(){ }
 
-    public ImageDownloadRequest(User user, int port){
-        this.user = user;
+    public ImageDownloadRequest(String ip, int port){
+        this.ip = ip;
         this.port = port;
     }
 
