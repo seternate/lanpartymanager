@@ -29,7 +29,7 @@ import java.util.*;
  * {@code LANServer} manages all the communication with the {@code LANClient} and the game organisation.
  *
  * @author Levin Jeck
- * @version 1.1
+ * @version 2.0
  * @since 1.0
  */
 public class LANServer extends Server {

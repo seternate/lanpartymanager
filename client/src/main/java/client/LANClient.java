@@ -42,7 +42,7 @@ import static java.lang.Thread.sleep;
  *     It handles the communication as an interface to the GUI and implements all needed back-end functionality.
  * </p>
  * @author Levin Jeck
- * @version 1.2
+ * @version 2.0
  * @since 1.0
  */
 public class LANClient extends Client {

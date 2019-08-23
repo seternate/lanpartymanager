@@ -13,7 +13,7 @@ import java.net.Socket;
  * {@code ImageUpload} handles the upload of all {@code Images} served by the {@code LANServer}.
  *
  * @author Levin Jeck
- * @version 1.0
+ * @version 2.0
  * @since 1.0
  */
 public class ImageUpload extends Thread {
