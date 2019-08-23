@@ -11,15 +11,13 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 
 /**
- * {@code LanClient} creates the {@link LANClient}, starts the {@link SpringApplication} and launches the {@code FXGui}.
+ * {@code LanClient} creates the {@link LANClient} and launches the {@code FXGui}.
  *
  * @author Levin Jeck
- * @version 1.0
+ * @version 2.0
  * @see Application
  * @since 1.0
  */
-@SpringBootApplication
-@ComponentScan(basePackages="springboot")
 public class LanClient extends Application {
     public static LANClient client;
 
@@ -27,8 +25,7 @@ public class LanClient extends Application {
     /**
      * {@code main} method of the {@code LanClient}.
      * <p>
-     *     Starts the {@link LANClient}, the {@link SpringApplication} and
-     *     launches the {@code FXGui}.
+     *     Starts the {@link LANClient} and launches the {@code FXGui}.
      * </p>
      *
      * @param args command-line arguments
@@ -39,8 +36,6 @@ public class LanClient extends Application {
         Log.setLogger(new KryoLogging());
         //Create the LANClient
         client = new LANClient();
-        //Start the SpingApplication
-        SpringApplication.run(LanClient.class, args);
         //Launch the GUI
         launch(args);
     }
