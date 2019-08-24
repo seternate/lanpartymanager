@@ -94,14 +94,14 @@ public class MainController extends Controller{
         GameList games = getClient().getGames();
         GridPane serverGridPane = new GridPane();
         serverGridPane.setVgap(30);
-        serverGridPane.minHeightProperty().bind(spMain.heightProperty().divide(5));
+        serverGridPane.minHeightProperty().bind(spMain.widthProperty().divide(5));
         for(int i = 0; i < games.size(); i++){
             ImageView imageView = new ImageView(ControllerHelper.getIcon(games.get(i)));
             imageView.setPreserveRatio(true);
-            imageView.fitHeightProperty().bind(spMain.heightProperty().divide(5));
+            imageView.fitHeightProperty().bind(spMain.widthProperty().divide(5));
             serverGridPane.addRow(0, imageView);
         }
-        spServers.minHeightProperty().bind(spMain.heightProperty().divide(5).multiply(1.05));
+        spServers.minHeightProperty().bind(spMain.widthProperty().divide(5).multiply(1.05));
         spServers.setOnScroll(new EventHandler<ScrollEvent>() {
             @Override
             public void handle(ScrollEvent event) {
