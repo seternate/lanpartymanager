@@ -156,7 +156,7 @@ public class MainController extends Controller{
         try {
             return loader.load();
         } catch (IOException e) {
-
+            e.printStackTrace();
         }
         return null;
     }

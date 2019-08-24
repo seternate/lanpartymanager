@@ -1,7 +1,8 @@
 package controller;
 
 import entities.game.Game;
-import client.GameStatus;
+import client.monitor.GameStatus;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
@@ -12,13 +13,17 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
+
+import java.util.Locale;
 
 class GameOverlayController extends Controller{
 
     private ImageView gameTileImage;
     private Game game;
+    private GameStatus gameStatus;
     @FXML
     private ImageView ivRunGame, ivDownloadGame, ivOpenExplorer, ivStartServer;
     @FXML
@@ -38,6 +43,7 @@ class GameOverlayController extends Controller{
 
     @FXML
     private void initialize() {
+        gameStatus = getClient().getGameStatus(game);
         lblGamename.setText(game.getName());
         lblVersion.setText(game.getVersionServer());
         Tooltip.install(lblGamename, new Tooltip(lblGamename.getText()));
@@ -49,7 +55,6 @@ class GameOverlayController extends Controller{
         Tooltip.install(ivStartServer, new Tooltip("Start a new server"));
         ivRunGame.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
             if (event.getButton() == MouseButton.PRIMARY) {
-                GameStatus gameStatus = getClient().getGameStatus(game);
                 if (!gameStatus.isRunning())
                     getClient().startGame(game, true);
                 else
@@ -59,7 +64,6 @@ class GameOverlayController extends Controller{
         });
         ivDownloadGame.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
             if (event.getButton() == MouseButton.PRIMARY) {
-                GameStatus gameStatus = getClient().getGameStatus(game);
                 if (!gameStatus.isDownloading() && !gameStatus.isExtracting())
                     getClient().download(game);
                 else {
@@ -113,13 +117,8 @@ class GameOverlayController extends Controller{
             lblDownloadbar.setFont(Font.font("System", FontWeight.NORMAL, newValue.doubleValue()*0.5/5));
             lblDownloadSpeed.setFont(Font.font("System", FontWeight.NORMAL, newValue.doubleValue()*0.25/5));
         });
-    }
-        /*
-
-
-        //Download listener
-        gameStatus.downloading.addListener((observable, oldValue, newValue) -> setDownloadbarVisibility(newValue));
-        gameStatus.downloadProgress.addListener((observable, oldValue, newValue) -> {
+        gameStatus.getDownloadingProperty().addListener((observable, oldValue, newValue) -> setDownloadbarVisibility(newValue));
+        gameStatus.getDownloadProgressProperty().addListener((observable, oldValue, newValue) -> {
             if(ApplicationManager.getFocusedGame().equals(game) && newValue.doubleValue() > 0) {
                 spDownloadGame.setVisible(true);
                 lblDownloadSpeed.setVisible(true);
@@ -129,9 +128,8 @@ class GameOverlayController extends Controller{
                 });
             }
         });
-        //Unzip listener
-        gameStatus.unzipping.addListener((observable, oldValue, newValue) -> setDownloadbarVisibility(newValue));
-        gameStatus.unzipProgress.addListener((observable, oldValue, newValue) -> {
+        gameStatus.getExtractingProperty().addListener((observable, oldValue, newValue) -> setDownloadbarVisibility(newValue));
+        gameStatus.getExtractionProgressProperty().addListener((observable, oldValue, newValue) -> {
             if(ApplicationManager.getFocusedGame().equals(game) && newValue.doubleValue() > 0) {
                 spDownloadGame.setVisible(true);
                 Platform.runLater(() -> {
@@ -140,68 +138,37 @@ class GameOverlayController extends Controller{
                 });
             }
         });
-        //Local availability listener
-        gameStatus.local.addListener(new ChangeListener<Boolean>() {
-            @Override
-            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-                if(!newValue) {
-                    Platform.runLater(() -> lblGamename.setTextFill(Paint.valueOf("grey")));
-                    Platform.runLater(() -> lblVersion.setTextFill(Paint.valueOf("grey")));
-                } else {
-                    Platform.runLater(() -> lblGamename.setTextFill(Paint.valueOf("black")));
-                    Platform.runLater(() -> lblVersion.setTextFill(Paint.valueOf("black")));
-                }
-            }
-
-        });
-        //DownloadSpeedListener
-        gameStatus.downloadSpeed.addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                Platform.runLater(() -> lblDownloadSpeed.setText(newValue));
+        gameStatus.getLocalProperty().addListener((observable, oldValue, newValue) -> {
+            if(!newValue) {
+                Platform.runLater(() -> lblGamename.setTextFill(Paint.valueOf("grey")));
+                Platform.runLater(() -> lblVersion.setTextFill(Paint.valueOf("grey")));
+            } else {
+                Platform.runLater(() -> lblGamename.setTextFill(Paint.valueOf("black")));
+                Platform.runLater(() -> lblVersion.setTextFill(Paint.valueOf("black")));
             }
         });
-        //Game running listener
-        gameStatus.running.addListener(new ChangeListener<Boolean>() {
-            @Override
-            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-                if(newValue) {
-                    Platform.runLater(() -> {
-                        if(ivRunGame.hoverProperty().get())
-                            ivRunGame.setImage(new Image(ClassLoader.getSystemResource("close_mo.png").toString(), true));
-                        else
-                            ivRunGame.setImage(new Image(ClassLoader.getSystemResource("close.png").toString(), true));
-                        Tooltip.install(ivRunGame, new Tooltip("Exit game"));
-                    });
-
-                } else {
-                    Platform.runLater(() -> {
-                        if(ivRunGame.hoverProperty().get())
-                            ivRunGame.setImage(new Image(ClassLoader.getSystemResource("play_mo.png").toString(), true));
-                        else
-                            ivRunGame.setImage(new Image(ClassLoader.getSystemResource("play.png").toString(), true));
-                        Tooltip.install(ivRunGame, new Tooltip("Start game"));
-                    });
-                }
+        gameStatus.getDownloadSpeedProperty().addListener((observable, oldValue, newValue) -> {
+            Platform.runLater(() -> lblDownloadSpeed.setText(newValue));
+        });
+        gameStatus.getRunningProperty().addListener((observable, oldValue, newValue) -> {
+            if(newValue) {
+                Platform.runLater(() -> {
+                    if(ivRunGame.hoverProperty().get())
+                        ivRunGame.setImage(new Image(ClassLoader.getSystemResource("close_mo.png").toString(), true));
+                    else
+                        ivRunGame.setImage(new Image(ClassLoader.getSystemResource("close.png").toString(), true));
+                    Tooltip.install(ivRunGame, new Tooltip("Exit game"));
+                });
+            } else {
+                Platform.runLater(() -> {
+                    if(ivRunGame.hoverProperty().get())
+                        ivRunGame.setImage(new Image(ClassLoader.getSystemResource("play_mo.png").toString(), true));
+                    else
+                        ivRunGame.setImage(new Image(ClassLoader.getSystemResource("play.png").toString(), true));
+                    Tooltip.install(ivRunGame, new Tooltip("Start game"));
+                });
             }
         });
-
-
-
-
-
-
-
-
-        //Set the button sizing
-
-        //Mouse over effect for buttons
-
-        //Grey Serverstart and Serverconnect if not available
-
-
-
-
     }
 
     private void setDownloadbarVisibility(Boolean newValue) {
@@ -221,7 +188,6 @@ class GameOverlayController extends Controller{
                 ivDownloadGame.setImage(new Image(ClassLoader.getSystemResource("close.png").toString(), true));
         }
     }
-    */
 
     private void mouseEntered(MouseEvent event){
         GameStatus gameStatus = getClient().getGameStatus(game);
@@ -267,4 +233,5 @@ class GameOverlayController extends Controller{
     public void shutdown() {
 
     }
+
 }

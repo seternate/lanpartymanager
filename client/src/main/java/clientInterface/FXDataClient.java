@@ -3,7 +3,7 @@ package clientInterface;
 import client.ServerStatus;
 import entities.game.Game;
 import entities.game.GameList;
-import client.GameStatus;
+import client.monitor.GameStatus;
 import entities.user.User;
 import entities.user.UserList;
 import entities.user.UserRunGamesList;

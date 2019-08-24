@@ -1,6 +1,7 @@
-package client;
+package client.monitor;
 
 import entities.game.Game;
+import javafx.beans.property.*;
 
 /**
  * {@code GameStatus} handles the status of an {@link Game}. Available information are the version, up-to-date state,
@@ -11,9 +12,11 @@ import entities.game.Game;
  * @since 1.0
  */
 public class GameStatus {
-    private boolean playable, local, version, update, downloading, extracting, running;
-    private double downloadProgress, extractionProgress;
-    private String downloadSpeed;
+    private Game game;
+    private boolean playable, version, update;
+    private BooleanProperty downloading, extracting, local, running;
+    private DoubleProperty downloadProgress, extractionProgress;
+    private StringProperty downloadSpeed;
 
 
     /**
@@ -21,17 +24,18 @@ public class GameStatus {
      *
      * @since 1.0
      */
-    public GameStatus(){
+    public GameStatus(Game game){
+        this.game = game;
         playable = false;
-        local = false;
+        local = new SimpleBooleanProperty(false);
         version = true;
         update = false;
-        downloading = false;
-        extracting = false;
-        running = false;
-        downloadProgress = 0.;
-        extractionProgress = 0.;
-        downloadSpeed = "";
+        downloading = new SimpleBooleanProperty(false);
+        extracting = new SimpleBooleanProperty(false);
+        running = new SimpleBooleanProperty(false);
+        downloadProgress = new SimpleDoubleProperty(0.);
+        extractionProgress = new SimpleDoubleProperty(0.);
+        downloadSpeed = new SimpleStringProperty("");
     }
 
     /**
@@ -55,7 +59,7 @@ public class GameStatus {
      * @since 1.0
      */
     public boolean isLocal() {
-        return local;
+        return local.get();
     }
 
     /**
@@ -63,7 +67,11 @@ public class GameStatus {
      * @since 1.0
      */
     public void setLocal(boolean local) {
-        this.local = local;
+        this.local.set(local);
+    }
+
+    public BooleanProperty getLocalProperty(){
+        return local;
     }
 
     /**
@@ -103,7 +111,7 @@ public class GameStatus {
      * @since 1.0
      */
     public boolean isDownloading() {
-        return downloading;
+        return downloading.get();
     }
 
     /**
@@ -111,7 +119,11 @@ public class GameStatus {
      * @since 1.0
      */
     public void setDownloading(boolean downloading) {
-        this.downloading = downloading;
+        this.downloading.set(downloading);
+    }
+
+    public BooleanProperty getDownloadingProperty(){
+        return downloading;
     }
 
     /**
@@ -119,7 +131,7 @@ public class GameStatus {
      * @since 1.0
      */
     public boolean isExtracting() {
-        return extracting;
+        return extracting.get();
     }
 
     /**
@@ -127,7 +139,11 @@ public class GameStatus {
      * @since 1.0
      */
     public void setExtracting(boolean extracting) {
-        this.extracting = extracting;
+        this.extracting.set(extracting);
+    }
+
+    public BooleanProperty getExtractingProperty(){
+        return extracting;
     }
 
     /**
@@ -135,7 +151,7 @@ public class GameStatus {
      * @since 1.0
      */
     public double getDownloadProgress() {
-        return downloadProgress;
+        return downloadProgress.get();
     }
 
     /**
@@ -147,7 +163,11 @@ public class GameStatus {
             downloadProgress = 1.;
         else if(downloadProgress < 0.)
             downloadProgress = 0.;
-        this.downloadProgress = downloadProgress;
+        this.downloadProgress.set(downloadProgress);
+    }
+
+    public DoubleProperty getDownloadProgressProperty(){
+        return downloadProgress;
     }
 
     /**
@@ -155,7 +175,7 @@ public class GameStatus {
      * @since 1.0
      */
     public double getExtractionProgress() {
-        return extractionProgress;
+        return extractionProgress.get();
     }
 
     /**
@@ -167,7 +187,11 @@ public class GameStatus {
             extractionProgress = 1.;
         else if(extractionProgress < 0.)
             extractionProgress = 0.;
-        this.extractionProgress = extractionProgress;
+        this.extractionProgress.set(extractionProgress);
+    }
+
+    public DoubleProperty getExtractionProgressProperty(){
+        return extractionProgress;
     }
 
     /**
@@ -175,7 +199,7 @@ public class GameStatus {
      * @since 1.0
      */
     public String getDownloadSpeed(){
-        return downloadSpeed;
+        return downloadSpeed.get();
     }
 
     /**
@@ -183,7 +207,11 @@ public class GameStatus {
      * @since 1.0
      */
     public void setDownloadSpeed(String downloadSpeed){
-        this.downloadSpeed = downloadSpeed;
+        this.downloadSpeed.set(downloadSpeed);
+    }
+
+    public StringProperty getDownloadSpeedProperty(){
+        return downloadSpeed;
     }
 
     /**
@@ -191,7 +219,7 @@ public class GameStatus {
      * @since 1.0
      */
     public boolean isRunning() {
-        return running;
+        return running.get();
     }
 
     /**
@@ -199,7 +227,15 @@ public class GameStatus {
      * @since 1.0
      */
     public void setRunning(boolean running) {
-        this.running = running;
+        this.running.set(running);
+    }
+
+    public BooleanProperty getRunningProperty(){
+        return running;
+    }
+
+    public Game getGame(){
+        return game;
     }
 
 }
