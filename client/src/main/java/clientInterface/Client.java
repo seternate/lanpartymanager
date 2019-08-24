@@ -4,7 +4,7 @@ import client.ServerStatus;
 import controller.ApplicationManager;
 import entities.game.Game;
 import entities.game.GameList;
-import entities.game.GameStatus;
+import client.GameStatus;
 import entities.settings.ClientSettings;
 import entities.user.User;
 import entities.user.UserList;

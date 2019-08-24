@@ -7,8 +7,6 @@ import org.apache.log4j.Logger;
 import java.io.File;
 
 public abstract class ControllerHelper {
-    private static Logger log = Logger.getLogger(ControllerHelper.class);
-
 
     static Image getIcon(Game game){
         File iconpath = new File(ApplicationManager.getGamepath() + "/images");
@@ -16,7 +14,6 @@ public abstract class ControllerHelper {
             for (File icon : iconpath.listFiles()) {
                 int index = icon.getName().lastIndexOf(".");
                 if (icon.getName().substring(0, index).equals(game.getName() + "_icon")) {
-                    log.info("Local icon of '" + game + "' found.");
                     return new Image("file:" + icon.getAbsolutePath(), true);
                 }
             }

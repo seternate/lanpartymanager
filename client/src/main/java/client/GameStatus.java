@@ -1,11 +1,13 @@
-package entities.game;
+package client;
+
+import entities.game.Game;
 
 /**
  * {@code GameStatus} handles the status of an {@link Game}. Available information are the version, up-to-date state,
  * download- and extractionprogress.
  *
  * @author Levin Jeck
- * @version 1.0
+ * @version 2.0
  * @since 1.0
  */
 public class GameStatus {

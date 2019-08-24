@@ -14,7 +14,6 @@ import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import entities.game.Game;
 import entities.game.GameList;
-import entities.game.GameStatus;
 import entities.settings.ClientSettings;
 import entities.user.User;
 import entities.user.UserList;

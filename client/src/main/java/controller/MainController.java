@@ -17,6 +17,7 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.*;
+import javafx.scene.shape.Line;
 
 import java.io.IOException;
 
@@ -30,6 +31,8 @@ public class MainController extends Controller{
     private Label lblStatus;
     @FXML
     private ImageView ivUsers, ivSettings, ivOrder, ivServerbrowser;
+    @FXML
+    private Line seperator;
     private ChangeListener<Boolean> statusListener;
 
 
@@ -86,6 +89,8 @@ public class MainController extends Controller{
     private void updateServerBrowserPane(){
         //TODO: GameList mit allen offenen Servern, dazu noch Tooltip mit Spieler der ihn geöffnet hat
         //TODO: nicht anzeigen wenn keine Server vorhanden sind
+        seperator.setStartX(10);
+        seperator.endXProperty().bind(spMain.widthProperty().subtract(20));
         GameList games = getClient().getGames();
         GridPane serverGridPane = new GridPane();
         serverGridPane.setVgap(30);
@@ -100,7 +105,6 @@ public class MainController extends Controller{
         spServers.setOnScroll(new EventHandler<ScrollEvent>() {
             @Override
             public void handle(ScrollEvent event) {
-                System.out.println(event.getDeltaY());
                 spServers.setHvalue(spServers.getHvalue() - event.getDeltaY() / (1.5*Math.abs(event.getDeltaY())*games.size()));
             }
         });
@@ -115,9 +119,13 @@ public class MainController extends Controller{
         for(int i = 0; i < games.size(); i++){
             Node gameTile = gameTile(games.get(i));
             gameGridPane.addRow(i/5, gameTile);
-            //GridPane.setHgrow(gameTile, Priority.ALWAYS);
-            //GridPane.setHalignment(gameTile, HPos.CENTER);
         }
+        gameGridPane.setOnScroll(new EventHandler<ScrollEvent>() {
+            @Override
+            public void handle(ScrollEvent event) {
+                spGames.setVvalue(spGames.getVvalue() - event.getDeltaY() / (Math.abs(event.getDeltaY())*games.size()/2.5));
+            }
+        });
         spGames.setContent(gameGridPane);
     }
 

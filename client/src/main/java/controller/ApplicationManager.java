@@ -102,6 +102,11 @@ public class ApplicationManager {
             serverbrowserStage.show();
     }
 
+    public static void openServerStartup(Game game){
+        serverstartstage = new ServerStartStage(game);
+        serverstartstage.show();
+    }
+
 
 
 
@@ -158,10 +163,7 @@ public class ApplicationManager {
         serverconnectstage.show();
     }
 
-    public static void openServerStartup(Game game){
-        serverstartstage = new ServerStartStage(game);
-        serverstartstage.show();
-    }
+
 
     public static GameList getGames(){
         return client.getGames();
