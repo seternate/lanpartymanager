@@ -13,13 +13,16 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.*;
 import javafx.scene.shape.Line;
+import stages.GameTile;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 public class MainController extends Controller{
 
@@ -34,10 +37,12 @@ public class MainController extends Controller{
     @FXML
     private Line seperator;
     private ChangeListener<Boolean> statusListener;
+    private HashMap<Game, ImageView> imageGameList;
 
 
     @FXML
     private void initialize(){
+        imageGameList = new HashMap<>();
         addButtonHandler();
         updateGamePane();
         updateServerBrowserPane();
@@ -64,6 +69,31 @@ public class MainController extends Controller{
         ivSettings.addEventHandler(MouseEvent.MOUSE_EXITED, this::mouseExited);
         ivOrder.addEventHandler(MouseEvent.MOUSE_EXITED, this::mouseExited);
         ivServerbrowser.addEventHandler(MouseEvent.MOUSE_EXITED, this::mouseExited);
+    }
+
+    @FXML
+    public void searchGame(KeyEvent event){
+        ImageView image = null;
+        int row = 0;
+        for(int i = 0; i < getClient().getGames().size(); i++) {
+            Game game = getClient().getGames().get(i);
+            if (game.getName().toLowerCase().startsWith(event.getCharacter())) {
+                image = imageGameList.get(game);
+                row = i/5;
+                break;
+            }
+        }
+        if(image == null) {
+            event.consume();
+            return;
+        }
+        double height = spGames.getContent().getBoundsInLocal().getHeight();
+        //double y = (image.getParent().getParent().getBoundsInParent().getMaxY() + image.getParent().getParent().getBoundsInParent().getMinY()) / 2;
+        double y = (height/(getClient().getGames().size()/5))*row;
+        spGames.setVvalue(y/height);
+        System.out.println(height + " : " + y);
+        image.requestFocus();
+        event.consume();
     }
 
     private void addButtonHandler(){
@@ -134,7 +164,8 @@ public class MainController extends Controller{
         gameTileImage.setPreserveRatio(false);
         gameTileImage.fitWidthProperty().bind(spGames.widthProperty().divide(5).subtract(60/5 + 1));
         gameTileImage.fitHeightProperty().bind(gameTileImage.fitWidthProperty().divide(0.725));
-        VBox gameTileOverlay = gameTileOverlay(gameTileImage, game);
+        imageGameList.put(game, gameTileImage);
+        VBox gameTileOverlay = new GameTile(game, gameTileImage).getGameTile();
         gameTileOverlay.prefHeightProperty().bind(gameTileImage.fitHeightProperty());
         gameTileOverlay.prefWidthProperty().bind(gameTileImage.fitWidthProperty());
         gameTileOverlay.setVisible(false);
@@ -148,17 +179,6 @@ public class MainController extends Controller{
             event.consume();
         });
         return gameTile;
-    }
-
-    private VBox gameTileOverlay(ImageView gameTileImage, Game game){
-        FXMLLoader loader = new FXMLLoader(ClassLoader.getSystemResource("gameoverlay.fxml"));
-        loader.setController(new GameOverlayController(gameTileImage, game));
-        try {
-            return loader.load();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
     }
 
     private void mouseEntered(MouseEvent event){

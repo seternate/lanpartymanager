@@ -19,7 +19,7 @@ import javafx.scene.text.FontWeight;
 
 import java.util.Locale;
 
-class GameOverlayController extends Controller{
+public class GameOverlayController extends Controller{
 
     private ImageView gameTileImage;
     private Game game;
@@ -108,11 +108,9 @@ class GameOverlayController extends Controller{
         ivOpenExplorer.addEventHandler(MouseEvent.MOUSE_EXITED, this::mouseExited);
         ivStartServer.addEventHandler(MouseEvent.MOUSE_EXITED, this::mouseExited);
         if(gameStatus.isLocal()){
-            System.out.println("local");
             lblGamename.setTextFill(Paint.valueOf("black"));
             lblVersion.setTextFill(Paint.valueOf("black"));
         } else {
-            System.out.println("not local");
             lblGamename.setTextFill(Paint.valueOf("grey"));
             lblVersion.setTextFill(Paint.valueOf("grey"));
         }
