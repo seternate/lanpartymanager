@@ -5,16 +5,17 @@ import client.monitor.GameStatus;
 import javafx.application.Platform;
 import javafx.beans.Observable;
 import javafx.beans.value.ObservableValue;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.scene.control.Label;
-import javafx.scene.control.ProgressBar;
-import javafx.scene.control.Tooltip;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
@@ -37,6 +38,8 @@ public class GameOverlayController extends Controller{
     private StackPane spDownloadGame;
     @FXML
     private GridPane gpGameTile;
+    @FXML
+    private VBox root;
 
 
     public GameOverlayController(ImageView gameTileImage, Game game){
@@ -147,6 +150,26 @@ public class GameOverlayController extends Controller{
                 });
             }
         });
+        MenuItem itemDeleteGame = new MenuItem("Delete");
+        itemDeleteGame.setOnAction(new EventHandler<ActionEvent>() {
+            public void handle(ActionEvent e) {
+                if(gameStatus.isRunning())
+                    getClient().stopGame(game);
+                if(gameStatus.isDownloading() ||gameStatus.isExtracting())
+                    getClient().stopDownloadUnzip(game);
+                if(game.delete()) {
+                    gameStatus.setLocal(false);
+                    gameStatus.setPlayable(false);
+                }
+
+            }
+        });
+        ContextMenu context = new ContextMenu(itemDeleteGame);
+        root.setOnContextMenuRequested((event) -> {
+            if(gameStatus.isLocal()) {
+                context.show(gameTileImage.getScene().getWindow(), event.getScreenX(), event.getScreenY());
+            }
+        });
         gameStatus.getLocalProperty().addListener((observable, oldValue, newValue) -> {
             if(!newValue) {
                 lblGamename.setTextFill(Color.web("#000000", 0.75));
@@ -178,6 +201,7 @@ public class GameOverlayController extends Controller{
                 });
             }
         });
+
     }
 
     private void setDownloadbarVisibility(Boolean newValue) {

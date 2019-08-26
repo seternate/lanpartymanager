@@ -11,8 +11,8 @@ public class MainStage extends Stage {
 
     public MainStage(){
         setTitle("Lanpartymanager" + " (" + LanClient.client.getUser().getIpAddress() + ")");
-        setMinWidth(600);
-        setMinHeight(400);
+        setMinWidth(800);
+        setMinHeight(600);
         Preferences pref = Preferences.userRoot().node("MainStage");
         double x = pref.getDouble("win_pos_x", (Screen.getPrimary().getVisualBounds().getWidth() - getWidth()) / 2);
         double y = pref.getDouble("win_pos_y", (Screen.getPrimary().getVisualBounds().getHeight() - getHeight()) / 2);

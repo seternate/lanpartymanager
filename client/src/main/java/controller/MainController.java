@@ -4,18 +4,17 @@ import entities.game.Game;
 import entities.game.GameList;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.input.ScrollEvent;
+import javafx.scene.input.*;
 import javafx.scene.layout.*;
 import javafx.scene.shape.Line;
 import fxml.GameTile;
@@ -71,6 +70,7 @@ public class MainController extends Controller{
 
     @FXML
     public void searchGame(KeyEvent event){
+        //TODO: more than one key --> form a word
         ImageView image = null;
         int row = 0;
         for(int i = 0; i < getClient().getGames().size(); i++) {
@@ -120,15 +120,15 @@ public class MainController extends Controller{
         seperator.endXProperty().bind(spMain.widthProperty().subtract(20));
         GameList games = getClient().getGames();
         GridPane serverGridPane = new GridPane();
-        serverGridPane.setVgap(30);
-        serverGridPane.minHeightProperty().bind(spMain.widthProperty().divide(5));
+        serverGridPane.setHgap(5);
+        serverGridPane.minHeightProperty().bind(spMain.heightProperty().divide(8));
         for(int i = 0; i < games.size(); i++){
             ImageView imageView = new ImageView(ControllerHelper.getIcon(games.get(i)));
             imageView.setPreserveRatio(true);
-            imageView.fitHeightProperty().bind(spMain.widthProperty().divide(5));
+            imageView.fitHeightProperty().bind(spMain.heightProperty().divide(8));
             serverGridPane.addRow(0, imageView);
         }
-        spServers.minHeightProperty().bind(spMain.widthProperty().divide(5).multiply(1.05));
+        spServers.minHeightProperty().bind(spMain.heightProperty().divide(8).multiply(1.05));
         spServers.setOnScroll(new EventHandler<ScrollEvent>() {
             @Override
             public void handle(ScrollEvent event) {
@@ -144,7 +144,8 @@ public class MainController extends Controller{
         gameGridPane.setHgap(15);
         gameGridPane.setVgap(15);
         for(int i = 0; i < games.size(); i++){
-            Node gameTile = gameTile(games.get(i));
+            Game game = games.get(i);
+            Node gameTile = gameTile(game);
             gameGridPane.addRow(i/5, gameTile);
         }
         gameGridPane.setOnScroll(new EventHandler<ScrollEvent>() {

@@ -3,6 +3,7 @@ package entities.game;
 import helper.GameFolderHelper;
 import helper.GameInfoHelper;
 
+import java.io.File;
 import java.util.Properties;
 
 /**
@@ -325,6 +326,10 @@ public class Game {
             return -3;
         else
             return 0;
+    }
+
+    public boolean delete(){
+        return GameFolderHelper.deleteGameFolder(this);
     }
 
     /**
