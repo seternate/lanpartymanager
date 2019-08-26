@@ -9,6 +9,7 @@ import client.monitor.*;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
+import controller.ApplicationManager;
 import entities.game.Game;
 import entities.game.GameList;
 import entities.settings.ClientSettings;
@@ -18,6 +19,7 @@ import entities.user.UserRunGamesList;
 import entities.user.UserRunServerList;
 import helper.GameFolderHelper;
 import helper.kryo.NetworkClassRegistrationHelper;
+import javafx.application.Platform;
 import message.*;
 import org.apache.log4j.Logger;
 import requests.ImageDownloadRequest;
@@ -326,6 +328,7 @@ public class LANClient extends Client {
                     runserverlist = (UserRunServerList)object;
                     log.info("Received a userrunserverlist from the LANServer.");
                     log.debug("Received a userrunserverlist from the LANServer. IP-ADDRESS: " + serverStatus.getServerIP());
+                    Platform.runLater(() -> ApplicationManager.updateMainStageServers());
                 }
             }
         });

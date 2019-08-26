@@ -96,8 +96,10 @@ public class UsersController {
                 User user = lvUsers.getSelectionModel().getSelectedItem();
                 ObservableList<Game> servers = ApplicationManager.getUserRunServers().get(user);
                 Game game = servers.get(servers.size() - 1);
-                if(game != null)
-                    ApplicationManager.connectServer(game, user.getIpAddress());
+                if(game != null){
+                    //TODO
+                }
+
             }
         });
         ContextMenu context = new ContextMenu(itemIPAddress, itemJoin);

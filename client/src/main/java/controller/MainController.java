@@ -4,12 +4,10 @@ import entities.game.Game;
 import entities.game.GameList;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
-import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
-import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
@@ -30,9 +28,11 @@ public class MainController extends Controller{
     @FXML
     private Label lblStatus;
     @FXML
-    private ImageView ivUsers, ivSettings, ivOrder, ivServerbrowser;
+    private ImageView ivUsers, ivSettings, ivOrder;
     @FXML
     private Line seperator;
+    @FXML
+    private VBox rootGameServer;
     private ChangeListener<Boolean> statusListener;
     private HashMap<Game, ImageView> imageGameList;
 
@@ -57,15 +57,12 @@ public class MainController extends Controller{
         Tooltip.install(ivUsers, new Tooltip("Open userlist"));
         Tooltip.install(ivSettings, new Tooltip("Open settings"));
         Tooltip.install(ivOrder, new Tooltip("Open food-ordering"));
-        Tooltip.install(ivServerbrowser, new Tooltip("Open serverbrowser"));
         ivUsers.addEventHandler(MouseEvent.MOUSE_ENTERED, this::mouseEntered);
         ivSettings.addEventHandler(MouseEvent.MOUSE_ENTERED, this::mouseEntered);
         ivOrder.addEventHandler(MouseEvent.MOUSE_ENTERED, this::mouseEntered);
-        ivServerbrowser.addEventHandler(MouseEvent.MOUSE_ENTERED, this::mouseEntered);
         ivUsers.addEventHandler(MouseEvent.MOUSE_EXITED, this::mouseExited);
         ivSettings.addEventHandler(MouseEvent.MOUSE_EXITED, this::mouseExited);
         ivOrder.addEventHandler(MouseEvent.MOUSE_EXITED, this::mouseExited);
-        ivServerbrowser.addEventHandler(MouseEvent.MOUSE_EXITED, this::mouseExited);
     }
 
     @FXML
@@ -106,33 +103,41 @@ public class MainController extends Controller{
             if(event.getButton() == MouseButton.PRIMARY)
                 ApplicationManager.showOrder();
         });
-        ivServerbrowser.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-            if(event.getButton() == MouseButton.PRIMARY)
-                ApplicationManager.showServerBrowser();
-        });
-
     }
 
-    private void updateServerBrowserPane(){
-        //TODO: GameList mit allen offenen Servern, dazu noch Tooltip mit Spieler der ihn geöffnet hat
-        //TODO: nicht anzeigen wenn keine Server vorhanden sind
+    public void updateServerBrowserPane(){
+        if(getClient().getUserRunServer().size() == 0){
+            rootGameServer.getChildren().remove(seperator);
+            rootGameServer.getChildren().remove(spServers);
+            return;
+        } else if(seperator.getParent() == null && spServers.getParent() == null){
+            rootGameServer.getChildren().add(0, spServers);
+            rootGameServer.getChildren().add(1, seperator);
+        }
         seperator.setStartX(10);
         seperator.endXProperty().bind(spMain.widthProperty().subtract(20));
-        GameList games = getClient().getGames();
         GridPane serverGridPane = new GridPane();
         serverGridPane.setHgap(5);
         serverGridPane.minHeightProperty().bind(spMain.heightProperty().divide(8));
-        for(int i = 0; i < games.size(); i++){
-            ImageView imageView = new ImageView(ControllerHelper.getIcon(games.get(i)));
-            imageView.setPreserveRatio(true);
-            imageView.fitHeightProperty().bind(spMain.heightProperty().divide(8));
-            serverGridPane.addRow(0, imageView);
-        }
+        getClient().getUserRunServer().forEach((user, games) -> {
+            for(Game game : games){
+                ImageView imageView = new ImageView(ControllerHelper.getIcon(game));
+                imageView.setPreserveRatio(true);
+                imageView.fitHeightProperty().bind(spMain.heightProperty().divide(8));
+                imageView.setOnMouseClicked((event) -> {
+                    if(event.getClickCount() == 2 && event.getButton() == MouseButton.PRIMARY){
+                        getClient().connectServer(game, user.getIpAddress(), true);
+                    }
+                });
+                Tooltip.install(imageView, new Tooltip(user.getUsername()));
+                serverGridPane.addRow(0, imageView);
+            }
+        });
         spServers.minHeightProperty().bind(spMain.heightProperty().divide(8).multiply(1.05));
         spServers.setOnScroll(new EventHandler<ScrollEvent>() {
             @Override
             public void handle(ScrollEvent event) {
-                spServers.setHvalue(spServers.getHvalue() - event.getDeltaY() / (1.5*Math.abs(event.getDeltaY())*games.size()));
+                spServers.setHvalue(spServers.getHvalue() - event.getDeltaY() / (1.5*Math.abs(event.getDeltaY())*getClient().getGames().size()));
             }
         });
         spServers.setContent(serverGridPane);
@@ -183,8 +188,6 @@ public class MainController extends Controller{
         ImageView imageView = (ImageView)event.getTarget();
         if(imageView.equals(ivOrder))
             imageView.setImage(new Image(ClassLoader.getSystemResource("food_mo.png").toString(), true));
-        else if(imageView.equals(ivServerbrowser))
-            imageView.setImage(new Image(ClassLoader.getSystemResource("serverbrowser_mo.png").toString(), true));
         else if(imageView.equals(ivSettings))
             imageView.setImage(new Image(ClassLoader.getSystemResource("config_mo.png").toString(), true));
         else if(imageView.equals(ivUsers))
@@ -195,8 +198,6 @@ public class MainController extends Controller{
         ImageView imageView = (ImageView)event.getTarget();
         if(imageView.equals(ivOrder))
             imageView.setImage(new Image(ClassLoader.getSystemResource("food.png").toString(), true));
-        else if(imageView.equals(ivServerbrowser))
-            imageView.setImage(new Image(ClassLoader.getSystemResource("serverbrowser.png").toString(), true));
         else if(imageView.equals(ivSettings))
             imageView.setImage(new Image(ClassLoader.getSystemResource("config.png").toString(), true));
         else if(imageView.equals(ivUsers))

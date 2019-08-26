@@ -6,7 +6,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 
-public class ServerStartController {
+public class ServerStartController extends Controller{
     private Game game;
     @FXML
     private TextArea txtParameters;
@@ -23,7 +23,8 @@ public class ServerStartController {
 
     @FXML
     private void startServer(){
-        ApplicationManager.startServer(game, txtParameters.getText());
+        getClient().startServer(game, txtParameters.getText(), true);
+        txtParameters.getScene().getWindow().hide();
     }
 
     @FXML
@@ -32,4 +33,8 @@ public class ServerStartController {
             startServer();
     }
 
+    @Override
+    public void shutdown() {
+
+    }
 }

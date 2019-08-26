@@ -49,15 +49,7 @@
             <Insets bottom="5.0" right="95.0" />
          </StackPane.margin>
       </ImageView>
-      <ImageView fx:id="ivServerbrowser" fitHeight="150.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true" StackPane.alignment="BOTTOM_RIGHT">
-         <image>
-            <Image url="@serverbrowser.png" />
-         </image>
-         <StackPane.margin>
-            <Insets bottom="5.0" right="140.0" />
-         </StackPane.margin>
-      </ImageView>
-      <VBox alignment="TOP_CENTER" spacing="20.0">
+      <VBox fx:id="rootGameServer" alignment="TOP_CENTER" spacing="20.0">
          <children>
             <ScrollPane fx:id="spServers" hbarPolicy="NEVER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" vbarPolicy="NEVER" />
             <Line fx:id="seperator" endX="100.0" endY="-138.813720703125" startX="675.5858154296875" startY="-138.813720703125" strokeLineCap="ROUND" strokeType="OUTSIDE" strokeWidth="2.0" VBox.vgrow="NEVER">

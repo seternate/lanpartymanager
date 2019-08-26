@@ -1,5 +1,6 @@
 package stages;
 
+import controller.Controller;
 import controller.ServerStartController;
 import entities.game.Game;
 import javafx.fxml.FXMLLoader;
@@ -16,23 +17,28 @@ import java.io.InputStream;
 import java.util.prefs.Preferences;
 
 public class ServerStartStage extends Stage {
-    private static Logger log = Logger.getLogger(ServerStartStage.class);
+    private final static String ICON = "icon.png";
+
+    private Controller controller;
 
 
     public ServerStartStage(Game game){
         super();
-        FXMLLoader loader = new FXMLLoader(ClassLoader.getSystemResource("serverstart.fxml"));
+        FXMLLoader loader = new FXMLLoader(ClassLoader.getSystemResource(getFXML()));
         try {
             loader.setController(new ServerStartController(game));
             Parent rootNode = loader.load();
             setScene(new Scene(rootNode));
         } catch (IOException e) {
-            e.printStackTrace();
+            getLogger().fatal("Could not loaded " + getFXML());
+            getLogger().debug("Could not loaded " + getFXML(), e);
         }
-        InputStream icon = ClassLoader.getSystemResourceAsStream("icon.png");
-        if (icon != null) {
+        controller = loader.getController();
+        InputStream icon = ClassLoader.getSystemResourceAsStream(ICON);
+        if(icon != null)
             getIcons().add(new Image(icon));
-        }
+        else
+            getLogger().warn("Could not load application icon.");
         setTitle("Server - Setup");
         initModality(Modality.APPLICATION_MODAL);
         setMinHeight(250);
@@ -55,8 +61,20 @@ public class ServerStartStage extends Stage {
             preferences.putDouble("win_pos_y", getY());
             preferences.putDouble("win_width", getWidth());
             preferences.putDouble("win_height", getHeight());
-            log.info("Saved window size and position");
+            getLogger().info("Saved window size and position");
         });
+    }
+
+    public Logger getLogger() {
+        return Logger.getLogger(MainStage.class);
+    }
+
+    public String getFXML() {
+        return "serverstart.fxml";
+    }
+
+    public Controller getController(){
+        return controller;
     }
 
 }

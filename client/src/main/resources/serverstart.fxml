@@ -6,7 +6,7 @@
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.layout.BorderPane?>
 
-<BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="160.0" minWidth="250.0" onKeyPressed="#enter" prefHeight="161.0" prefWidth="261.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="160.0" minWidth="250.0" onKeyPressed="#enter" prefHeight="161.0" prefWidth="261.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
    <bottom>
       <Button mnemonicParsing="false" onMouseClicked="#startServer" text="Start Server" BorderPane.alignment="CENTER_RIGHT">
          <BorderPane.margin>

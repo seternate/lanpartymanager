@@ -25,9 +25,7 @@ public class ApplicationManager {
     private static SettingsStage settingsStage;
     private static UsersStage usersStage;
     private static OrderStage orderStage;
-    private static ServerbrowserStage serverbrowserStage;
     private static ServerStartStage serverstartstage;
-    private static ServerConnectStage serverconnectstage;
     //TODO
     private static Client client;
 
@@ -95,17 +93,19 @@ public class ApplicationManager {
             orderStage.show();
     }
 
-    public static void showServerBrowser(){
-        if(serverbrowserStage.isShowing())
-            serverbrowserStage.requestFocus();
-        else
-            serverbrowserStage.show();
-    }
-
     public static void openServerStartup(Game game){
         serverstartstage = new ServerStartStage(game);
         serverstartstage.show();
     }
+
+    public static void updateMainStageServers(){
+        if(mainStage != null)
+            mainStage.updateServers();
+    }
+
+
+
+
 
 
 
@@ -142,32 +142,7 @@ public class ApplicationManager {
         client.sendUserData(getUsername(), getGamepath(), order);
     }
 
-    public static void stopDownloadUnzip(Game game){
-        client.stopDownloadUnzip(game);
-    }
 
-    public static void startGame(Game game){
-        client.startGame(game);
-    }
-
-    public static void downloadGame(Game game){
-        client.downloadGame(game);
-    }
-
-    public static void openExplorer(Game game){
-        client.openExplorer(game);
-    }
-
-    public static void openServerList(Game game){
-        serverconnectstage = new ServerConnectStage(game);
-        serverconnectstage.show();
-    }
-
-
-
-    public static GameList getGames(){
-        return client.getGames();
-    }
 
     public static ObservableList<User> getUserslist(){
         return client.getUsersList();
@@ -175,10 +150,6 @@ public class ApplicationManager {
 
     public static Game getFocusedGame(){
         return mainStage == null ? null : null;
-    }
-
-    public static GameStatusProperty getGamestatusProperty(){
-        return client.getGamestatusProperty();
     }
 
     public static void updateMainstageRoot(){
@@ -191,12 +162,6 @@ public class ApplicationManager {
         serverstartstage.hide();
     }
 
-    public static void connectServer(Game game, String ip){
-        client.connectServer(game, ip);
-        if(serverconnectstage != null && serverconnectstage.isShowing())
-            serverconnectstage.hide();
-    }
-
     public static ObservableMap<User, Game> getUserRunGames(){
         return client.getRunGamesList();
     }
@@ -205,9 +170,6 @@ public class ApplicationManager {
         return null;
     }
 
-    public static void stopGame(Game game){
-        client.stopGame(game);
-    }
 
     public static User getUser(){
         return client.getUser();

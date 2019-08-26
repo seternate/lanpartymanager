@@ -1,5 +1,6 @@
 package stages;
 
+import controller.MainController;
 import javafx.stage.Screen;
 
 import main.LanClient;
@@ -40,6 +41,10 @@ public class MainStage extends Stage {
     @Override
     public String getFXML() {
         return "main.fxml";
+    }
+
+    public void updateServers(){
+        ((MainController)getController()).updateServerBrowserPane();
     }
 
 }
