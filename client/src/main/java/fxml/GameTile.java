@@ -1,4 +1,4 @@
-package stages;
+package fxml;
 
 import controller.Controller;
 import controller.GameOverlayController;

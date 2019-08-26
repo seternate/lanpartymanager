@@ -3,6 +3,8 @@ package client.monitor;
 import entities.game.Game;
 import javafx.beans.property.*;
 
+import java.util.Locale;
+
 /**
  * {@code GameStatus} handles the status of an {@link Game}. Available information are the version, up-to-date state,
  * download- and extractionprogress.
@@ -206,8 +208,9 @@ public class GameStatus {
      * @param downloadSpeed average downloadspeed of the download
      * @since 1.0
      */
-    public void setDownloadSpeed(String downloadSpeed){
-        this.downloadSpeed.set(downloadSpeed);
+    public void setDownloadSpeed(long downloadSpeed){
+        String speed = String.format(Locale.ENGLISH, "%.0f MB/sec", (float)downloadSpeed/1048576.);
+        this.downloadSpeed.set(speed);
     }
 
     public StringProperty getDownloadSpeedProperty(){

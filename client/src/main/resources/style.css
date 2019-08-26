@@ -48,7 +48,7 @@
     -fx-background-color: #3D3D3D;
     -fx-background-radius: 0;
 }
-.pane > .label, .text-area, .hbox > .label, .vbox > .label
+.pane > .label, .text-area
 {
     -fx-text-fill: #B3A9A3;
 }
@@ -208,19 +208,6 @@
 {
     -fx-background-color: #F0544C;
 }
-#gameoverlaylabeleffect
-{
-    -fx-text-fill: black;
-    -fx-effect: dropshadow(gaussian, grey, 12.5, 0.25, 0, 0);
-}
-#gametileoverlaylabel
-{
-    -fx-text-fill: black;
-}
-#gametileoverlay
-{
-    -fx-background-color: rgba(255, 255, 255, 0.75);
-}
 .progress-bar > .bar
 {
     -fx-accent: #2E2E2E;
@@ -231,7 +218,21 @@
     -fx-control-inner-background: #999999;
     -fx-background-insets: 0;
 }
+#gametileoverlay
+{
+    -fx-background-color: rgba(225, 225, 225, 0.75);
+}
+#gameoverlaylabeleffect
+{
+    -fx-effect: dropshadow(gaussian, grey, 12.5, 0.25, 0, 0);
+}
+
 #progressbarlabel
+{
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(gaussian, #2E2E2E, 2, 0.9, 0, 0);
+}
+#downloadspeedlabel
 {
     -fx-effect: dropshadow(gaussian, #2E2E2E, 2, 0.9, 0, 0);
 }

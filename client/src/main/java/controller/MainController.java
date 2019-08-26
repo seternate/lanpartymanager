@@ -6,7 +6,6 @@ import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -19,9 +18,8 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.*;
 import javafx.scene.shape.Line;
-import stages.GameTile;
+import fxml.GameTile;
 
-import java.io.IOException;
 import java.util.HashMap;
 
 public class MainController extends Controller{
@@ -88,7 +86,6 @@ public class MainController extends Controller{
             return;
         }
         double height = spGames.getContent().getBoundsInLocal().getHeight();
-        //double y = (image.getParent().getParent().getBoundsInParent().getMaxY() + image.getParent().getParent().getBoundsInParent().getMinY()) / 2;
         double y = (height/(getClient().getGames().size()/5))*row;
         spGames.setVvalue(y/height);
         System.out.println(height + " : " + y);

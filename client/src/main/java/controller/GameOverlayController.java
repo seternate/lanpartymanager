@@ -3,6 +3,8 @@ package controller;
 import entities.game.Game;
 import client.monitor.GameStatus;
 import javafx.application.Platform;
+import javafx.beans.Observable;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
@@ -13,6 +15,7 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
@@ -89,7 +92,7 @@ public class GameOverlayController extends Controller{
             ivStartServer.setImage(new Image(ClassLoader.getSystemResource("serverplay_md.png").toString(), true));
         lblGamename.setFont(Font.font("System", FontWeight.BOLD, gameTileImage.fitHeightProperty().doubleValue()/17.0));
         lblVersion.setFont(Font.font("System", FontWeight.BOLD, gameTileImage.fitHeightProperty().doubleValue()/17.0));
-        lblDownloadbar.setFont(Font.font("System", FontWeight.NORMAL, gpGameTile.heightProperty().doubleValue()*0.5/5));
+        lblDownloadbar.setFont(Font.font("System", FontWeight.NORMAL, gpGameTile.heightProperty().doubleValue()*0.45/5));
         lblDownloadSpeed.setFont(Font.font("System", FontWeight.NORMAL, gpGameTile.heightProperty().doubleValue()*0.25/5));
         ivRunGame.fitHeightProperty().bind(gpGameTile.heightProperty().divide(4));
         ivDownloadGame.fitHeightProperty().bind(gpGameTile.heightProperty().divide(4));
@@ -111,47 +114,46 @@ public class GameOverlayController extends Controller{
             lblGamename.setTextFill(Paint.valueOf("black"));
             lblVersion.setTextFill(Paint.valueOf("black"));
         } else {
-            lblGamename.setTextFill(Paint.valueOf("grey"));
-            lblVersion.setTextFill(Paint.valueOf("grey"));
+            lblGamename.setTextFill(Color.web("#555555"));
+            lblVersion.setTextFill(Color.web("#555555"));
         }
         gameTileImage.fitHeightProperty().addListener((observable, oldValue, newValue) -> {
-            //Font resizing
             double fontSize = newValue.doubleValue()/17.0;
             lblGamename.setFont(Font.font("System", FontWeight.BOLD, fontSize));
             lblVersion.setFont(Font.font("System", FontWeight.BOLD, fontSize));
         });
         gpGameTile.heightProperty().addListener((observable, oldValue, newValue) -> {
-            lblDownloadbar.setFont(Font.font("System", FontWeight.NORMAL, newValue.doubleValue()*0.5/5));
+            lblDownloadbar.setFont(Font.font("System", FontWeight.NORMAL, newValue.doubleValue()*0.45/5));
             lblDownloadSpeed.setFont(Font.font("System", FontWeight.NORMAL, newValue.doubleValue()*0.25/5));
         });
         gameStatus.getDownloadingProperty().addListener((observable, oldValue, newValue) -> setDownloadbarVisibility(newValue));
         gameStatus.getDownloadProgressProperty().addListener((observable, oldValue, newValue) -> {
-            if(ApplicationManager.getFocusedGame().equals(game) && newValue.doubleValue() > 0) {
+            if(newValue.doubleValue() > 0) {
                 spDownloadGame.setVisible(true);
                 lblDownloadSpeed.setVisible(true);
                 Platform.runLater(() -> {
                     pbDownload.setProgress(newValue.doubleValue());
-                    lblDownloadbar.setText(String.format(Locale.ENGLISH,"%.01f %%", newValue.doubleValue() * 100));
+                    lblDownloadbar.setText(String.format(Locale.ENGLISH,"%.0f %%", newValue.doubleValue() * 100));
                 });
             }
         });
         gameStatus.getExtractingProperty().addListener((observable, oldValue, newValue) -> setDownloadbarVisibility(newValue));
         gameStatus.getExtractionProgressProperty().addListener((observable, oldValue, newValue) -> {
-            if(ApplicationManager.getFocusedGame().equals(game) && newValue.doubleValue() > 0) {
+            if(newValue.doubleValue() > 0) {
                 spDownloadGame.setVisible(true);
                 Platform.runLater(() -> {
                     pbDownload.setProgress(newValue.doubleValue());
-                    lblDownloadbar.setText(String.format(Locale.ENGLISH, "Unzip: %.01f %%", newValue.doubleValue() * 100));
+                    lblDownloadbar.setText(String.format(Locale.ENGLISH, "Unzip: %.0f %%", newValue.doubleValue() * 100));
                 });
             }
         });
         gameStatus.getLocalProperty().addListener((observable, oldValue, newValue) -> {
             if(!newValue) {
-                Platform.runLater(() -> lblGamename.setTextFill(Paint.valueOf("grey")));
-                Platform.runLater(() -> lblVersion.setTextFill(Paint.valueOf("grey")));
+                lblGamename.setTextFill(Color.web("#000000", 0.75));
+                lblVersion.setTextFill(Color.web("#000000", 0.75));
             } else {
-                Platform.runLater(() -> lblGamename.setTextFill(Paint.valueOf("black")));
-                Platform.runLater(() -> lblVersion.setTextFill(Paint.valueOf("black")));
+                lblGamename.setTextFill(Paint.valueOf("black"));
+                lblVersion.setTextFill(Paint.valueOf("black"));
             }
         });
         gameStatus.getDownloadSpeedProperty().addListener((observable, oldValue, newValue) -> {

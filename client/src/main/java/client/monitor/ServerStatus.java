@@ -1,4 +1,4 @@
-package client;
+package client.monitor;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -12,7 +12,7 @@ import javafx.beans.property.SimpleBooleanProperty;
  * @since 1.0
  */
 public class ServerStatus {
-    private BooleanProperty connected;
+    private BooleanProperty connected, wasConnected;
     private String serverIP;
 
     /**
@@ -22,6 +22,7 @@ public class ServerStatus {
      */
     public ServerStatus(){
         connected = new SimpleBooleanProperty(false);
+        wasConnected = new SimpleBooleanProperty(false);
         serverIP = null;
     }
 
@@ -42,12 +43,25 @@ public class ServerStatus {
         connected.set(true);
     }
 
+    public BooleanProperty getConnectedProperty(){
+        return connected;
+    }
+
+    public boolean wasConnected(){
+        return wasConnected.get();
+    }
+
+    public BooleanProperty getWasConnectedProperty(){
+        return wasConnected;
+    }
+
     /**
      * Sets connection status to <b>false</b>.
      *
      * @since 1.0
      */
     public void disconnected(){
+        wasConnected.set(true);
         connected.set(false);
     }
 
@@ -65,10 +79,6 @@ public class ServerStatus {
      */
     public String getServerIP(){
         return serverIP;
-    }
-
-    public BooleanProperty getConnectedProperty(){
-        return connected;
     }
 
 }

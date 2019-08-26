@@ -75,7 +75,7 @@
                   <Insets left="5.0" right="5.0" />
                </GridPane.margin>
             </StackPane>
-            <Label id="gameoverlaylabeleffect" fx:id="lblDownloadSpeed" text="250.23 MB/sec" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="2" GridPane.valignment="TOP">
+            <Label id="downloadspeedlabel" fx:id="lblDownloadSpeed" text="250.23 MB/sec" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="2" GridPane.valignment="TOP">
                <GridPane.margin>
                   <Insets right="5.0" />
                </GridPane.margin>

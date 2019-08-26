@@ -29,6 +29,7 @@ public class MainStage extends Stage {
             preferences.putDouble("win_width", getWidth());
             preferences.putDouble("win_height", getHeight());
         });
+        getScene().getRoot().requestFocus();
     }
 
     @Override

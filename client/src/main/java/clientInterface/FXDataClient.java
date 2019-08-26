@@ -1,6 +1,6 @@
 package clientInterface;
 
-import client.ServerStatus;
+import client.monitor.ServerStatus;
 import entities.game.Game;
 import entities.game.GameList;
 import client.monitor.GameStatus;

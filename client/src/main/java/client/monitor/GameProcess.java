@@ -1,6 +1,7 @@
 package client.monitor;
 
 import entities.game.Game;
+import main.LanClient;
 import org.apache.log4j.Logger;
 
 /**
@@ -45,6 +46,8 @@ public class GameProcess extends Thread{
             process.waitFor();
         } catch (InterruptedException e) {
             log.warn("Listening on the game process of '" + game + "' was interrupted.", e);
+        } finally {
+            LanClient.client.getGameStatus(game).setRunning(false);
         }
         log.info("'" + game + "' has been closed with the exit value: " + process.exitValue());
         monitor.removeAndUpdate(this);

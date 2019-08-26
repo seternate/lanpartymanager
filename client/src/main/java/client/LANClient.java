@@ -6,7 +6,6 @@ import client.download.GameDownloadManager;
 import client.filedrop.FileDropClient;
 import client.filedrop.FileDropServer;
 import client.monitor.*;
-import clientInterface.GameStatusProperty;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
@@ -27,7 +26,6 @@ import requests.DownloadRequest;
 import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
-import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -159,18 +157,21 @@ public class LANClient extends Client {
         addListener(new Listener() {
             @Override
             public void connected(Connection connection) {
-                //TODO
                 ImageDownload imagedownload = new ImageDownload(user);
                 sendTCP(new ImageDownloadRequest(user.getIpAddress(), imagedownload.getPort()));
                 serverStatus.setServerIP(connection.getRemoteAddressTCP().getAddress().getHostAddress());
                 serverStatus.connected();
+                if(serverStatus.wasConnected()){
+                    sendTCP(new LoginMessage(user));
+                    sendTCP(new UserRunGameMessage(user, gamemonitor.getRunningProcesses()));
+                    sendTCP(new UserRunServerMessage(user, servermonitor.getRunningProcesses()));
+                }
                 log.info("Successfully logged into the LANServer.");
                 log.debug("Successfully logged into the LANServer. IP-ADDRESS: " + serverStatus.getServerIP());
             }
         });
     }
 
-    //TODO
     public void loginServer(String username, String gamepath){
         updateUser(username, gamepath);
         sendTCP(new LoginMessage(user));
@@ -193,7 +194,6 @@ public class LANClient extends Client {
                 serverStatus.disconnected();
                 log.info("Lost the connection to the LANServer.");
                 log.debug("Lost the connection to the LANServer. IP-ADDRESS: " + serverStatus.getServerIP());
-                serverStatus.setServerIP("");
                 connect();
             }
         });
@@ -250,7 +250,7 @@ public class LANClient extends Client {
             if(gameDownload.getDownloadprogress() < 1.){
                 gamestatus.setDownloading(true);
                 gamestatus.setDownloadProgress(gameDownload.getDownloadprogress());
-                gamestatus.setDownloadSpeed(gameDownload.getAverageDownloadspeed()/1048576 + " MB/sec");
+                gamestatus.setDownloadSpeed(gameDownload.getAverageDownloadspeed());
             }else{
                 gamestatus.setExtracting(true);
                 gamestatus.setExtractionProgress(gameDownload.getUnzipprogress());
@@ -473,6 +473,7 @@ public class LANClient extends Client {
         }
         //Start the download and extraction of the gamefile
         download.start();
+        gamestatusList.get(game).setDownloading(true);
         return 0;
     }
 
@@ -564,6 +565,7 @@ public class LANClient extends Client {
             gamemonitor.add(new GameProcess(game, gameprocess));
             if(!game.isOpenServer() && game.isConnectDirect())
                 servermonitor.add(new GameProcess(game, gameprocess));
+            gamestatusList.get(game).setRunning(true);
         } catch (Exception e) {
             log.error("Can not launch the game '" + game + "'.", e);
             return false;
@@ -644,6 +646,7 @@ public class LANClient extends Client {
             String connectparameter = game.getConnectParam().replace("?", ip);
             gameprocess = startProcess(game, false, game.getParam(), connectparameter);
             gamemonitor.add(new GameProcess(game, gameprocess));
+            gamestatusList.get(game).setRunning(true);
         } catch (IOException e) {
             log.error("Can not connect the game '" + game + "' to '" + ip + "'.", e);
             return false;
@@ -706,6 +709,8 @@ public class LANClient extends Client {
      */
     public boolean stopDownloadUnzip(Game game){
         gameDownloadManager.getDownload(game).stopDownloadUnzip();
+        gamestatusList.get(game).setDownloading(false);
+        gamestatusList.get(game).setExtracting(false);
         sendTCP(new DownloadStopMessage(user, game));
         return true;
     }
@@ -734,6 +739,7 @@ public class LANClient extends Client {
      * @since 1.0
      */
     public boolean stopGame(Game game){
+        gamestatusList.get(game).setRunning(false);
         return gamemonitor.stop(game);
     }
 
