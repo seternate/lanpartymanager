@@ -53,20 +53,24 @@ public class OrderController {
             return tableCell;
         });
 
-        tvOrdering.setItems(ApplicationManager.getOrderList());
-        txtOrder.setText(ApplicationManager.getUser().getOrder());
+        //tvOrdering.setItems(ApplicationManager.getOrderList());
+        //txtOrder.setText(ApplicationManager.getUser().getOrder());
     }
 
     @FXML
     private void placeOrder(MouseEvent event){
-        if(event.getButton() == MouseButton.PRIMARY)
-            ApplicationManager.setOrder(txtOrder.getText());
+        if(event.getButton() == MouseButton.PRIMARY){
+
+        }
+            //ApplicationManager.setOrder(txtOrder.getText());
     }
 
     @FXML
     private void enter(KeyEvent event){
-        if(event.getCode() == KeyCode.ENTER)
-            ApplicationManager.setOrder(txtOrder.getText());
+        if(event.getCode() == KeyCode.ENTER){
+
+        }
+            //ApplicationManager.setOrder(txtOrder.getText());
     }
 
 }

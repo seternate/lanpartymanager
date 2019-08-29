@@ -1,12 +1,10 @@
 package stages;
 
-import controller.ApplicationManager;
 import org.apache.log4j.Logger;
 
 public class SettingsStage extends Stage {
 
     public SettingsStage(){
-        super();
         setTitle("Settings");
         setResizable(false);
     }
@@ -18,7 +16,7 @@ public class SettingsStage extends Stage {
 
     @Override
     public String getFXML() {
-        return "login.fxml";
+        return "settings.fxml";
     }
 
 }

@@ -2,6 +2,7 @@ package controller;
 
 import entities.game.Game;
 import javafx.scene.image.Image;
+import main.LanClient;
 import org.apache.log4j.Logger;
 
 import java.io.File;
@@ -9,7 +10,7 @@ import java.io.File;
 public abstract class ControllerHelper {
 
     static Image getIcon(Game game){
-        File iconpath = new File(ApplicationManager.getGamepath() + "/images");
+        File iconpath = new File(LanClient.client.getUser().getGamepath() + "/images");
         if (iconpath.listFiles() != null) {
             for (File icon : iconpath.listFiles()) {
                 int index = icon.getName().lastIndexOf(".");
@@ -22,7 +23,7 @@ public abstract class ControllerHelper {
     }
 
     static Image getCover(Game game) {
-        File coverpath = new File(ApplicationManager.getGamepath() + "/images");
+        File coverpath = new File(LanClient.client.getUser().getGamepath() + "/images");
         if(coverpath.listFiles() != null){
             for(File cover : coverpath.listFiles()){
                 int index = cover.getName().lastIndexOf(".");

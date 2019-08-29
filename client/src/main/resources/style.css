@@ -206,7 +206,7 @@
 }
 .cell:selected
 {
-    -fx-background-color: #F0544C;
+    -fx-background-color: #2E2E2E;
 }
 .progress-bar > .bar
 {

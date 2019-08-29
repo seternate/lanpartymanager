@@ -1,5 +1,6 @@
 package stages;
 
+import controller.ApplicationManager;
 import controller.PreloaderController;
 import javafx.stage.StageStyle;
 import org.apache.log4j.Logger;

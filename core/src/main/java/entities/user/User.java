@@ -27,7 +27,19 @@ public final class User {
      *
      * @since 1.0
      */
-    public User(){ }
+    public User(){
+        this.settings = new ClientSettings();
+        this.ipAddress = "";
+        order = "";
+    }
+
+    public User(User user){
+        this.settings = new ClientSettings();
+        this.settings.setUsername(user.getUsername());
+        this.settings.setGamepath(user.getGamepath());
+        this.ipAddress = user.getIpAddress();
+        this.order = user.getOrder();
+    }
 
     /**
      * Creates the {@code User} with the {@code settings}. The ip-address and order of the {@code User} are set.

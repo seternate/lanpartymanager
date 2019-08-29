@@ -1,20 +1,13 @@
 package controller;
 
-import clientInterface.Client;
-import clientInterface.GameStatusProperty;
 import entities.game.Game;
-import entities.game.GameList;
-import entities.user.User;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.ObservableList;
-import javafx.collections.ObservableMap;
+import javafx.stage.WindowEvent;
 import main.LanClient;
 import stages.*;
 
-import java.io.File;
-import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -26,13 +19,15 @@ public class ApplicationManager {
     private static UsersStage usersStage;
     private static OrderStage orderStage;
     private static ServerStartStage serverstartstage;
-    //TODO
-    private static Client client;
 
 
     public static void start(){
         preloaderStage = new PreloaderStage();
         preloaderStage.show();
+        preloaderStage.setOnHidden(event -> {
+            if(!ApplicationManager.isRunning())
+                System.exit(0);
+        });
         //LoginStage timer/executor after first server connection was made
         Timer loginOpener = new Timer();
         loginOpener.schedule(new TimerTask() {
@@ -58,16 +53,23 @@ public class ApplicationManager {
     public static void openLoginStage(){
         loginStage = new LoginStage();
         loginStage.show();
+        loginStage.setOnHidden(event -> {
+            if(!ApplicationManager.isRunning())
+                System.exit(0);
+        });
         preloaderStage.hide();
     }
 
     public static void openMainStage(String username, String gamepath){
         LanClient.client.loginServer(username, gamepath);
         mainStage = new MainStage();
-        //settingsStage = new SettingsStage();
-        //usersStage = new UsersStage();
+        mainStage.setOnHidden(event -> {
+            if(!ApplicationManager.isRunning())
+                System.exit(0);
+        });
+        settingsStage = new SettingsStage();
+        usersStage = new UsersStage();
         //orderStage = new OrderStage();
-        //serverbrowserStage = new ServerbrowserStage();
         mainStage.show();
         loginStage.hide();
     }
@@ -80,10 +82,10 @@ public class ApplicationManager {
     }
 
     public static void showSettings(){
-        if(loginStage.isShowing())
-            loginStage.requestFocus();
+        if(settingsStage.isShowing())
+            settingsStage.requestFocus();
         else
-            loginStage.show();
+            settingsStage.show();
     }
 
     public static void showOrder(){
@@ -98,89 +100,23 @@ public class ApplicationManager {
         serverstartstage.show();
     }
 
+    public static void updateMainstageRoot(){
+        if(mainStage != null)
+            mainStage.updateGames();
+    }
+
     public static void updateMainStageServers(){
         if(mainStage != null)
             mainStage.updateServers();
     }
 
-
-
-
-
-
-
-
-
-
-
-
+    public static void updateUsersStage(){
+        if(usersStage != null)
+            usersStage.update();
+    }
 
     public static boolean isRunning(){
-        return (preloaderStage != null && preloaderStage.isShowing())
-                || (loginStage != null && loginStage.isShowing())
-                || (mainStage != null && mainStage.isShowing());
-    }
-
-
-
-
-    public static String getUsername(){
-        return LanClient.client.getUser().getUsername();
-    }
-
-    public static String getGamepath(){
-        return LanClient.client.getUser().getGamepath();
-    }
-
-
-    public static void saveSettings(String username, String gamepath){
-        client.sendUserData(username, gamepath, getUser().getOrder());
-        loginStage.hide();
-    }
-
-    public static void setOrder(String order){
-        client.sendUserData(getUsername(), getGamepath(), order);
-    }
-
-
-
-    public static ObservableList<User> getUserslist(){
-        return client.getUsersList();
-    }
-
-    public static Game getFocusedGame(){
-        return mainStage == null ? null : null;
-    }
-
-    public static void updateMainstageRoot(){
-        if(mainStage == null)
-            return;
-    }
-
-    public static void startServer(Game game, String parameters){
-        client.startServer(game, parameters);
-        serverstartstage.hide();
-    }
-
-    public static ObservableMap<User, Game> getUserRunGames(){
-        return client.getRunGamesList();
-    }
-
-    public static ObservableMap<User, ObservableList<Game>> getUserRunServers(){
-        return null;
-    }
-
-
-    public static User getUser(){
-        return client.getUser();
-    }
-
-    public static ObservableList<User> getOrderList(){
-        return client.getUsersList();
-    }
-
-    public static void sendFiles(User user, List<File> files){
-        client.sendFiles(user, files);
+        return preloaderStage.isShowing() || (loginStage != null && loginStage.isShowing()) || (mainStage != null && mainStage.isShowing());
     }
 
 }

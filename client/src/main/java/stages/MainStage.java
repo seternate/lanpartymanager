@@ -1,6 +1,7 @@
 package stages;
 
 import controller.MainController;
+import javafx.application.Platform;
 import javafx.stage.Screen;
 
 import main.LanClient;
@@ -45,6 +46,10 @@ public class MainStage extends Stage {
 
     public void updateServers(){
         ((MainController)getController()).updateServerBrowserPane();
+    }
+
+    public void updateGames(){
+        ((MainController)getController()).updateGamePane();
     }
 
 }

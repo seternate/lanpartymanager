@@ -1,31 +1,14 @@
 package stages;
 
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.image.Image;
+import controller.UsersController;
 import javafx.stage.Screen;
-import javafx.stage.Stage;
+import org.apache.log4j.Logger;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.prefs.Preferences;
 
 public class UsersStage extends Stage {
 
     public UsersStage(){
-        super();
-        FXMLLoader loader = new FXMLLoader(ClassLoader.getSystemResource("users.fxml"));
-        try {
-            Parent rootNode = loader.load();
-            setScene(new Scene(rootNode));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        InputStream icon = ClassLoader.getSystemResourceAsStream("icon.png");
-        if (icon != null) {
-            getIcons().add(new Image(icon));
-        }
         setTitle("Users");
         setMinWidth(250);
         setMaxWidth(350);
@@ -48,6 +31,20 @@ public class UsersStage extends Stage {
             preferences.putDouble("win_width", getWidth());
             preferences.putDouble("win_height", getHeight());
         });
+    }
+
+    public void update(){
+        ((UsersController)getController()).update();
+    }
+
+    @Override
+    public Logger getLogger() {
+        return Logger.getLogger(UsersStage.class);
+    }
+
+    @Override
+    public String getFXML() {
+        return "users.fxml";
     }
 
 }

@@ -3,6 +3,8 @@ package controller;
 import entities.game.Game;
 import entities.user.User;
 import javafx.application.Platform;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
 import javafx.collections.MapChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -19,9 +21,9 @@ import org.apache.log4j.Logger;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UsersController {
+public class UsersController extends Controller{
 
-    private class UserCell extends ListCell<User> {
+    private class UserCell extends ListCell<User>{
 
         UserCell(){
             setOnDragOver(event -> {
@@ -31,7 +33,7 @@ public class UsersController {
                 event.consume();
             });
             setOnDragDropped(event -> {
-                ApplicationManager.sendFiles(getItem(), event.getDragboard().getFiles());
+                getClient().sendFiles(getItem(), event.getDragboard().getFiles());
                 event.consume();
             });
         }
@@ -43,11 +45,11 @@ public class UsersController {
             setGraphic(null);
             setText(null);
             if(item != null){
-                setText(item.getUsername());
-                if(ApplicationManager.getUserRunGames().get(item) != null){
-                    Image image = ControllerHelper.getIcon(ApplicationManager.getUserRunGames().get(item));
+                setText(item.getUsername() + " (" + item.getIpAddress()+ ")");
+                if(getClient().getUserRunGames().get(item) != null){
+                    Image image = ControllerHelper.getIcon(getClient().getUserRunGames().get(item).get(0));
                     ImageView icon = new ImageView(image);
-                    Tooltip tooltip = new Tooltip(ApplicationManager.getUserRunGames().get(item).toString());
+                    Tooltip tooltip = new Tooltip(getClient().getUserRunGames().get(item).toString());
                     this.setTooltip(tooltip);
                     icon.setFitHeight(56);
                     icon.setFitWidth(56);
@@ -55,23 +57,21 @@ public class UsersController {
                 }
             }
         }
-
     }
-
-
-    private static Logger log = Logger.getLogger(UsersController.class);
 
 
     @FXML
     private ListView<User> lvUsers;
+    private ObservableList<User> users;
+    private List<UserCell> cellFactory;
 
 
     @FXML
     private void initialize(){
-        log.info("Initializing.");
-        //Bind ObservableList from client to show users
-        lvUsers.setItems(ApplicationManager.getUserslist());
-        List<UserCell> cellFactory = new ArrayList<>();
+        users = FXCollections.observableArrayList();
+        users.addAll(getClient().getUserList().toList());
+        lvUsers.setItems(users);
+        cellFactory = new ArrayList<>();
         lvUsers.setCellFactory(new Callback<ListView<User>, ListCell<User>>() {
             @Override
             public ListCell<User> call(ListView<User> param) {
@@ -80,62 +80,71 @@ public class UsersController {
                 return cell;
             }
         });
-        MenuItem itemIPAddress = new MenuItem("Copy IP to clipboard");
-        itemIPAddress.setOnAction(new EventHandler<ActionEvent>() {
-            public void handle(ActionEvent e) {
+        MenuItem itemIPAddress = new MenuItem("Copy IP");
+        itemIPAddress.setOnAction(event -> {
                 Clipboard clipboard = Clipboard.getSystemClipboard();
                 ClipboardContent content = new ClipboardContent();
                 content.putString(lvUsers.getSelectionModel().getSelectedItem().getIpAddress());
                 clipboard.setContent(content);
-            }
         });
-        MenuItem itemJoin = new MenuItem("Join open server");
-        itemJoin.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
+        MenuItem itemJoin = new MenuItem("Join server");
+        itemJoin.setOnAction(event -> {
                 User user = lvUsers.getSelectionModel().getSelectedItem();
-                ObservableList<Game> servers = ApplicationManager.getUserRunServers().get(user);
+                List<Game> servers = getClient().getUserRunServer().get(user);
                 Game game = servers.get(servers.size() - 1);
                 if(game != null){
-                    //TODO
-                }
-
+                    getClient().connectServer(game, user.getIpAddress(), true);
             }
         });
         ContextMenu context = new ContextMenu(itemIPAddress, itemJoin);
         lvUsers.setContextMenu(context);
-        lvUsers.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
+        lvUsers.setOnMouseClicked(event -> {
                 if(event.getButton() == MouseButton.SECONDARY)
                     context.show(lvUsers, Side.BOTTOM, 0, 0);
+        });
+        getClient().getUserRunGames().forEach((user, games) -> {
+            Image image = ControllerHelper.getIcon(games.get(games.size() - 1));
+            ImageView icon = new ImageView(image);
+            icon.setFitHeight(48);
+            icon.setFitWidth(48);
+            for(UserCell cell : cellFactory){
+                if(cell.getItem() != null && cell.getItem().equals(user))
+                    Platform.runLater(() -> {
+                        cell.setGraphic(icon);
+                        Tooltip tooltip = new Tooltip("Playing: " + games.get(games.size() - 1));
+                        cell.setTooltip(tooltip);
+                    });
             }
         });
-        ApplicationManager.getUserRunGames().addListener(new MapChangeListener<User, Game>() {
-            @Override
-            public void onChanged(Change<? extends User, ? extends Game> change) {
-                Image image = null;
-                if(change.getValueAdded() != null){
-                    image = ControllerHelper.getIcon(change.getValueAdded());
-                }
-                ImageView icon = new ImageView(image);
-                icon.setFitHeight(48);
-                icon.setFitWidth(48);
-                for(UserCell cell : cellFactory){
-                    if(image != null && cell.getItem() != null && cell.getItem().equals(change.getKey()))
-                        Platform.runLater(() -> {
-                            cell.setGraphic(icon);
-                            Tooltip tooltip = new Tooltip(change.getValueAdded().toString());
-                            cell.setTooltip(tooltip);
-                        });
-                    else if(image == null && cell.getItem() != null && cell.getItem().equals((change.getKey())))
-                        Platform.runLater(() -> {
-                            cell.setGraphic(null);
-                            cell.setTooltip(null);
-                        });
-                }
+    }
+
+    public void update(){
+        Platform.runLater(() -> users.setAll(getClient().getUserList().toList()));
+        for(UserCell cell : cellFactory){
+            if(cell.getItem() != null)
+                Platform.runLater(() -> {
+                    cell.setGraphic(null);
+                    cell.setTooltip(null);
+                });
+        }
+        getClient().getUserRunGames().forEach((user, games) -> {
+            Image image = ControllerHelper.getIcon(games.get(games.size() - 1));
+            ImageView icon = new ImageView(image);
+            icon.setFitHeight(48);
+            icon.setFitWidth(48);
+            for(UserCell cell : cellFactory){
+                if(cell.getItem() != null && cell.getItem().equals(user))
+                    Platform.runLater(() -> {
+                        cell.setGraphic(icon);
+                        Tooltip tooltip = new Tooltip("Playing: " + games.get(games.size() - 1));
+                        cell.setTooltip(tooltip);
+                    });
             }
         });
+    }
+
+    @Override
+    public void shutdown() {
 
     }
 

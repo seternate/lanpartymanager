@@ -216,6 +216,7 @@ public class LANClient extends Client {
                     log.info("Received a gamelist from the LANServer.");
                     log.debug("Received a gamelist from the LANServer. IP-ADDRESS: " + serverStatus.getServerIP());
                     createGameStatus();
+                    ApplicationManager.updateMainStageServers();
                 }
             }
         });
@@ -273,6 +274,7 @@ public class LANClient extends Client {
                 if(object instanceof UserlistMessage){
                     UserlistMessage message = (UserlistMessage)object;
                     users = message.users;
+                    ApplicationManager.updateUsersStage();
                     log.info("Received a userlist from the LANServer.");
                     log.debug("Received a userlist from the LANServer. IP-ADDRESS: " + serverStatus.getServerIP());
                 }
@@ -308,6 +310,7 @@ public class LANClient extends Client {
             public void received(Connection connection, Object object) {
                 if(object instanceof UserRunGamesList){
                     rungameslist = (UserRunGamesList)object;
+                    ApplicationManager.updateUsersStage();
                     log.info("Received a userrungameslist from the LANServer.");
                     log.debug("Received a userrungameslist from the LANServer. IP-ADDRESS: " + serverStatus.getServerIP());
                 }
@@ -422,8 +425,10 @@ public class LANClient extends Client {
     public boolean updateUser(User user) {
         try {
             //Update user information
+            System.out.println("request");
             if(this.user.update(user)) {
                 //Send new user to the server
+                System.out.println("updated");
                 ImageDownload imagedownload = new ImageDownload(user);
                 sendTCP(new ImageDownloadRequest(user.getIpAddress(), imagedownload.getPort()));
                 sendTCP(new UserupdateMessage(user));
@@ -436,7 +441,7 @@ public class LANClient extends Client {
     }
 
     public boolean updateUser(String username, String gamepath){
-        User user = getUser();
+        User user = new User(getUser());
         user.setUsername(username);
         user.setGamepath(gamepath);
         return updateUser(user);
