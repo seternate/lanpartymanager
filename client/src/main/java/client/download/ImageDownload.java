@@ -2,11 +2,18 @@ package client.download;
 
 import entities.user.User;
 import helper.NetworkHelper;
+import main.LanClient;
 import org.apache.log4j.Logger;
+import requests.ImageDownloadRequest;
 
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
+import java.util.Stack;
+import java.util.concurrent.ArrayBlockingQueue;
 
 /**
  * {@code ImageDownload} handles the download of all {@code Images} served by the {@code LANServer}.
@@ -17,12 +24,40 @@ import java.net.Socket;
  */
 public class ImageDownload extends Thread {
     private static Logger log = Logger.getLogger(ImageDownload.class);
+    private static Queue<ImageDownload> queue = new LinkedList<>();
+
+    public static void queue(User user){
+        ImageDownload imageDownlaod = new ImageDownload(user);
+        queue.add(imageDownlaod);
+        if(queue.size() == 1)
+            LanClient.client.sendTCP(new ImageDownloadRequest(user.getIpAddress(), imageDownlaod.getPort()));
+    }
+
+    public static boolean isDownloading(){
+        return queue.size() != 0;
+    }
+
+    public static void waitDownloads(){
+        try {
+            if(queue.size() != 0) {
+                synchronized (queue.peek()){
+                    queue.peek().wait(2000);
+                    waitDownloads();
+                }
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     private Socket clientsocket;
     private ServerSocket serversocket;
     private int port;
-    private String gamepath;
+    private String gamepath, ipAddress;
 
+
+    private ImageDownload(){ }
 
     /**
      * Creates the {@code ImageDownload}.
@@ -33,8 +68,9 @@ public class ImageDownload extends Thread {
      * @param user {@link User} who downloads the {@code Images}
      * @since 1.0
      */
-    public ImageDownload(User user){
+    private ImageDownload(User user){
         clientsocket = new Socket();
+        ipAddress = user.getIpAddress();
         gamepath = user.getGamepath();
         //Get a free port to listen to
         port = NetworkHelper.getOpenPort();
@@ -115,6 +151,11 @@ public class ImageDownload extends Thread {
         clientsocket.close();
         serversocket.close();
         log.info("Downloaded all images.");
+        queue.remove();
+        if(queue.size() != 0){
+            ImageDownload imageDownload = queue.peek();
+            LanClient.client.sendTCP(new ImageDownloadRequest(imageDownload.getIpAddress(), imageDownload.getPort()));
+        }
     }
 
     /**
@@ -123,6 +164,10 @@ public class ImageDownload extends Thread {
      */
     public int getPort(){
         return port;
+    }
+
+    public String getIpAddress(){
+        return ipAddress;
     }
 
 }

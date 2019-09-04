@@ -45,11 +45,11 @@ public class MainStage extends Stage {
     }
 
     public void updateServers(){
-        ((MainController)getController()).updateServerBrowserPane();
+        Platform.runLater(() -> ((MainController)getController()).updateServerBrowserPane());
     }
 
     public void updateGames(){
-        ((MainController)getController()).updateGamePane();
+        Platform.runLater(() -> ((MainController)getController()).updateGamePane());
     }
 
 }

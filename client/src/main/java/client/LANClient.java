@@ -25,6 +25,7 @@ import org.apache.log4j.Logger;
 import requests.ImageDownloadRequest;
 import requests.DownloadRequest;
 
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
@@ -159,8 +160,9 @@ public class LANClient extends Client {
         addListener(new Listener() {
             @Override
             public void connected(Connection connection) {
-                ImageDownload imagedownload = new ImageDownload(user);
-                sendTCP(new ImageDownloadRequest(user.getIpAddress(), imagedownload.getPort()));
+                ImageDownload.queue(user);
+                //ImageDownload imagedownload = new ImageDownload(user);
+                //sendTCP(new ImageDownloadRequest(user.getIpAddress(), imagedownload.getPort()));
                 serverStatus.setServerIP(connection.getRemoteAddressTCP().getAddress().getHostAddress());
                 serverStatus.connected();
                 if(serverStatus.wasConnected()){
@@ -216,7 +218,10 @@ public class LANClient extends Client {
                     log.info("Received a gamelist from the LANServer.");
                     log.debug("Received a gamelist from the LANServer. IP-ADDRESS: " + serverStatus.getServerIP());
                     createGameStatus();
+                    ImageDownload.waitDownloads();
+                    System.out.println(ImageDownload.isDownloading());
                     ApplicationManager.updateMainStageServers();
+                    ApplicationManager.updateMainstageRoot();
                 }
             }
         });
@@ -331,7 +336,7 @@ public class LANClient extends Client {
                     runserverlist = (UserRunServerList)object;
                     log.info("Received a userrunserverlist from the LANServer.");
                     log.debug("Received a userrunserverlist from the LANServer. IP-ADDRESS: " + serverStatus.getServerIP());
-                    Platform.runLater(() -> ApplicationManager.updateMainStageServers());
+                    ApplicationManager.updateMainStageServers();
                 }
             }
         });
@@ -425,12 +430,11 @@ public class LANClient extends Client {
     public boolean updateUser(User user) {
         try {
             //Update user information
-            System.out.println("request");
             if(this.user.update(user)) {
                 //Send new user to the server
-                System.out.println("updated");
-                ImageDownload imagedownload = new ImageDownload(user);
-                sendTCP(new ImageDownloadRequest(user.getIpAddress(), imagedownload.getPort()));
+                ImageDownload.queue(user);
+                //ImageDownload imagedownload = new ImageDownload(user);
+                //sendTCP(new ImageDownloadRequest(user.getIpAddress(), imagedownload.getPort()));
                 sendTCP(new UserupdateMessage(user));
                 return true;
             }
