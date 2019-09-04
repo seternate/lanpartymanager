@@ -10,10 +10,7 @@ import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Queue;
-import java.util.Stack;
-import java.util.concurrent.ArrayBlockingQueue;
 
 /**
  * {@code ImageDownload} handles the download of all {@code Images} served by the {@code LANServer}.

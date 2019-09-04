@@ -219,7 +219,6 @@ public class LANClient extends Client {
                     log.debug("Received a gamelist from the LANServer. IP-ADDRESS: " + serverStatus.getServerIP());
                     createGameStatus();
                     ImageDownload.waitDownloads();
-                    System.out.println(ImageDownload.isDownloading());
                     ApplicationManager.updateMainStageServers();
                     ApplicationManager.updateMainstageRoot();
                 }
