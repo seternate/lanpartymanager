@@ -113,6 +113,9 @@ public class GameOverlayController extends Controller{
         ivDownloadGame.addEventHandler(MouseEvent.MOUSE_EXITED, this::mouseExited);
         ivOpenExplorer.addEventHandler(MouseEvent.MOUSE_EXITED, this::mouseExited);
         ivStartServer.addEventHandler(MouseEvent.MOUSE_EXITED, this::mouseExited);
+        if(gameStatus.isDownloading() || gameStatus.isExtracting()){
+            ivDownloadGame.setImage(new Image(ClassLoader.getSystemResource("close.png").toString(), true));
+        }
         if(gameStatus.isLocal()){
             lblGamename.setTextFill(Paint.valueOf("black"));
             lblVersion.setTextFill(Paint.valueOf("black"));
@@ -209,7 +212,7 @@ public class GameOverlayController extends Controller{
             Tooltip.install(ivDownloadGame, new Tooltip("Download game"));
             spDownloadGame.setVisible(false);
             lblDownloadSpeed.setVisible(false);
-            if(ivDownloadGame.hoverProperty().get())
+            if(!ivDownloadGame.hoverProperty().get())
                 ivDownloadGame.setImage(new Image(ClassLoader.getSystemResource("serverdownload_mo.png").toString(), true));
             else
                 ivDownloadGame.setImage(new Image(ClassLoader.getSystemResource("serverdownload.png").toString(), true));
