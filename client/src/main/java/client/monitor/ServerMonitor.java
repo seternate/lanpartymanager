@@ -1,6 +1,7 @@
 package client.monitor;
 
 import client.LANClient;
+import main.LanClient;
 
 /**
  * {@code ServerMonitor} manages {@link GameProcess} if the server is running.
@@ -40,6 +41,7 @@ public class ServerMonitor extends Monitor{
         boolean removed;
         synchronized(this){
             removed = remove(gameprocess);
+            LanClient.client.getGameStatus(gameprocess.getGame()).setServerRunning(false);
         }
         if(removed)
             client.updateOpenServers();

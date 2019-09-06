@@ -86,7 +86,10 @@ public class GameOverlayController extends Controller{
         });
         ivStartServer.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
             if (game.isOpenServer() && event.getButton() == MouseButton.PRIMARY)
-                ApplicationManager.openServerStartup(game);
+                if(!gameStatus.isServerRunning())
+                    ApplicationManager.openServerStartup(game);
+                else
+                    getClient().stopServer(game);
             event.consume();
         });
         spDownloadGame.setVisible(false);
@@ -204,6 +207,25 @@ public class GameOverlayController extends Controller{
                 });
             }
         });
+        gameStatus.getServerRunningProperty().addListener(((observable, oldValue, newValue) -> {
+            if(newValue) {
+                Platform.runLater(() -> {
+                    if(ivStartServer.hoverProperty().get())
+                        ivStartServer.setImage(new Image(ClassLoader.getSystemResource("close_mo.png").toString(), true));
+                    else
+                        ivStartServer.setImage(new Image(ClassLoader.getSystemResource("close.png").toString(), true));
+                    Tooltip.install(ivStartServer, new Tooltip("Close server"));
+                });
+            } else {
+                Platform.runLater(() -> {
+                    if(ivStartServer.hoverProperty().get())
+                        ivStartServer.setImage(new Image(ClassLoader.getSystemResource("serverplay_mo.png").toString(), true));
+                    else
+                        ivStartServer.setImage(new Image(ClassLoader.getSystemResource("serverplay.png").toString(), true));
+                    Tooltip.install(ivStartServer, new Tooltip("Start a new server"));
+                });
+            }
+        }));
 
     }
 
@@ -240,8 +262,10 @@ public class GameOverlayController extends Controller{
                 imageView.setImage(new Image(ClassLoader.getSystemResource("close_mo.png").toString(), true));
             else if(imageView.equals(ivOpenExplorer))
                 imageView.setImage(new Image(ClassLoader.getSystemResource("folder_mo.png").toString(), true));
-            else if(imageView.equals(ivStartServer))
+            else if(imageView.equals(ivStartServer) && !gameStatus.isServerRunning())
                 imageView.setImage(new Image(ClassLoader.getSystemResource("serverplay_mo.png").toString(), true));
+            else if(imageView.equals(ivStartServer) && gameStatus.isServerRunning())
+                imageView.setImage(new Image(ClassLoader.getSystemResource("close_mo.png").toString(), true));
         }
     }
 
@@ -260,8 +284,10 @@ public class GameOverlayController extends Controller{
                 imageView.setImage(new Image(ClassLoader.getSystemResource("close.png").toString(), true));
             else if(imageView.equals(ivOpenExplorer))
                 imageView.setImage(new Image(ClassLoader.getSystemResource("folder.png").toString(), true));
-            else if(imageView.equals(ivStartServer))
+            else if(imageView.equals(ivStartServer) && !gameStatus.isServerRunning())
                 imageView.setImage(new Image(ClassLoader.getSystemResource("serverplay.png").toString(), true));
+            else if(imageView.equals(ivStartServer) && gameStatus.isServerRunning())
+                imageView.setImage(new Image(ClassLoader.getSystemResource("close.png").toString(), true));
         }
     }
 

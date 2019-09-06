@@ -1,10 +1,13 @@
 package controller;
 
 import entities.game.Game;
+import entities.user.User;
+import guielements.Notification;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.stage.WindowEvent;
+import javafx.scene.control.Label;
+import javafx.stage.Popup;
 import main.LanClient;
 import stages.*;
 
@@ -117,6 +120,12 @@ public class ApplicationManager {
 
     public static boolean isRunning(){
         return preloaderStage.isShowing() || (loginStage != null && loginStage.isShowing()) || (mainStage != null && mainStage.isShowing());
+    }
+
+    public static void openServerNotification(User user, Game game){
+        Platform.runLater(() -> {
+            new Notification(mainStage, user, game);
+        });
     }
 
 }

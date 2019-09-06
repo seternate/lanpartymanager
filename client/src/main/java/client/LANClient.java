@@ -26,6 +26,10 @@ import requests.ImageDownloadRequest;
 import requests.DownloadRequest;
 
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
@@ -332,12 +336,25 @@ public class LANClient extends Client {
             @Override
             public void received(Connection connection, Object object) {
                 if(object instanceof UserRunServerList){
+                    serverOpenNotification(runserverlist, (UserRunServerList)object);
                     runserverlist = (UserRunServerList)object;
                     log.info("Received a userrunserverlist from the LANServer.");
                     log.debug("Received a userrunserverlist from the LANServer. IP-ADDRESS: " + serverStatus.getServerIP());
                     ApplicationManager.updateMainStageServers();
                 }
             }
+        });
+    }
+
+    //TODO
+    private void serverOpenNotification(UserRunServerList oldList, UserRunServerList newList){
+        if(newList.size() == 0 || newList.size() <= oldList.size())
+            return;
+        newList.forEach((user, games) -> {
+            if(oldList.get(user) != null && games.size() > oldList.get(user).size())
+                ApplicationManager.openServerNotification(user, games.get(games.size() - 1));
+            else if(oldList.get(user) == null)
+                ApplicationManager.openServerNotification(user, games.get(0));
         });
     }
 
@@ -704,6 +721,7 @@ public class LANClient extends Client {
         try {
             gameprocess = startProcess(game, true, parameter);
             servermonitor.add(new GameProcess(game, gameprocess));
+            gamestatusList.get(game).setServerRunning(true);
         } catch (IOException e) {
             log.error("Can not start the server of the game '" + game + "'.", e);
             return false;
@@ -750,8 +768,11 @@ public class LANClient extends Client {
      * @since 1.0
      */
     public boolean stopGame(Game game){
-        gamestatusList.get(game).setRunning(false);
         return gamemonitor.stop(game);
+    }
+
+    public boolean stopServer(Game game){
+        return servermonitor.stop(game);
     }
 
     /**

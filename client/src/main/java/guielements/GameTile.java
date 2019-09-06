@@ -1,4 +1,4 @@
-package fxml;
+package guielements;
 
 import controller.Controller;
 import controller.GameOverlayController;

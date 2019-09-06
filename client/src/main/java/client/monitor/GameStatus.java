@@ -16,7 +16,7 @@ import java.util.Locale;
 public class GameStatus {
     private Game game;
     private boolean playable, version, update;
-    private BooleanProperty downloading, extracting, local, running;
+    private BooleanProperty downloading, extracting, local, running, serverRunning;
     private DoubleProperty downloadProgress, extractionProgress;
     private StringProperty downloadSpeed;
 
@@ -35,6 +35,7 @@ public class GameStatus {
         downloading = new SimpleBooleanProperty(false);
         extracting = new SimpleBooleanProperty(false);
         running = new SimpleBooleanProperty(false);
+        serverRunning = new SimpleBooleanProperty(false);
         downloadProgress = new SimpleDoubleProperty(0.);
         extractionProgress = new SimpleDoubleProperty(0.);
         downloadSpeed = new SimpleStringProperty("");
@@ -235,6 +236,18 @@ public class GameStatus {
 
     public BooleanProperty getRunningProperty(){
         return running;
+    }
+
+    public boolean isServerRunning(){
+        return serverRunning.get();
+    }
+
+    public void setServerRunning(boolean running){
+        this.serverRunning.set(running);
+    }
+
+    public BooleanProperty getServerRunningProperty(){
+        return serverRunning;
     }
 
     public Game getGame(){

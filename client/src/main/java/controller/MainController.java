@@ -15,7 +15,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
 import javafx.scene.layout.*;
 import javafx.scene.shape.Line;
-import fxml.GameTile;
+import guielements.GameTile;
 
 import java.util.HashMap;
 
