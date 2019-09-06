@@ -348,7 +348,7 @@ public class LANClient extends Client {
 
     //TODO
     private void serverOpenNotification(UserRunServerList oldList, UserRunServerList newList){
-        if(newList.size() == 0 || newList.size() <= oldList.size())
+        if(newList.size() == 0 || newList.size() < oldList.size())
             return;
         newList.forEach((user, games) -> {
             if(oldList.get(user) != null && games.size() > oldList.get(user).size())

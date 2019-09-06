@@ -14,14 +14,19 @@ import javafx.scene.paint.Paint;
 import javafx.stage.Popup;
 import javafx.stage.Screen;
 import javafx.stage.StageStyle;
+import javafx.stage.Window;
 import org.apache.log4j.Logger;
 import stages.Stage;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
 public class Notification extends Popup {
+
+    private static List<Notification> notifications = new ArrayList<>();
 
     private VBox root;
     private Controller controller;
@@ -37,7 +42,7 @@ public class Notification extends Popup {
             setHideOnEscape(true);
             getContent().add(root);
             setX(Screen.getPrimary().getVisualBounds().getWidth() - root.getPrefWidth() - 10);
-            setY(Screen.getPrimary().getVisualBounds().getHeight() - root.getPrefHeight() - 10);
+            setY(Screen.getPrimary().getVisualBounds().getHeight() - (root.getPrefHeight() + 10) * (notifications.size() + 1));
             show(owner);
             setTimer(5000);
             getScene().getStylesheets().add("popupstyle.css");
@@ -63,6 +68,24 @@ public class Notification extends Popup {
                 Platform.runLater(() -> hide());
             }
         }, start);
+    }
+
+    @Override
+    public void show(Window owner){
+        super.show(owner);
+        notifications.add(this);
+    }
+
+    @Override
+    public void hide(){
+        super.hide();
+        notifications.remove(this);
+        updatePositions();
+    }
+
+    private void updatePositions(){
+        for(int i = 0; i < notifications.size(); i++)
+            notifications.get(i).setY(Screen.getPrimary().getVisualBounds().getHeight() - (root.getPrefHeight() + 10) * (i + 1));
     }
 
 }

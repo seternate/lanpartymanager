@@ -42,7 +42,7 @@ public class NotificationController extends Controller {
 
     @FXML
     public void mouseClick(MouseEvent event){
-        if(event.getButton() == MouseButton.PRIMARY && getClient().getUserRunServer().get(user).contains(game)){
+        if(event.getButton() == MouseButton.PRIMARY && getClient().getUserRunServer().get(user) != null && getClient().getUserRunServer().get(user).contains(game)){
             getClient().connectServer(game, user.getIpAddress(), true);
         }
     }
