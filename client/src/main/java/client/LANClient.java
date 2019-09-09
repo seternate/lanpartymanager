@@ -346,7 +346,6 @@ public class LANClient extends Client {
         });
     }
 
-    //TODO
     private void serverOpenNotification(UserRunServerList oldList, UserRunServerList newList){
         if(newList.size() == 0 || newList.size() < oldList.size())
             return;
