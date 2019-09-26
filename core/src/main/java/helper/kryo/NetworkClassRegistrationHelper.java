@@ -5,6 +5,7 @@ import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Server;
 import entities.game.Game;
 import entities.game.GameList;
+import entities.game.serverparameters.*;
 import entities.settings.ClientSettings;
 import entities.user.User;
 import entities.user.UserList;
@@ -15,6 +16,7 @@ import requests.ImageDownloadRequest;
 import requests.DownloadRequest;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * {@code NetworkClassRegistrationHelper} handles the registration of the {@code Classes} to the {@link Client} and
@@ -66,6 +68,13 @@ public abstract class NetworkClassRegistrationHelper {
         kryo.register(UserlistMessage.class);
         kryo.register(UserupdateMessage.class);
         kryo.register(ArrayList.class);
+        kryo.register(ServerParameters.class);
+        kryo.register(ServerParameterNumber.class);
+        kryo.register(ServerParameterLiteral.class);
+        kryo.register(ServerParameterDropdown.class);
+        kryo.register(ServerParameterBoolean.class);
+        kryo.register(ServerParameterType.class);
+        kryo.register(HashMap.class);
     }
 
 }

@@ -1,6 +1,7 @@
 package stages;
 
 import controller.Controller;
+import controller.ServerDetailController;
 import controller.ServerStartController;
 import entities.game.Game;
 import javafx.fxml.FXMLLoader;
@@ -9,23 +10,22 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Modality;
 import javafx.stage.Screen;
-import javafx.stage.Stage;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.prefs.Preferences;
 
-public class ServerStartStage extends Stage {
+public class ServerDetailStage extends  Stage {
     private final static String ICON = "icon.png";
 
     private Controller controller;
 
 
-    public ServerStartStage(Game game){
+    public ServerDetailStage(Game game){
         FXMLLoader loader = new FXMLLoader(ClassLoader.getSystemResource(getFXML()));
         try {
-            loader.setController(new ServerStartController(game));
+            loader.setController(new ServerDetailController(game));
             Parent rootNode = loader.load();
             setScene(new Scene(rootNode));
         } catch (IOException e) {
@@ -40,8 +40,9 @@ public class ServerStartStage extends Stage {
             getLogger().warn("Could not load application icon.");
         setTitle("Server - Setup");
         initModality(Modality.APPLICATION_MODAL);
-        setMinHeight(250);
-        setMinWidth(300);
+        setHeight(275);
+        setWidth(350);
+        setResizable(false);
 
         //Windowsize recognition
         Preferences pref = Preferences.userRoot().node("ServerStartStage");
@@ -64,16 +65,13 @@ public class ServerStartStage extends Stage {
         });
     }
 
+    @Override
     public Logger getLogger() {
-        return Logger.getLogger(ServerStartStage.class);
+        return Logger.getLogger(ServerDetailStage.class);
     }
 
+    @Override
     public String getFXML() {
-        return "serverstart.fxml";
+        return "serverstart_detail.fxml";
     }
-
-    public Controller getController(){
-        return controller;
-    }
-
 }

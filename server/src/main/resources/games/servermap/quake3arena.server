@@ -1,0 +1,34 @@
+{
+	"parameters":[{
+		"name":"Dedicated",
+		"arg":"+set dedicated",
+		"type":"Boolean"
+	},
+	{
+		"name":"Host Name",
+		"arg":"+seta sv_hostname",
+		"type":"literal",
+		"standard":"Lan Server"
+	},
+	{
+		"name":"Gametype",
+		"arg":"+seta g_gametype",
+		"type":"dropdown",
+		"Deathmatch":"0",
+		"Team Deathmatch":"1"
+	},
+	{
+		"name":"Map",
+		"arg":"+map",
+		"type":"dropdown",
+		"Deathmatch League":"q3dm1"
+	},
+	{
+		"name":"Max. Clients",
+		"arg":"+seta sv_maxclients",
+		"type":"number",
+		"standard":16,
+		"lowerbound":0,
+		"upperbound":64
+	}]
+}

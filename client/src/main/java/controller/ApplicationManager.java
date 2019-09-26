@@ -6,8 +6,6 @@ import guielements.Notification;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.scene.control.Label;
-import javafx.stage.Popup;
 import main.LanClient;
 import stages.*;
 
@@ -21,6 +19,7 @@ public class ApplicationManager {
     private static SettingsStage settingsStage;
     private static UsersStage usersStage;
     private static OrderStage orderStage;
+    private static ServerDetailStage serverdetailstage;
     private static ServerStartStage serverstartstage;
 
 
@@ -99,8 +98,13 @@ public class ApplicationManager {
     }
 
     public static void openServerStartup(Game game){
-        serverstartstage = new ServerStartStage(game);
-        serverstartstage.show();
+        if(game.getServerParameters() == null) {
+            serverstartstage = new ServerStartStage(game);
+            serverstartstage.show();
+        } else {
+            serverdetailstage = new ServerDetailStage(game);
+            serverdetailstage.show();
+        }
     }
 
     public static void updateMainstageRoot(){
