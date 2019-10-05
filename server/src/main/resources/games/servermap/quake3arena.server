@@ -14,14 +14,40 @@
 		"name":"Gametype",
 		"arg":"+seta g_gametype",
 		"type":"dropdown",
-		"Deathmatch":"0",
-		"Team Deathmatch":"1"
+		"Free for all":"0",
+		"Tournament":"1",
+		"Team Deathmatch":"3",
+		"Capture the Flag":"4",
+		"One Flag CTF":"5"
 	},
 	{
 		"name":"Map",
 		"arg":"+map",
 		"type":"dropdown",
-		"Deathmatch League":"q3dm1"
+		"Introduction":"q3dm0",
+		"Arean Gate":"q3dm1",
+		"House of Pain":"q3dm2",
+		"Arena of Death":"q3dm3",
+        "Place of Many Deaths":"q3dm4",
+        "The Forgotten Place":"q3dm5",
+        "The Camping Grounds":"q3dm6",
+        "Temple of Retribution":"q3dm7",
+        "Brimstone Abbey":"q3dm8",
+        "Hero's Keep":"q3dm9",
+        "The Nameless Place":"q3dm10",
+        "Deva Station":"q3dm11",
+        "The Dredwerkz":"q3dm12",
+        "Lost World":"q3dm13",
+        "Grim Dungeons":"q3dm14",
+        "Demon Keep":"q3dm15",
+        "Bouncy Map":"q3dm16",
+        "The Longest Yard":"q3dm17",
+        "Space Chamber":"q3dm18",
+        "Apocalypse Void":"q3dm19",
+        "Dueling Keeps CTF":"q3ctf1",
+        "Troubled Waters CTF":"q3ctf2",
+        "The Stronghold CTF":"q3ctf3",
+        "Space CTF":"q3ctf4"
 	},
 	{
 		"name":"Max. Clients",
@@ -30,5 +56,13 @@
 		"standard":16,
 		"lowerbound":0,
 		"upperbound":64
+	},
+	{
+	    "name":"Weapon Respawn Time",
+	    "arg":"+seta g_weaponrespawn",
+	    "type":"number",
+	    "standard":5,
+	    "lowerbound":0,
+	    "upperbound":9999
 	}]
 }

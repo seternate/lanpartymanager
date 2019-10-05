@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.prefs.Preferences;
 
-public class ServerDetailStage extends  Stage {
+public class ServerDetailStage extends  javafx.stage.Stage {
     private final static String ICON = "icon.png";
 
     private Controller controller;
@@ -65,12 +65,10 @@ public class ServerDetailStage extends  Stage {
         });
     }
 
-    @Override
     public Logger getLogger() {
         return Logger.getLogger(ServerDetailStage.class);
     }
 
-    @Override
     public String getFXML() {
         return "serverstart_detail.fxml";
     }

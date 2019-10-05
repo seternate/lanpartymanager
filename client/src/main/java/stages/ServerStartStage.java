@@ -9,14 +9,13 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Modality;
 import javafx.stage.Screen;
-import javafx.stage.Stage;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.prefs.Preferences;
 
-public class ServerStartStage extends Stage {
+public class ServerStartStage extends javafx.stage.Stage {
     private final static String ICON = "icon.png";
 
     private Controller controller;
@@ -41,7 +40,7 @@ public class ServerStartStage extends Stage {
         setTitle("Server - Setup");
         initModality(Modality.APPLICATION_MODAL);
         setMinHeight(250);
-        setMinWidth(300);
+        setMinWidth(350);
 
         //Windowsize recognition
         Preferences pref = Preferences.userRoot().node("ServerStartStage");
