@@ -2,7 +2,7 @@
 	"parameters":[{
 		"name":"Dedicated",
 		"arg":"+set dedicated",
-		"type":"Boolean"
+		"type":"boolean"
 	},
 	{
 		"name":"Host Name",

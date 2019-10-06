@@ -1,0 +1,41 @@
+{
+	"parameters":[{
+		"name":"Dedicated",
+		"arg":"+set dedicated",
+		"type":"boolean"
+	},
+	{
+		"name":"Map",
+		"arg":"+map",
+		"type":"dropdown",
+		"Carentan":"mp_carentan",
+		"Beaumont-Hague":"mp_silotown",
+		"Beltot":"mp_farmhouse",
+		"Burgundy":"mp_burgundy",
+		"Caen":"mp_trainstation",
+		"El Alamein":"mp_decoy",
+		"Leningrad":"mp_leningrad",
+		"Matmata":"mp_matmata",
+		"Moscow":"mp_downtown",
+		"Newvillers":"mp_newvillers",
+		"St. Mere Eglise":"mp_dawnville",
+		"Toujane":"mp_toujane",
+		"Villers-Bocage":"mp_breakout"
+	},
+	{
+		"name":"Gametype",
+		"arg":"+g_gametype",
+		"type":"dropdown",
+		"Deathmatch":"dm",
+		"Team Deathmatch":"tdm",
+		"Capture the Flag":"ctf",
+		"Search and Destroy":"sd",
+		"Headquater":"hq"
+	},
+	{
+		"name":"Host Name",
+		"arg":"+sv_hostname",
+		"type":"literal",
+		"standard":"Lan Server"
+	}]
+}
