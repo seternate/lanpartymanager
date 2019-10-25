@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  * {@code GameList} handles {@link Game}.
@@ -54,7 +55,9 @@ public class GameList extends ArrayList<Game> {
             property.load(istream);
             istream.close();
             //Add properties to list
-            this.add(new Game(property));
+            Game game = new Game(property);
+            game.setServerParameter(fileProperty.getParent() + "/servermap/" + fileProperty.getName().split(Pattern.quote("."))[0] + ".server");
+            this.add(game);
         }
         //Throw a new exception if no properties files where found
         if(this.isEmpty())

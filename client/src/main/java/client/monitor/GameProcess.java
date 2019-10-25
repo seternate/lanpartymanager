@@ -1,6 +1,7 @@
 package client.monitor;
 
 import entities.game.Game;
+import main.LanClient;
 import org.apache.log4j.Logger;
 
 /**

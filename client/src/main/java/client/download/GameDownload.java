@@ -3,6 +3,7 @@ package client.download;
 import entities.game.Game;
 import entities.user.User;
 import helper.NetworkHelper;
+import main.LanClient;
 import org.apache.log4j.Logger;
 
 import java.io.DataInputStream;
@@ -136,6 +137,7 @@ public class GameDownload extends Thread {
      * @since 1.0
      */
     private void saveFile() throws IOException {
+        LanClient.client.getGameStatus(game).setDownloading(true);
         //Get filename
         String gamepath = this.gamepath + game.getServerFileName();
         //Open inputstream
@@ -146,8 +148,10 @@ public class GameDownload extends Thread {
         FileOutputStream fos = new FileOutputStream(gamepath, false);
         //Read game data
         //Check if download got canceled
-        if(stop)
+        if(stop){
+            LanClient.client.getGameStatus(game).setDownloading(false);
             return;
+        }
         log.info("Started download of '" + game + "' with a size of " + (double)Math.round((double)gamesize/10485.76)/100. + " MByte.");
         int read;
         long readSum = 0;
@@ -171,8 +175,10 @@ public class GameDownload extends Thread {
             downloadspeed = Math.round((double)read/((double)duration/1000000000.));
             //Set average speed in bytes/second
             averageDownloadspeed = Math.round((double)readSum/((double)durationSum/1000000000.));
+            LanClient.client.getGameStatus(game).setDownloadSpeed(getAverageDownloadspeed());
             //Set progress
             downloadprogress = (double)readSum/(double)gamesize;
+            LanClient.client.getGameStatus(game).setDownloadProgress(getDownloadprogress());
         } while(read > 0 && !stop);
         //Close all streams
         fos.close();
@@ -187,13 +193,16 @@ public class GameDownload extends Thread {
                 log.info("'" + file.getAbsolutePath() + "' was deleted due to interrupted download.");
             else
                 log.error("Can not delete '" + file.getAbsolutePath() + "' due to interrupted download.");
+            LanClient.client.getGameStatus(game).setDownloading(false);
             return;
         }
+        LanClient.client.getGameStatus(game).setDownloading(false);
         log.info("Download of '" + game + "' ended successfully - "
                 + (double)Math.round((double)getAverageDownloadspeed()/10485.76)/100. + " MByte/sec.");
 
         //Unzip downloaded game
         log.info("Start unzipping '" + game + "'.");
+        LanClient.client.getGameStatus(game).setExtracting(true);
         try {
             new SevenZipHelper(gamepath, this.gamepath, false, null, this).extract();
             log.info("Unzipping of '" + game + "' finished successfully.");
@@ -207,8 +216,10 @@ public class GameDownload extends Thread {
             else {
                 log.info("Deleted 7zip file of '" + game + "'.");
             }
+            LanClient.client.getGameStatus(game).setExtracting(false);
+            LanClient.client.getGameStatus(game).setLocal(game.isUptodate() == 0 || game.isUptodate() == -2 || game.isUptodate() == -3);
+            LanClient.client.getGameStatus(game).setPlayable(game.isUptodate() == 0 || game.isUptodate() == -2);
         }
-
     }
 
     /**
@@ -310,6 +321,7 @@ public class GameDownload extends Thread {
      * @since 1.0
      */
     void setUnzipprogress(double progress){
+        LanClient.client.getGameStatus(game).setExtractionProgress(progress);
         unzipprogress = progress;
     }
 

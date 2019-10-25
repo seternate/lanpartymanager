@@ -1,8 +1,11 @@
 package entities.game;
 
+import entities.game.serverparameters.ServerParameters;
 import helper.GameFolderHelper;
 import helper.GameInfoHelper;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Properties;
 
 /**
@@ -117,6 +120,7 @@ public class Game {
     private String name, versionServer, connectParam, exeFileRelative, coverUrl, serverFileName, param, exeServerRelative, serverParam;
     private boolean connectDirect, openServer;
     private Version version;
+    private ServerParameters serverParameters;
 
 
     /**
@@ -140,7 +144,7 @@ public class Game {
         exeFileRelative = parsePath(properties.getProperty("exe.file"));
         coverUrl = properties.getProperty("cover.url");
         serverFileName = properties.getProperty("file.server");
-        connectDirect = Boolean.valueOf(properties.getProperty("connect.direct"));
+        connectDirect = Boolean.parseBoolean(properties.getProperty("connect.direct"));
         //Determine and load version-information
         String versionFormat = properties.getProperty("version.format");
         switch(versionFormat){
@@ -157,7 +161,8 @@ public class Game {
         exeServerRelative = (properties.getProperty("exe.server")==null || properties.getProperty("exe.server").equals(""))
                 ? exeFileRelative : parsePath(properties.getProperty("exe.server"));
         serverParam = properties.getProperty("exe.server.param")==null ? "" : properties.getProperty("exe.server.param");
-        openServer = Boolean.valueOf(properties.getProperty("openserver"));
+        openServer = Boolean.parseBoolean(properties.getProperty("openserver"));
+        serverParameters = null;
     }
 
     /**
@@ -327,6 +332,10 @@ public class Game {
             return 0;
     }
 
+    public boolean delete(){
+        return GameFolderHelper.deleteGameFolder(this);
+    }
+
     /**
      * It checks for equal {@link #getName()}, {@link #getVersionServer()}, {@link #getConnectParam()},
      * {@link #getExeFileRelative()}, {@link #getCoverUrl()}, {@link #getServerFileName()}, {@link #isConnectDirect()},
@@ -367,6 +376,21 @@ public class Game {
     @Override
     public String toString(){
         return name;
+    }
+
+    public void setServerParameter(String serverMapFilePath){
+        File servermap = new File(serverMapFilePath);
+        if(!servermap.exists())
+            return;
+        try {
+            serverParameters = new ServerParameters(servermap);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public ServerParameters getServerParameters(){
+        return serverParameters;
     }
 
 }

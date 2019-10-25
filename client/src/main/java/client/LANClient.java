@@ -5,17 +5,13 @@ import client.download.GameDownload;
 import client.download.GameDownloadManager;
 import client.filedrop.FileDropClient;
 import client.filedrop.FileDropServer;
-import client.monitor.GameMonitor;
-import client.monitor.GameProcess;
-import client.monitor.Monitor;
-import client.monitor.ServerMonitor;
+import client.monitor.*;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
+import controller.ApplicationManager;
 import entities.game.Game;
 import entities.game.GameList;
-import entities.game.GameStatus;
-import entities.server.ServerStatus;
 import entities.settings.ClientSettings;
 import entities.user.User;
 import entities.user.UserList;
@@ -23,11 +19,17 @@ import entities.user.UserRunGamesList;
 import entities.user.UserRunServerList;
 import helper.GameFolderHelper;
 import helper.kryo.NetworkClassRegistrationHelper;
+import javafx.application.Platform;
 import message.*;
 import org.apache.log4j.Logger;
 import requests.ImageDownloadRequest;
 import requests.DownloadRequest;
 
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
@@ -42,7 +44,7 @@ import static java.lang.Thread.sleep;
  *     It handles the communication as an interface to the GUI and implements all needed back-end functionality.
  * </p>
  * @author Levin Jeck
- * @version 1.2
+ * @version 2.0
  * @since 1.0
  */
 public class LANClient extends Client {
@@ -53,14 +55,15 @@ public class LANClient extends Client {
     private FileDropServer fileDropServer;
     private GameDownloadManager gameDownloadManager;
     private ClientSettings settings;
-    private volatile ServerStatus serverStatus;
-    private volatile User user;
-    private volatile UserList users;
-    private volatile GameList games;
-    private volatile Monitor gamemonitor;
-    private volatile Monitor servermonitor;
-    private volatile UserRunGamesList rungameslist;
-    private volatile UserRunServerList runserverlist;
+    private ServerStatus serverStatus;
+    private User user;
+    private UserList users;
+    private GameList games;
+    private Monitor gamemonitor;
+    private Monitor servermonitor;
+    private UserRunGamesList rungameslist;
+    private UserRunServerList runserverlist;
+    private GameStatusList gamestatusList;
 
 
     /**
@@ -79,6 +82,7 @@ public class LANClient extends Client {
         gamemonitor = new GameMonitor(this);
         servermonitor = new ServerMonitor(this);
         serverStatus = new ServerStatus();
+        gamestatusList = new GameStatusList();
         users = new UserList();
         games = new GameList();
         //Register listener and classes to be send over KryoNet
@@ -160,17 +164,27 @@ public class LANClient extends Client {
         addListener(new Listener() {
             @Override
             public void connected(Connection connection) {
-                sendTCP(new LoginMessage(user));
-                sendTCP(new UserRunGameMessage(user, gamemonitor.getRunningProcesses()));
-                sendTCP(new UserRunServerMessage(user, servermonitor.getRunningProcesses()));
-                ImageDownload imagedownload = new ImageDownload(user);
-                sendTCP(new ImageDownloadRequest(user, imagedownload.getPort()));
+                ImageDownload.queue(user);
+                //ImageDownload imagedownload = new ImageDownload(user);
+                //sendTCP(new ImageDownloadRequest(user.getIpAddress(), imagedownload.getPort()));
                 serverStatus.setServerIP(connection.getRemoteAddressTCP().getAddress().getHostAddress());
                 serverStatus.connected();
+                if(serverStatus.wasConnected()){
+                    sendTCP(new LoginMessage(user));
+                    sendTCP(new UserRunGameMessage(user, gamemonitor.getRunningProcesses()));
+                    sendTCP(new UserRunServerMessage(user, servermonitor.getRunningProcesses()));
+                }
                 log.info("Successfully logged into the LANServer.");
                 log.debug("Successfully logged into the LANServer. IP-ADDRESS: " + serverStatus.getServerIP());
             }
         });
+    }
+
+    public void loginServer(String username, String gamepath){
+        updateUser(username, gamepath);
+        sendTCP(new LoginMessage(user));
+        sendTCP(new UserRunGameMessage(user, gamemonitor.getRunningProcesses()));
+        sendTCP(new UserRunServerMessage(user, servermonitor.getRunningProcesses()));
     }
 
     /**
@@ -188,7 +202,6 @@ public class LANClient extends Client {
                 serverStatus.disconnected();
                 log.info("Lost the connection to the LANServer.");
                 log.debug("Lost the connection to the LANServer. IP-ADDRESS: " + serverStatus.getServerIP());
-                serverStatus.setServerIP("");
                 connect();
             }
         });
@@ -208,9 +221,53 @@ public class LANClient extends Client {
                     games = message.games;
                     log.info("Received a gamelist from the LANServer.");
                     log.debug("Received a gamelist from the LANServer. IP-ADDRESS: " + serverStatus.getServerIP());
+                    createGameStatus();
+                    ImageDownload.waitDownloads();
+                    ApplicationManager.updateMainStageServers();
+                    ApplicationManager.updateMainstageRoot();
                 }
             }
         });
+    }
+
+    private void createGameStatus(){
+        for(int i = 0; i < games.size(); i++){
+            Game game = games.get(i);
+            GameStatus gamestatus = new GameStatus(game);
+            //Get uptodate state of the game
+            int uptodate = game.isUptodate();
+            switch(uptodate){
+                case -1: gamestatus.setLocal(false);
+                    break;
+                case -2: gamestatus.setPlayable(true);
+                    gamestatus.setVersion(false);
+                    gamestatus.setLocal(true);
+                    break;
+                case -3: gamestatus.setUpdate(true);
+                    gamestatus.setLocal(true);
+                    break;
+                case 0: gamestatus.setPlayable(true);
+                    gamestatus.setLocal(true);
+            }
+            //Check if game is running or not
+            gamestatus.setRunning(gamemonitor.getRunningProcesses().contains(game));
+            //Check if game is downloaded, else send games status
+            if(!gameDownloadManager.isDownloading(game)){
+                gamestatusList.add(gamestatus);
+                continue;
+            }
+            //Set download/unzip progress if downloading/unzipping
+            GameDownload gameDownload = gameDownloadManager.getDownload(game);
+            if(gameDownload.getDownloadprogress() < 1.){
+                gamestatus.setDownloading(true);
+                gamestatus.setDownloadProgress(gameDownload.getDownloadprogress());
+                gamestatus.setDownloadSpeed(gameDownload.getAverageDownloadspeed());
+            }else{
+                gamestatus.setExtracting(true);
+                gamestatus.setExtractionProgress(gameDownload.getUnzipprogress());
+            }
+            gamestatusList.add(gamestatus);
+        }
     }
 
     /**
@@ -225,6 +282,7 @@ public class LANClient extends Client {
                 if(object instanceof UserlistMessage){
                     UserlistMessage message = (UserlistMessage)object;
                     users = message.users;
+                    ApplicationManager.updateUsersStage();
                     log.info("Received a userlist from the LANServer.");
                     log.debug("Received a userlist from the LANServer. IP-ADDRESS: " + serverStatus.getServerIP());
                 }
@@ -260,6 +318,7 @@ public class LANClient extends Client {
             public void received(Connection connection, Object object) {
                 if(object instanceof UserRunGamesList){
                     rungameslist = (UserRunGamesList)object;
+                    ApplicationManager.updateUsersStage();
                     log.info("Received a userrungameslist from the LANServer.");
                     log.debug("Received a userrungameslist from the LANServer. IP-ADDRESS: " + serverStatus.getServerIP());
                 }
@@ -277,11 +336,24 @@ public class LANClient extends Client {
             @Override
             public void received(Connection connection, Object object) {
                 if(object instanceof UserRunServerList){
+                    serverOpenNotification(runserverlist, (UserRunServerList)object);
                     runserverlist = (UserRunServerList)object;
                     log.info("Received a userrunserverlist from the LANServer.");
                     log.debug("Received a userrunserverlist from the LANServer. IP-ADDRESS: " + serverStatus.getServerIP());
+                    ApplicationManager.updateMainStageServers();
                 }
             }
+        });
+    }
+
+    private void serverOpenNotification(UserRunServerList oldList, UserRunServerList newList){
+        if(newList.size() == 0 || newList.size() < oldList.size())
+            return;
+        newList.forEach((user, games) -> {
+            if(oldList.get(user) != null && games.size() > oldList.get(user).size())
+                ApplicationManager.openServerNotification(user, games.get(games.size() - 1));
+            else if(oldList.get(user) == null)
+                ApplicationManager.openServerNotification(user, games.get(0));
         });
     }
 
@@ -358,38 +430,7 @@ public class LANClient extends Client {
      * @since 1.0
      */
     public GameStatus getGameStatus(Game game){
-        GameStatus gamestatus = new GameStatus();
-        //Get uptodate state of the game
-        int uptodate = game.isUptodate();
-        switch(uptodate){
-            case -1: gamestatus.setLocal(false);
-                     break;
-            case -2: gamestatus.setPlayable(true);
-                     gamestatus.setVersion(false);
-                     gamestatus.setLocal(true);
-                     break;
-            case -3: gamestatus.setUpdate(true);
-                     gamestatus.setLocal(true);
-                     break;
-            case 0: gamestatus.setPlayable(true);
-                    gamestatus.setLocal(true);
-        }
-        //Check if game is running or not
-        gamestatus.setRunning(gamemonitor.getRunningProcesses().contains(game));
-        //Check if game is downloaded, else send games status
-        if(!gameDownloadManager.isDownloading(game))
-            return gamestatus;
-        //Set download/unzip progress if downloading/unzipping
-        GameDownload gameDownload = gameDownloadManager.getDownload(game);
-        if(gameDownload.getDownloadprogress() < 1.){
-            gamestatus.setDownloading(true);
-            gamestatus.setDownloadProgress(gameDownload.getDownloadprogress());
-            gamestatus.setDownloadSpeed(gameDownload.getAverageDownloadspeed()/1048576 + " MB/sec");
-        }else{
-            gamestatus.setExtracting(true);
-            gamestatus.setExtractionProgress(gameDownload.getUnzipprogress());
-        }
-        return gamestatus;
+        return gamestatusList.get(game);
     }
 
     /**
@@ -406,8 +447,9 @@ public class LANClient extends Client {
             //Update user information
             if(this.user.update(user)) {
                 //Send new user to the server
-                ImageDownload imagedownload = new ImageDownload(user);
-                sendTCP(new ImageDownloadRequest(user, imagedownload.getPort()));
+                ImageDownload.queue(user);
+                //ImageDownload imagedownload = new ImageDownload(user);
+                //sendTCP(new ImageDownloadRequest(user.getIpAddress(), imagedownload.getPort()));
                 sendTCP(new UserupdateMessage(user));
                 return true;
             }
@@ -415,6 +457,13 @@ public class LANClient extends Client {
             log.warn("Could not updated user information.", e);
         }
         return false;
+    }
+
+    public boolean updateUser(String username, String gamepath){
+        User user = new User(getUser());
+        user.setUsername(username);
+        user.setGamepath(gamepath);
+        return updateUser(user);
     }
 
     /**
@@ -451,6 +500,7 @@ public class LANClient extends Client {
         }
         //Start the download and extraction of the gamefile
         download.start();
+        gamestatusList.get(game).setDownloading(true);
         return 0;
     }
 
@@ -542,6 +592,7 @@ public class LANClient extends Client {
             gamemonitor.add(new GameProcess(game, gameprocess));
             if(!game.isOpenServer() && game.isConnectDirect())
                 servermonitor.add(new GameProcess(game, gameprocess));
+            gamestatusList.get(game).setRunning(true);
         } catch (Exception e) {
             log.error("Can not launch the game '" + game + "'.", e);
             return false;
@@ -622,6 +673,7 @@ public class LANClient extends Client {
             String connectparameter = game.getConnectParam().replace("?", ip);
             gameprocess = startProcess(game, false, game.getParam(), connectparameter);
             gamemonitor.add(new GameProcess(game, gameprocess));
+            gamestatusList.get(game).setRunning(true);
         } catch (IOException e) {
             log.error("Can not connect the game '" + game + "' to '" + ip + "'.", e);
             return false;
@@ -668,6 +720,7 @@ public class LANClient extends Client {
         try {
             gameprocess = startProcess(game, true, parameter);
             servermonitor.add(new GameProcess(game, gameprocess));
+            gamestatusList.get(game).setServerRunning(true);
         } catch (IOException e) {
             log.error("Can not start the server of the game '" + game + "'.", e);
             return false;
@@ -684,6 +737,8 @@ public class LANClient extends Client {
      */
     public boolean stopDownloadUnzip(Game game){
         gameDownloadManager.getDownload(game).stopDownloadUnzip();
+        gamestatusList.get(game).setDownloading(false);
+        gamestatusList.get(game).setExtracting(false);
         sendTCP(new DownloadStopMessage(user, game));
         return true;
     }
@@ -713,6 +768,10 @@ public class LANClient extends Client {
      */
     public boolean stopGame(Game game){
         return gamemonitor.stop(game);
+    }
+
+    public boolean stopServer(Game game){
+        return servermonitor.stop(game);
     }
 
     /**

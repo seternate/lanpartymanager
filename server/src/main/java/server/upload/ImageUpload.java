@@ -13,7 +13,7 @@ import java.net.Socket;
  * {@code ImageUpload} handles the upload of all {@code Images} served by the {@code LANServer}.
  *
  * @author Levin Jeck
- * @version 1.0
+ * @version 2.0
  * @since 1.0
  */
 public class ImageUpload extends Thread {
@@ -23,7 +23,6 @@ public class ImageUpload extends Thread {
     private String ipaddress;
     private File imagepath;
     private int port;
-    private User user;
 
 
     /**
@@ -33,14 +32,12 @@ public class ImageUpload extends Thread {
      * </p>
      *
      * @param port port, opened by the {@code user}
-     * @param user {@link User}, who requested the upload of the {@code Images}
      * @param imagepath path of the images
      * @since 1.0
      */
-    public ImageUpload(int port, User user, File imagepath){
-        this.ipaddress = user.getIpAddress();
+    public ImageUpload(int port, String ip, File imagepath){
+        this.ipaddress = ip;
         this.port = port;
-        this.user = user;
         this.imagepath = imagepath;
         //Open socket
         try {
@@ -60,8 +57,7 @@ public class ImageUpload extends Thread {
         try {
             sendImages();
         } catch (Exception e) {
-            log.error("Error while sending the images to '" + user + "' : "
-                    + ipaddress + ".", e);
+            log.error("Error while sending the images to '" + ipaddress + "'.", e);
         }
     }
 
@@ -100,7 +96,7 @@ public class ImageUpload extends Thread {
         //Close all open streams
         dos.close();
         socket.close();
-        log.info("Sent all images successfully to '" + user + "'.");
+        log.info("Sent all images successfully to '" + ipaddress + "'.");
     }
 
 }

@@ -73,4 +73,16 @@ public abstract class GameFolderHelper {
         return getGameFolder(game.getExeFileRelative());
     }
 
+    public static boolean deleteGameFolder(Game game){
+        return deleteDirectory(new File(getGameFolder(game)));
+    }
+
+    private static boolean deleteDirectory(File directory){
+        File[] files = directory.listFiles();
+        if(files != null)
+            for(File file : files)
+                deleteDirectory(file);
+        return directory.delete();
+    }
+
 }

@@ -5,6 +5,7 @@ import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
 import entities.game.Game;
 import entities.game.GameList;
+import entities.game.serverparameters.ServerParameter;
 import entities.settings.ServerSettings;
 import entities.settings.Settings;
 import entities.user.User;
@@ -29,7 +30,7 @@ import java.util.*;
  * {@code LANServer} manages all the communication with the {@code LANClient} and the game organisation.
  *
  * @author Levin Jeck
- * @version 1.0
+ * @version 2.0
  * @since 1.0
  */
 public class LANServer extends Server {
@@ -110,6 +111,7 @@ public class LANServer extends Server {
                 System.exit(-5);
             }
         });
+
     }
 
     /**
@@ -467,17 +469,8 @@ public class LANServer extends Server {
             public void received(Connection connection, Object object) {
                 if(object instanceof ImageDownloadRequest){
                     ImageDownloadRequest request = (ImageDownloadRequest)object;
-                    //Check if the user is logged in and sends the game files to the user
-                    if(!users.containsKey(connection.getID())) {
-                        log.warn("Connection: " + connection.getID() + " - is not logged in and tried to " +
-                                "download all game covers.");
-                        //Send an error message to the user
-                        connection.sendTCP(new ErrorMessage(ErrorMessage.userNotLoggedIn));
-                    } else {
-                        //Send covers to the user
-                        new ImageUpload(request.port, users.get(connection.getID()), new File(gamedirectory, "images"));
-                    }
-
+                    //Send covers to the user
+                    new ImageUpload(request.port, request.ip, new File(gamedirectory, "images"));
                 }
             }
         });
