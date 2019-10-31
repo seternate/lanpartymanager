@@ -1,0 +1,79 @@
+{
+	"parameters":[{
+		"name":"Map",
+		"arg":"",
+		"type":"dropdown",
+		"Coliseum":"DM-Coliseum.run",
+		"Hel":"DM-Hel.run",
+		"Acid Chamber":"DM-AcidChamber.run",
+		"Hildir":"DM-Hildir.run",
+		"Lava Pit":"DM-LavaPit.run",
+		"Ruins":"DM-Ruins.run",
+		"Thorstadt":"DM-Thorstadt.run"
+	},
+	{
+	    "name":"Gametype",
+	    "arg":"Game=",
+	    "type":"dropdown",
+	    "Deathmatch":"RuneI.RuneMultiplayer",
+	    "Team Deathmatch":"RuneI.Teamgame"
+	},
+	{
+		"name":"Server Name",
+		"arg":"ServerName=",
+		"type":"literal",
+		"standard":"Lan Server"
+	},
+	{
+        "name":"Frag Limit",
+        "arg":"fraglimit=",
+        "type":"number",
+        "standard":100,
+        "upperbound":9999,
+        "lowerbound":0
+    },
+    {
+        "name":"Time Limit",
+        "arg":"TimeLimit=",
+        "type":"number",
+        "standard":0,
+        "upperbound":9999,
+        "lowerbound":0
+    },
+    {
+        "name":"Game Speed",
+        "arg":"GameSpeed=",
+        "type":"literal",
+        "standard":"1.00000"
+    },
+    {
+        "name":"Max Player",
+        "arg":"MaxPlayers=",
+        "type":"number",
+        "standard":16,
+        "upperbound":512,
+        "lowerbound":0
+    },
+    {
+        "name":"Auto Pickup",
+        "arg":"bAutoPickup=",
+        "type":"boolean"
+    },
+    {
+        "name":"Harcore",
+        "arg":"bHardCoreMode=",
+        "type":"boolean"
+    },
+    {
+        "name":"Mega Speed",
+        "arg":"bMegaSpeed=",
+        "type":"boolean"
+    },
+    {
+        "name":"Mutator",
+        "arg":"Mutator=",
+        "type":"dropdown",
+        "Fatboy":"RuneI.MutatorFatboy -server -lanplay",
+        "Low Gravity":"RuneI.MutatorLowGrav -server -lanplay"
+    }]
+}

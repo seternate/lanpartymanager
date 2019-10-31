@@ -1,0 +1,66 @@
+{
+	"parameters":[{
+		"name":"Dedicated",
+		"arg":"+spawnServer +seta net_serverDedicated",
+		"type":"boolean"
+	},
+	{
+		"name":"Map",
+		"arg":"+seta si_map",
+		"type":"dropdown",
+        "Keeper Gravity":"game/dmescher",
+        "Switch Gravity":"game/dmescher2",
+        "Gravity Lab":"game/dmgravitylab_6",
+        "Space Oddity":"game/planes_4",
+        "Roadhouse":"game/dmroadhouse",
+        "Salvage Walk":"game/dmsalvagewalk",
+        "Shuttle 1":"game/dmshuttle1",
+        "Shuttle 2":"game/dmshuttle2",
+        "Spindle Spheres":"game/dmsphere",
+        "Topillogical":"game/dmtopillogical_4",
+        "Tunnel Rat":"game/dmtunnelrat_8",
+        "Bio-Walk":"game/dmwallwalk2"
+	},
+	{
+		"name":"Gametype",
+		"arg":"+seta si_gametype",
+		"type":"dropdown",
+		"Deathmatch":"deathmatch",
+		"Team Deathmatch":"Team DM"
+	},
+	{
+		"name":"Server Name",
+		"arg":"+seta si_name",
+		"type":"literal",
+		"standard":"Lan Server"
+	},
+	{
+	    "name":"LAN Server",
+	    "arg":"+seta net_LANServer",
+	    "type":"boolean"
+	},
+	{
+	    "name":"Max Player",
+	    "arg":"+seta si_maxPlayers",
+	    "type":"number",
+	    "standard":16,
+	    "upperbound":999,
+	    "lowerbound":0
+	},
+	{
+        "name":"Frag Limit",
+        "arg":"+seta si_fragLimit",
+        "type":"number",
+        "standard":50,
+        "upperbound":9999,
+        "lowerbound":0
+    },
+    {
+        "name":"Time Limit",
+        "arg":"+seta si_timeLimit",
+        "type":"number",
+        "standard":20,
+        "upperbound":9999,
+        "lowerbound":0
+    }]
+}

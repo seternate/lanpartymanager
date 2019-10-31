@@ -3,43 +3,54 @@
 		"name":"Map",
 		"arg":"server",
 		"type":"dropdown",
-		"Carentan":"mp_carentan",
-		"Beaumont-Hague":"mp_silotown",
-		"Beltot":"mp_farmhouse",
-		"Burgundy":"mp_burgundy",
-		"Caen":"mp_trainstation",
-		"El Alamein":"mp_decoy",
-		"Leningrad":"mp_leningrad",
-		"Matmata":"mp_matmata",
-		"Moscow":"mp_downtown",
-		"Newvillers":"mp_newvillers",
-		"St. Mere Eglise":"mp_dawnville",
-		"Toujane":"mp_toujane",
-		"Villers-Bocage":"mp_breakout"
+		"Biotics Lab":"KF-BioticsLab.rom",
+		"Farm":"KF-Farm.rom",
+		"Manor":"KF-Manor.rom",
+		"Menu":"KF-Menu.rom",
+		"Offices":"KF-Offices.rom",
+		"West London":"KF-WestLondon.rom"
 	},
 	{
 		"name":"Gametype",
-		"arg":"+g_gametype",
+		"arg":"game=",
 		"type":"dropdown",
-		"Deathmatch":"dm",
-		"Team Deathmatch":"tdm",
-		"Capture the Flag":"ctf",
-		"Search and Destroy":"sd",
-		"Headquater":"hq"
+		"Campaign-Zombie":"KFmod.KFGameType"
 	},
 	{
-		"name":"Host Name",
-		"arg":"+sv_hostname",
+		"name":"Server Name",
+		"arg":"ServerName=",
 		"type":"literal",
 		"standard":"Lan Server"
 	},
 	{
-        "name":"Teambeschuss",
-        "arg":"+scr_friendlyfire",
+        "name":"Difficulty",
+        "arg":"Difficulty=",
         "type":"dropdown",
-        "Aus":"0",
-        "An":"1",
-        "Reflektiert":"2",
-        "Geteilt":"3"
+        "Beginner":"1.0",
+        "Normal":"2.0",
+        "Hard":"4.0",
+        "Suicidal":"5.0",
+        "Hell on Earth":"7.0"
+    },
+    {
+        "name":"Spiellänge",
+        "arg":"KFGameLength=",
+        "type":"dropdown",
+        "Short [4 Waves]":"0",
+        "Normal [7 Waves]":"1",
+        "Long [10 Waves]":"2"
+    },
+    {
+        "name":"Max Players",
+        "arg":"MaxPlayers",
+        "type":"number",
+        "standard":16,
+        "lowerbound":0,
+        "upperbound":32
+    },
+    {
+        "name":"VAC Secure",
+        "arg":"VACSecured",
+        "type":"boolean"
     }]
 }

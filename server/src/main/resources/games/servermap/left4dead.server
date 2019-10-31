@@ -1,0 +1,54 @@
+{
+	"parameters":[{
+		"name":"Dedicated",
+		"arg":"+sv_lan",
+		"type":"boolean"
+	},
+	{
+		"name":"Map",
+		"arg":"+map",
+		"type":"dropdown",
+		"Airport 1: Greenhouse":"l4d_airport01_greenhouse",
+		"Airport 2: Offices":"l4d_airport02_offices",
+		"Airport 3: Garage":"l4d_airport03_garage",
+		"Airport 4: Terminal":"l4d_airport04_terminal",
+		"Airport 5: Runway":"l4d_airport05_runway",
+		"Farm 1: Hilltop":"l4d_farm01_hilltop",
+		"Farm 2: Traintunnel":"l4d_farm02_traintunnel",
+		"Farm 3: Bridge":"l4d_farm03_bridge",
+		"Farm 4: Barn":"l4d_farm04_barn",
+		"Farm 5: Cornfield":"l4d_farm05_cornfield",
+		"Hospital 1: Apartment":"l4d_hospital01_apartment",
+		"Hospital 2: Subway":"l4d_hospital02_subway",
+		"Hospital 3: Sewers":"l4d_hospital03_sewers",
+		"Hospital 4: Interior":"l4d_hospital04_interior",
+		"Hospital 5: Rooftop":"l4d_hospital05_rooftop",
+		"Smalltown 1: Caves":"l4d_smalltown01_caves",
+		"Smalltown 2: Drainage":"l4d_smalltown02_drainage",
+		"Smalltown 3: Ranchhouse":"l4d_smalltown03_ranchhouse",
+		"Smalltown 4: Mainstreet":"l4d_smalltown04_mainstreet",
+		"Smalltown 5: Houseboat":"l4d_smalltown05_houseboat"
+	},
+	{
+		"name":"Gametype",
+		"arg":"+mp_gamemode",
+		"type":"dropdown",
+		"Coop":"coop",
+		"Versus":"versus",
+		"Survival":"survival"
+	},
+	{
+		"name":"Difficulty",
+		"arg":"+z_difficulty",
+		"type":"dropdown",
+		"Easy":"easy",
+		"Normal":"normal",
+		"Advanced":"advanced",
+		"Expert":"expert"
+	},
+	{
+    	"name":"Only lobby connect",
+    	"arg":"+sv_allow_lobby",
+    	"type":"boolean"
+    }]
+}
