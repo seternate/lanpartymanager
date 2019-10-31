@@ -1,12 +1,7 @@
 {
 	"parameters":[{
-		"name":"Dedicated",
-		"arg":"+set dedicated",
-		"type":"boolean"
-	},
-	{
 		"name":"Map",
-		"arg":"+map",
+		"arg":"server",
 		"type":"dropdown",
 		"Carentan":"mp_carentan",
 		"Beaumont-Hague":"mp_silotown",
