@@ -2,5 +2,3 @@ rootProject.name = 'lanpartymanager'
 include 'core'
 include 'client'
 include 'server'
-include 'fxapplication'
-

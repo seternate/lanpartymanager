@@ -1,0 +1,31 @@
+{
+	"parameters":[{
+		"name":"Dedicated",
+		"arg":"+set dedicated",
+		"type":"boolean"
+	},
+	{
+		"name":"Map",
+		"arg":"+map",
+		"type":"dropdown",
+		"Ambush":"mp_convoy",
+		"Backlot":"mp_backlot",
+		"Bloc":"mp_bloc",
+		"Bog":"mp_bog",
+		"Broadcast":"mp_broadcast",
+		"Chinatown":"mp_carentan",
+		"Crash":"mp_crash",
+		"Creek":"mp_creek",
+		"Crossfire":"mp_crossfire",
+		"District":"mp_citystreets",
+		"Downpour":"mp_farm",
+		"Killhouse":"mp_killhouse",
+		"Overgrown":"mp_overgrown",
+		"Pipeline":"mp_pipeline",
+		"Shipment":"mp_shipment",
+		"Showdown":"mp_showdown",
+		"Strike":"mp_strike",
+		"Vacant":"mp_vacant",
+		"Wet Work":"mp_cargoship"
+	}]
+}
