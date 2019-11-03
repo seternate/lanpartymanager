@@ -5,7 +5,6 @@ import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
 import entities.game.Game;
 import entities.game.GameList;
-import entities.game.serverparameters.ServerParameter;
 import entities.settings.ServerSettings;
 import entities.settings.Settings;
 import entities.user.User;
@@ -15,16 +14,16 @@ import entities.user.UserRunServerList;
 import helper.kryo.NetworkClassRegistrationHelper;
 import message.*;
 import org.apache.log4j.Logger;
-import requests.ImageDownloadRequest;
 import requests.DownloadRequest;
-import server.upload.ImageUpload;
+import requests.ImageDownloadRequest;
 import server.upload.GameUpload;
 import server.upload.GameUploadManager;
+import server.upload.ImageUpload;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.BindException;
-import java.util.*;
+import java.util.List;
 
 /**
  * {@code LANServer} manages all the communication with the {@code LANClient} and the game organisation.
@@ -63,7 +62,7 @@ public class LANServer extends Server {
      * @since 1.0
      */
     public LANServer(File gamedirectory){
-        super();
+        super(65535, 65535);
         users = new UserList();
         gameuploadmanager = new GameUploadManager();
         userrungames = new UserRunGamesList();
