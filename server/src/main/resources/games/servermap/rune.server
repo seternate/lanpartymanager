@@ -60,7 +60,7 @@
         "type":"boolean"
     },
     {
-        "name":"Harcore",
+        "name":"Hardcore",
         "arg":"bHardCoreMode=",
         "type":"boolean"
     },

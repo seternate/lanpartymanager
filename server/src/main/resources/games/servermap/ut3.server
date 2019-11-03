@@ -1,0 +1,93 @@
+{
+	"parameters":[{
+		"name":"Map",
+		"arg":"server",
+		"type":"dropdown",
+		"Strident":"CTF-Strident",
+		"Omicron Dawn":"CTF-OmicronDawn",
+		"Coret":"CTF-Coret",
+		"Reflection":"CTF-Reflection",
+		"Hydrosis":"CTF-Hydrosis",
+		"Vertebrae":"CTF-Vertebrae",
+		"Arsenal":"DM-Arsenal",
+		"Rising Sun":"DM-RisingSun",
+		"Carbon Fire":"DM-CarbonFire",
+		"Deck":"DM-Deck",
+		"Defiance":"DM-Defiance",
+		"Deimos":"DM-Deimos",
+		"Diesel":"DM-Diesel",
+		"Biohazard":"DM-Biohazard",
+		"HeatRay":"DM-HeatRay",
+		"Gateway":"DM-Gateway",
+		"Fearless":"DM-Fearless",
+		"Sentinel":"DM-Sentinel",
+		"Shangri La":"DM-ShangriLa",
+		"Sanctuary":"DM-Sanctuary",
+		"Tank Crossing":"WAR-TankCrossing",
+		"Downtown":"WAR-Downtown",
+		"Sinkhole":"WAR-Sinkhole",
+		"Dusk":"WAR-Dusk",
+		"Islander":"WAR-Islander",
+		"Market District":"WAR-MarketDistrict",
+		"Onyx Coast":"WAR-OnyxCoast",
+		"Power Surge":"WAR-PowerSurge",
+		"Serenity":"WAR-Serenity",
+		"Serenity Necris":"WAR-Serenity_Necris",
+		"Floodgate":"WAR-Floodgate",
+		"Avalanche":"WAR-Avalanche",
+		"Torlan":"WAR-Torlan",
+		"Torlan Necris":"WAR-Torlan_Necris"
+	},
+	{
+	    "name":"Gametype",
+	    "arg":"Game=",
+	    "type":"dropdown",
+	    "Deathmatch":"UTGame.UTDeathmatch",
+	    "Team Deathmatch":"UTGame.UTTeamGame",
+	    "Capture the Flag":"UTGame.UTCTFGame"
+	},
+	{
+		"name":"Server Name",
+		"arg":"ServerName=",
+		"type":"literal",
+		"standard":"Lan Server"
+	},
+	{
+        "name":"Frag Limit",
+        "arg":"GoalScore=",
+        "type":"number",
+        "standard":100,
+        "upperbound":9999,
+        "lowerbound":0
+    },
+    {
+        "name":"Time Limit",
+        "arg":"TimeLimit=",
+        "type":"number",
+        "standard":0,
+        "upperbound":9999,
+        "lowerbound":0
+    },
+    {
+        "name":"Game Speed",
+        "arg":"GameSpeed=",
+        "type":"literal",
+        "standard":"1.00000"
+    },
+    {
+        "name":"Max Player",
+        "arg":"MaxPlayers=",
+        "type":"number",
+        "standard":16,
+        "upperbound":512,
+        "lowerbound":0
+    },
+    {
+        "name":"Mutator",
+        "arg":"Mutator=",
+        "type":"dropdown",
+        "InstaGib":"UTMutator_Instagib",
+        "Low Gravity":"UTMutator_LowGrav",
+        "Big Head":"UTMutator_BigHead"
+    }]
+}

@@ -1,0 +1,121 @@
+{
+	"parameters":[{
+		"name":"Map",
+		"arg":"server",
+		"type":"dropdown",
+		"Frigate [AS]":"AS-Frigate.unr",
+		"Guardia [AS]":"AS-Guardia.unr",
+		"Hi Speed [AS]":"AS-HiSpeed.unr",
+		"Mazon [AS]":"AS-Mazon.unr",
+		"Ocean Floor [AS]":"AS-OceanFloor.unr",
+		"Overlord [AS]":"AS-Overlord.unr",
+		"Rook [AS]":"AS-Rook.unr",
+		"Command [CTF]":"CTF-Command.unr",
+		"Coret [CTF]":"CTF-Coret.unr",
+		"Dreary [CTF]":"CTF-Dreary.unr",
+		"Eternal Cave [CTF]":"CTF-EternalCave.unr",
+		"Face [CTF]":"CTF-Face.unr",
+		"Gauntlet [CTF]":"CTF-Gauntlet.unr",
+		"Lava Giant [CTF]":"CTF-LavaGiant.unr",
+		"Niven [CTF]":"CTF-Niven.unr",
+		"November [CTF]":"CTF-November.unr",
+		"Barricade":"DM-Barricade.unr",
+		"Codex":"DM-Codex.unr",
+		"Conveyor":"DM-Conveyor.unr",
+		"Curse":"DM-Curse][.unr",
+		"Deck":"DM-Deck16][.unr",
+		"Fetid":"DM-Fetid.unr",
+		"Fractal":"DM-Fractal.unr",
+		"Gothic":"DM-Gothic.unr",
+		"Grinder":"DM-Grinder.unr",
+		"Hyperblast":"DM-HyperBlast.unr",
+		"Galleon":"DM-KGalleon.unr",
+		"Liandri":"DM-Liandri.unr",
+		"Morbias":"DM-Morbias][.unr",
+		"Morpheus":"DM-Morpheus.unr",
+		"Oblivion":"DM-Oblivion.unr",
+		"Peak":"DM-Peak.unr",
+		"Phobos":"DM-Phobos.unr",
+		"Pressure":"DM-Pressure.unr",
+		"Pyramid":"DM-Pyramid.unr",
+		"Stalwart":"DM-Stalwart.unr",
+		"Stalwart XL":"DM-StalwartXL.unr",
+		"Tempest":"DM-Tempest.unr",
+		"Turbine":"DM-Turbine.unr",
+		"Zeto":"DM-Zeto.unr",
+		"Cinder [DOM]":"DOM-Cinder.unr",
+		"Condemned [DOM]":"DOM-Condemned.unr",
+		"Cryptic [DOM]":"DOM-Cryptic.unr",
+		"Gearbolt [DOM]":"DOM-Gearbolt.unr",
+		"Ghardhen [DOM]":"DOM-Ghardhen.unr",
+		"Lament [DOM]":"DOM-Lament.unr",
+		"Leadworks [DOM]":"DOM-Leadworks.unr",
+		"Metal Dream [DOM]":"DOM-MetalDream.unr",
+		"Olden [DOM]":"DOM-Olden.unr",
+		"Sesmar [DOM]":"DOM-Sesmar.unr"
+	},
+	{
+	    "name":"Gametype",
+	    "arg":"Game=",
+	    "type":"dropdown",
+	    "Deathmatch":"Botpack.DeathMatchPlus",
+	    "Team Deathmatch":"Botpack.TeamGamePlus",
+	    "Capture the Flag":"Botpack.CTFGame",
+	    "Domination":"Botpack.Domination",
+	    "Assault":"Botpack.Assault"
+	},
+	{
+		"name":"Server Name",
+		"arg":"ServerName=",
+		"type":"literal",
+		"standard":"Lan Server"
+	},
+	{
+        "name":"Frag Limit",
+        "arg":"FragLimit=",
+        "type":"number",
+        "standard":100,
+        "upperbound":9999,
+        "lowerbound":0
+    },
+    {
+        "name":"Time Limit",
+        "arg":"TimeLimit=",
+        "type":"number",
+        "standard":0,
+        "upperbound":9999,
+        "lowerbound":0
+    },
+    {
+        "name":"Game Speed",
+        "arg":"GameSpeed=",
+        "type":"literal",
+        "standard":"1.00000"
+    },
+    {
+        "name":"Max Player",
+        "arg":"MaxPlayers=",
+        "type":"number",
+        "standard":16,
+        "upperbound":512,
+        "lowerbound":0
+    },
+    {
+        "name":"Hardcore",
+        "arg":"bHardCoreMode=",
+        "type":"boolean"
+    },
+    {
+        "name":"Mega Speed",
+        "arg":"bMegaSpeed=",
+        "type":"boolean"
+    },
+    {
+        "name":"Mutator",
+        "arg":"Mutator=",
+        "type":"dropdown",
+        "InstaGib":"BotPack.InstaGibDM",
+        "Low Gravity":"BotPack.LowGrav",
+        "Chainsaw Meele":"BotPack.ChainsawMelee"
+    }]
+}
