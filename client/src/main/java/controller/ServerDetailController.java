@@ -70,11 +70,11 @@ public class ServerDetailController extends Controller {
     }
 
     private Node initLiteral(ServerParameterLiteral parameter){
-        return new TextField(parameter.getStandard());
+        return new TextField(parameter.getArgValue());
     }
 
     private Node initNumber(ServerParameterNumber parameter){
-        return new TextField(parameter.getStandard());
+        return new TextField(parameter.getArgValue());
     }
 
     private Node initBoolean(ServerParameterBoolean paramter){
@@ -94,21 +94,28 @@ public class ServerDetailController extends Controller {
     public void startServer(){
         StringBuilder parameters = new StringBuilder();
         for(int i = 0; i < gpParameters.getChildren().size(); i++){
+            Node children;
+            Node childrenOld = null;
             if(i%2 != 0) {
-                Node children = gpParameters.getChildren().get(i);
+                children = gpParameters.getChildren().get(i);
+                ServerParameter serverParameter = game.getServerParameters().get(GridPane.getRowIndex(children));
                 if (children.getClass() == TextField.class)
-                    parameters.append(game.getServerParameters().get(GridPane.getRowIndex(children)).getArgument(((TextField)children).getText())).append(" ");
+                    parameters.append(serverParameter.getParameter(((TextField)children).getText()));
                 else if(children.getClass() == ComboBox.class)
-                    parameters.append(game.getServerParameters().get(GridPane.getRowIndex(children)).getArgument(((ComboBox<String>)children).getSelectionModel().getSelectedItem())).append(" ");
+                    parameters.append(serverParameter.getParameter(((ComboBox<String>)children).getSelectionModel().getSelectedItem()));
                 else if(children.getClass() == HBox.class){
                     if(((RadioButton)((HBox)children).getChildren().get(0)).isSelected())
-                        parameters.append(game.getServerParameters().get(GridPane.getRowIndex(children)).getArgument(((RadioButton)((HBox)children).getChildren().get(0)).getText())).append(" ");
+                        parameters.append(serverParameter.getParameter(((RadioButton)((HBox)children).getChildren().get(0)).getText()));
                     else if(((RadioButton)((HBox)children).getChildren().get(1)).isSelected())
-                        parameters.append(game.getServerParameters().get(GridPane.getRowIndex(children)).getArgument(((RadioButton)((HBox)children).getChildren().get(1)).getText())).append(" ");
+                        parameters.append(serverParameter.getParameter(((RadioButton)((HBox)children).getChildren().get(1)).getText()));
                 }
+                if(serverParameter.getFormat() == ServerParameterFormat.CONSOLE && i < gpParameters.getChildren().size() - 1)
+                    parameters.append(" ");
+                else if(serverParameter.getFormat() == ServerParameterFormat.WEB && i < gpParameters.getChildren().size() - 1)
+                    parameters.append("?");
             }
         }
-        getClient().startServer(game, parameters.toString(), true);
+        getClient().startServer(game, parameters.toString().trim(), true);
         spParameters.getScene().getWindow().hide();
     }
 

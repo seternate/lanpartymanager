@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 public class ServerParameterDropdown extends ServerParameter {
@@ -13,18 +12,8 @@ public class ServerParameterDropdown extends ServerParameter {
 
     public ServerParameterDropdown() { }
 
-    public ServerParameterDropdown(String name, String argumentBase, Map<String, String> entries){
-        super(name, argumentBase, ServerParameterType.DROPDOWN, entries.entrySet().iterator().next().getValue());
-        this.entries = entries;
-    }
-
-    public ServerParameterDropdown(String name, String argumentBase){
-        super(name, argumentBase, ServerParameterType.DROPDOWN, null);
-        this.entries = new HashMap<>();
-    }
-
     public ServerParameterDropdown(JsonNode node){
-        this(node.get("name").asText(), node.get("arg").asText());
+        this(node.get(NAME).asText(), node.get(ARG).asText());
         Iterator<Map.Entry<String, JsonNode>> map = node.fields();
         for(int i = 0; i < 3; i++)
             map.next();
@@ -32,18 +21,31 @@ public class ServerParameterDropdown extends ServerParameter {
             Map.Entry<String, JsonNode> entry = map.next();
             entries.put(entry.getKey(), entry.getValue().asText());
         }
-        setStandard(entries.entrySet().iterator().next().getValue());
+        setArgValue(entries.entrySet().iterator().next().getValue());
+    }
+
+    public ServerParameterDropdown(String name, String argKey, Map<String, String> entries){
+        super(name, argKey, ServerParameterType.DROPDOWN, entries.entrySet().iterator().next().getValue());
+        this.entries = entries;
+    }
+
+    public ServerParameterDropdown(String name, String argKey){
+        super(name, argKey, ServerParameterType.DROPDOWN, null);
+        this.entries = new HashMap<>();
     }
 
     @Override
-    public String getArgument(String suffix) {
-        if(suffix.isEmpty() || !entries.containsKey(suffix))
-            return getArgument();
-        return getArgumentBase() + " " + entries.get(suffix);
+    String getParameterConsole() {
+        return getArgKey() + " " + entries.get(getArgValue());
+    }
+
+    @Override
+    String getParameterWeb() {
+        return getArgKey() + entries.get(getArgValue());
     }
 
     public String[] getDropdownText(){
-        return entries.keySet().toArray(new String[0]);
+        return (entries.keySet().toArray(new String[0]));
     }
 
 }

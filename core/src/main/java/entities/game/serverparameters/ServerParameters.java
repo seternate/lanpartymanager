@@ -26,4 +26,8 @@ public class ServerParameters extends ArrayList<ServerParameter>{
         }
     }
 
+    public String getParameter(){
+        return null;
+    }
+
 }
