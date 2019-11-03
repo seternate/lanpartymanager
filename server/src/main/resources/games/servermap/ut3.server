@@ -1,7 +1,11 @@
 {
 	"parameters":[{
+        "arg":"server",
+        "type":"base"
+    },
+    {
 		"name":"Map",
-		"arg":"server",
+		"arg":"",
 		"type":"dropdown",
 		"Strident":"CTF-Strident",
 		"Omicron Dawn":"CTF-OmicronDawn",
@@ -50,7 +54,7 @@
 		"name":"Server Name",
 		"arg":"ServerName=",
 		"type":"literal",
-		"standard":"Lan Server"
+		"standard":"UnrealTournament3"
 	},
 	{
         "name":"Frag Limit",
@@ -71,8 +75,10 @@
     {
         "name":"Game Speed",
         "arg":"GameSpeed=",
-        "type":"literal",
-        "standard":"1.00000"
+        "type":"number",
+        "standard":"1.00000",
+        "upperbound":5,
+        "lowerbound":0
     },
     {
         "name":"Max Player",

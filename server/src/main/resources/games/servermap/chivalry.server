@@ -1,7 +1,11 @@
 {
 	"parameters":[{
+	    "arg":"server",
+	    "type":"base"
+	},
+	{
 		"name":"Map",
-		"arg":"server",
+		"arg":"",
 		"type":"dropdown",
 		"Arena [FFA]":"AOCFFA-Arena3_p",
 		"Darkforest Cistern [FFA]":"AOCFFA-Darkforest_Cistern_p",

@@ -41,13 +41,14 @@ public class ServerDetailController extends Controller {
         for(int i = 0; i < game.getServerParameters().size(); i++){
             ServerParameter parameter = game.getServerParameters().get(i);
             Label label = new Label(parameter.getName());
-            Node argument;
+            Node argument = null;
             ServerParameterType parameterType = parameter.getType();
             switch(parameterType){
                 case DROPDOWN: argument = initDropdown((ServerParameterDropdown)parameter); break;
                 case LITERAL:  argument = initLiteral((ServerParameterLiteral)parameter); break;
                 case NUMBER:   argument = initNumber((ServerParameterNumber)parameter); break;
                 case BOOLEAN:  argument = initBoolean((ServerParameterBoolean)parameter); break;
+                case BASE: continue;
                 default: argument = new Label("Can not initialize argument.");
             }
             gpParameters.addRow(i, label, argument);
@@ -93,12 +94,21 @@ public class ServerDetailController extends Controller {
     @FXML
     public void startServer(){
         StringBuilder parameters = new StringBuilder();
+        ServerParameters serverParameters = game.getServerParameters();
+
+        if(serverParameters.get(0).getType() == ServerParameterType.BASE){
+            parameters.append(serverParameters.get(0).getParameter());
+            if(serverParameters.get(0).getFormat() == ServerParameterFormat.CONSOLE)
+                parameters.append(" ");
+            else if(serverParameters.get(0).getFormat() == ServerParameterFormat.WEB)
+                parameters.append("?");
+        }
+
         for(int i = 0; i < gpParameters.getChildren().size(); i++){
             Node children;
-            Node childrenOld = null;
             if(i%2 != 0) {
                 children = gpParameters.getChildren().get(i);
-                ServerParameter serverParameter = game.getServerParameters().get(GridPane.getRowIndex(children));
+                ServerParameter serverParameter = serverParameters.get(GridPane.getRowIndex(children));
                 if (children.getClass() == TextField.class)
                     parameters.append(serverParameter.getParameter(((TextField)children).getText()));
                 else if(children.getClass() == ComboBox.class)
@@ -115,6 +125,8 @@ public class ServerDetailController extends Controller {
                     parameters.append("?");
             }
         }
+        if(serverParameters.get(serverParameters.size() - 1).getType() == ServerParameterType.BASE)
+            parameters.append(serverParameters.get(serverParameters.size() - 1).getParameter());
         getClient().startServer(game, parameters.toString().trim(), true);
         spParameters.getScene().getWindow().hide();
     }

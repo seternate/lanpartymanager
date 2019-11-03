@@ -1,7 +1,11 @@
 {
 	"parameters":[{
+        "arg":"server",
+        "type":"base"
+    },
+    {
 		"name":"Map",
-		"arg":"server",
+		"arg":"",
 		"type":"dropdown",
 		"Frigate [AS]":"AS-Frigate.unr",
 		"Guardia [AS]":"AS-Guardia.unr",
@@ -68,7 +72,7 @@
 		"name":"Server Name",
 		"arg":"ServerName=",
 		"type":"literal",
-		"standard":"Lan Server"
+		"standard":"UnrealTournament"
 	},
 	{
         "name":"Frag Limit",
@@ -89,8 +93,10 @@
     {
         "name":"Game Speed",
         "arg":"GameSpeed=",
-        "type":"literal",
-        "standard":"1.00000"
+        "type":"number",
+        "standard":"1.00000",
+        "upperbound":5,
+        "lowerbound":0
     },
     {
         "name":"Max Player",

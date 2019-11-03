@@ -22,7 +22,7 @@
 		"name":"Server Name",
 		"arg":"ServerName=",
 		"type":"literal",
-		"standard":"Lan Server"
+		"standard":"Rune"
 	},
 	{
         "name":"Frag Limit",
@@ -43,8 +43,10 @@
     {
         "name":"Game Speed",
         "arg":"GameSpeed=",
-        "type":"literal",
-        "standard":"1.00000"
+        "type":"number",
+        "standard":"1.00000",
+        "upperbound":5,
+        "lowerbound":0
     },
     {
         "name":"Max Player",
@@ -73,7 +75,11 @@
         "name":"Mutator",
         "arg":"Mutator=",
         "type":"dropdown",
-        "Fatboy":"RuneI.MutatorFatboy -server -lanplay",
-        "Low Gravity":"RuneI.MutatorLowGrav -server -lanplay"
+        "Fatboy":"RuneI.MutatorFatboy",
+        "Low Gravity":"RuneI.MutatorLowGrav"
+    },
+    {
+    	"arg":"?Listen -server -lanplay",
+    	"type":"base"
     }]
 }

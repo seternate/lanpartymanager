@@ -1,7 +1,11 @@
 {
 	"parameters":[{
+	    "arg":"server",
+	    "type":"base"
+	},
+	{
 		"name":"Map",
-		"arg":"server",
+		"arg":"",
 		"type":"dropdown",
 		"Biotics Lab":"KF-BioticsLab.rom",
 		"Farm":"KF-Farm.rom",
@@ -20,7 +24,7 @@
 		"name":"Server Name",
 		"arg":"ServerName=",
 		"type":"literal",
-		"standard":"Lan Server"
+		"standard":"KillingFloor"
 	},
 	{
         "name":"Difficulty",

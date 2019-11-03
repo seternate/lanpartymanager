@@ -21,7 +21,8 @@ public class ServerParameters extends ArrayList<ServerParameter>{
                 case NUMBER:    add(new ServerParameterNumber(node)); break;
                 case DROPDOWN:  add(new ServerParameterDropdown(node)); break;
                 case LITERAL:   add(new ServerParameterLiteral(node)); break;
-                case BOOLEAN:   add(new ServerParameterBoolean(node));
+                case BOOLEAN:   add(new ServerParameterBoolean(node)); break;
+                case BASE:      add(new ServerParameterBase(node));
             }
         }
     }

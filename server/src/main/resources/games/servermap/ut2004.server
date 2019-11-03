@@ -1,7 +1,11 @@
 {
 	"parameters":[{
+        "arg":"server",
+        "type":"base"
+    },
+    {
 		"name":"Map",
-		"arg":"server",
+		"arg":"",
 		"type":"dropdown",
 		"Albatros [DM]":"DM-1on1-Albatross",
 		"Crash [DM]":"DM-1on1-Crash",
@@ -78,7 +82,7 @@
 		"name":"Server Name",
 		"arg":"ServerName=",
 		"type":"literal",
-		"standard":"Lan Server"
+		"standard":"UnrealTournament2004"
 	},
 	{
         "name":"Frag Limit",
@@ -99,8 +103,10 @@
     {
         "name":"Game Speed",
         "arg":"GameSpeed=",
-        "type":"literal",
-        "standard":"1.00000"
+        "type":"number",
+        "standard":"1.00000",
+        "upperbound":5,
+        "lowerbound":0
     },
     {
         "name":"Max Player",
