@@ -93,7 +93,28 @@ public class ServerDetailController extends Controller {
 
     @FXML
     public void startServer(){
-        StringBuilder parameters = new StringBuilder();
+        ServerParameters serverParameters = game.getServerParameters();
+        for(int i = 0; i < gpParameters.getChildren().size(); i++){
+            Node children;
+            if(i%2 != 0) {
+                children = gpParameters.getChildren().get(i);
+                ServerParameter serverParameter = serverParameters.get(GridPane.getRowIndex(children));
+                if (children.getClass() == TextField.class)
+                    serverParameter.setArgValue(((TextField)children).getText());
+                else if(children.getClass() == ComboBox.class)
+                    serverParameter.setArgValue(((ComboBox<String>)children).getSelectionModel().getSelectedItem());
+                else if(children.getClass() == HBox.class){
+                    if(((RadioButton)((HBox)children).getChildren().get(0)).isSelected())
+                        serverParameter.setArgValue(((RadioButton)((HBox)children).getChildren().get(0)).getText());
+                    else if(((RadioButton)((HBox)children).getChildren().get(1)).isSelected())
+                        serverParameter.setArgValue(((RadioButton)((HBox)children).getChildren().get(1)).getText());
+                }
+            }
+        }
+        System.out.println(serverParameters.getParameter());
+        getClient().startServer(game, serverParameters.getParameter(), true);
+        spParameters.getScene().getWindow().hide();
+        /*StringBuilder parameters = new StringBuilder();
         ServerParameters serverParameters = game.getServerParameters();
 
         if(serverParameters.get(0).getType() == ServerParameterType.BASE){
@@ -128,7 +149,7 @@ public class ServerDetailController extends Controller {
         if(serverParameters.get(serverParameters.size() - 1).getType() == ServerParameterType.BASE)
             parameters.append(serverParameters.get(serverParameters.size() - 1).getParameter());
         getClient().startServer(game, parameters.toString().trim(), true);
-        spParameters.getScene().getWindow().hide();
+        spParameters.getScene().getWindow().hide();*/
     }
 
     @FXML

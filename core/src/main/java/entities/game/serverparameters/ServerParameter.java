@@ -63,7 +63,7 @@ public abstract class ServerParameter {
         return format;
     }
 
-    void setArgValue(String argValue){
+    public void setArgValue(String argValue){
         this.argValue = argValue;
     }
 

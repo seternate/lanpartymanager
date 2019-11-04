@@ -79,7 +79,7 @@
         "Low Gravity":"RuneI.MutatorLowGrav"
     },
     {
-    	"arg":"?Listen -server -lanplay",
+    	"arg":"Listen -server -lanplay",
     	"type":"base"
     }]
 }
