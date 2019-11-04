@@ -47,10 +47,10 @@
 		"Headquater":"hq"
 	},
 	{
-		"name":"Host Name",
+		"name":"Server Name",
 		"arg":"+sv_hostname",
 		"type":"literal",
-		"standard":"Lan Server"
+		"standard":"CallOfDuty5"
 	},
 	{
         "name":"Gravity",

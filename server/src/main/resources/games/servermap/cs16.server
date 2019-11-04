@@ -1,0 +1,6 @@
+{
+	"parameters":[{
+		"arg":"-steam -appid 5 +localinfo mm_gamedll dlls/zbotcz.dll",
+		"type":"base"
+	}]
+}

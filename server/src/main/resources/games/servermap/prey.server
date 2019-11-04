@@ -32,7 +32,7 @@
 		"name":"Server Name",
 		"arg":"+seta si_name",
 		"type":"literal",
-		"standard":"Lan Server"
+		"standard":"Prey"
 	},
 	{
 	    "name":"LAN Server",

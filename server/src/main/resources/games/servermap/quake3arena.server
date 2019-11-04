@@ -5,10 +5,10 @@
 		"type":"boolean"
 	},
 	{
-		"name":"Host Name",
+		"name":"Server Name",
 		"arg":"+seta sv_hostname",
 		"type":"literal",
-		"standard":"Lan Server"
+		"standard":"Quake3"
 	},
 	{
 		"name":"Gametype",
