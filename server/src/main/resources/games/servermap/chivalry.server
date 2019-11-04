@@ -53,6 +53,7 @@
 	{
 		"name":"Dedicated",
 		"arg":"dedicated=",
-		"type":"boolean"
+		"type":"boolean",
+		"standard":"1"
 	}]
 }

@@ -1,8 +1,13 @@
 {
 	"parameters":[{
+	    "arg":"+spawnServer",
+	    "type":"base"
+	},
+	{
 		"name":"Dedicated",
-		"arg":"+spawnServer +seta net_serverDedicated",
-		"type":"boolean"
+		"arg":"+seta net_serverDedicated",
+		"type":"boolean",
+        "standard":"1"
 	},
 	{
 		"name":"Map",
@@ -37,7 +42,8 @@
 	{
 	    "name":"LAN Server",
 	    "arg":"+seta net_LANServer",
-	    "type":"boolean"
+	    "type":"boolean",
+        "standard":"1"
 	},
 	{
 	    "name":"Max Player",

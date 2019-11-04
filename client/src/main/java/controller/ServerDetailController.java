@@ -78,7 +78,7 @@ public class ServerDetailController extends Controller {
         return new TextField(parameter.getArgValue());
     }
 
-    private Node initBoolean(ServerParameterBoolean paramter){
+    private Node initBoolean(ServerParameterBoolean parameter){
         HBox root = new HBox();
         root.setSpacing(10);
         RadioButton yes = new RadioButton("Yes");
@@ -86,7 +86,10 @@ public class ServerDetailController extends Controller {
         ToggleGroup tgrp = new ToggleGroup();
         yes.setToggleGroup(tgrp);
         no.setToggleGroup(tgrp);
-        yes.setSelected(true);
+        if(parameter.getArgValue().equals(ServerParameterBoolean.TRUE))
+            yes.setSelected(true);
+        else if(parameter.getArgValue().equals(ServerParameterBoolean.FALSE))
+            no.setSelected(true);
         root.getChildren().addAll(yes, no);
         return root;
     }
@@ -105,51 +108,15 @@ public class ServerDetailController extends Controller {
                     serverParameter.setArgValue(((ComboBox<String>)children).getSelectionModel().getSelectedItem());
                 else if(children.getClass() == HBox.class){
                     if(((RadioButton)((HBox)children).getChildren().get(0)).isSelected())
-                        serverParameter.setArgValue(((RadioButton)((HBox)children).getChildren().get(0)).getText());
+                        serverParameter.setArgValue(ServerParameterBoolean.TRUE);
                     else if(((RadioButton)((HBox)children).getChildren().get(1)).isSelected())
-                        serverParameter.setArgValue(((RadioButton)((HBox)children).getChildren().get(1)).getText());
+                        serverParameter.setArgValue(ServerParameterBoolean.FALSE);
                 }
             }
         }
         System.out.println(serverParameters.getParameter());
         getClient().startServer(game, serverParameters.getParameter(), true);
         spParameters.getScene().getWindow().hide();
-        /*StringBuilder parameters = new StringBuilder();
-        ServerParameters serverParameters = game.getServerParameters();
-
-        if(serverParameters.get(0).getType() == ServerParameterType.BASE){
-            parameters.append(serverParameters.get(0).getParameter());
-            if(serverParameters.get(0).getFormat() == ServerParameterFormat.CONSOLE)
-                parameters.append(" ");
-            else if(serverParameters.get(0).getFormat() == ServerParameterFormat.WEB)
-                parameters.append("?");
-        }
-
-        for(int i = 0; i < gpParameters.getChildren().size(); i++){
-            Node children;
-            if(i%2 != 0) {
-                children = gpParameters.getChildren().get(i);
-                ServerParameter serverParameter = serverParameters.get(GridPane.getRowIndex(children));
-                if (children.getClass() == TextField.class)
-                    parameters.append(serverParameter.getParameter(((TextField)children).getText()));
-                else if(children.getClass() == ComboBox.class)
-                    parameters.append(serverParameter.getParameter(((ComboBox<String>)children).getSelectionModel().getSelectedItem()));
-                else if(children.getClass() == HBox.class){
-                    if(((RadioButton)((HBox)children).getChildren().get(0)).isSelected())
-                        parameters.append(serverParameter.getParameter(((RadioButton)((HBox)children).getChildren().get(0)).getText()));
-                    else if(((RadioButton)((HBox)children).getChildren().get(1)).isSelected())
-                        parameters.append(serverParameter.getParameter(((RadioButton)((HBox)children).getChildren().get(1)).getText()));
-                }
-                if(serverParameter.getFormat() == ServerParameterFormat.CONSOLE && i < gpParameters.getChildren().size() - 1)
-                    parameters.append(" ");
-                else if(serverParameter.getFormat() == ServerParameterFormat.WEB && i < gpParameters.getChildren().size() - 1)
-                    parameters.append("?");
-            }
-        }
-        if(serverParameters.get(serverParameters.size() - 1).getType() == ServerParameterType.BASE)
-            parameters.append(serverParameters.get(serverParameters.size() - 1).getParameter());
-        getClient().startServer(game, parameters.toString().trim(), true);
-        spParameters.getScene().getWindow().hide();*/
     }
 
     @FXML

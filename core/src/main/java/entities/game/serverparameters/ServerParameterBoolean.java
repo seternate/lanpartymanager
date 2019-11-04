@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 public class ServerParameterBoolean extends ServerParameter {
 
-    private static final String TRUE = "1",
+    public static final String TRUE = "1",
                                 FALSE = "0";
 
     public ServerParameterBoolean() { }

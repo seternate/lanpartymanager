@@ -30,11 +30,13 @@ public class ServerParameters extends ArrayList<ServerParameter>{
     public String getParameter(){
         StringBuilder parameter = new StringBuilder();
         for(int i = 0; i < size(); i++){
-            parameter.append(get(i).getParameter());
-            if(get(i).getFormat() == ServerParameterFormat.CONSOLE && i < (size() - 1))
-                parameter.append(" ");
-            else if(get(i).getFormat() == ServerParameterFormat.WEB && i < (size() - 1))
-                parameter.append("?");
+            if(!get(i).getParameter().endsWith("none")){
+                parameter.append(get(i).getParameter());
+                if (get(i).getFormat() == ServerParameterFormat.CONSOLE && i < (size() - 1))
+                    parameter.append(" ");
+                else if (get(i).getFormat() == ServerParameterFormat.WEB && i < (size() - 1))
+                    parameter.append("?");
+            }
         }
         return parameter.toString().trim();
     }

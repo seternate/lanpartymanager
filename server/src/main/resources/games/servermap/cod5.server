@@ -2,7 +2,8 @@
 	"parameters":[{
 		"name":"Dedicated",
 		"arg":"+set dedicated",
-		"type":"boolean"
+		"type":"boolean",
+        "standard":"1"
 	},
 	{
 		"name":"Map",
@@ -90,31 +91,37 @@
     {
         "name":"Verstärkung",
         "arg":"+scr_game_hardpoints",
-        "type":"boolean"
+        "type":"boolean",
+        "standard":"1"
     },
     {
         "name":"Artillerie",
         "arg":"+scr_hardpoint_allowartillery",
-        "type":"boolean"
+        "type":"boolean",
+        "standard":"1"
     },
     {
         "name":"Dogs",
         "arg":"+scr_hardpoint_allowdogs",
-        "type":"boolean"
+        "type":"boolean",
+        "standard":"1"
     },
     {
         "name":"Radar2",
         "arg":"+scr_hardpoint_allowradar",
-        "type":"boolean"
+        "type":"boolean",
+        "standard":"1"
     },
     {
         "name":"Luftschlag",
         "arg":"+scr_hardpoint_allowsupply",
-        "type":"boolean"
+        "type":"boolean",
+        "standard":"1"
     },
     {
         "name":"Radar",
         "arg":"+scr_hardpoint_allowuav",
-        "type":"boolean"
+        "type":"boolean",
+        "standard":"1"
     }]
 }

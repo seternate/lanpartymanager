@@ -120,6 +120,7 @@
         "name":"Mutator",
         "arg":"Mutator=",
         "type":"dropdown",
+        "Disabled":"none",
         "InstaGib":"BotPack.InstaGibDM",
         "Low Gravity":"BotPack.LowGrav",
         "Chainsaw Meele":"BotPack.ChainsawMelee"

@@ -2,7 +2,8 @@
 	"parameters":[{
 		"name":"Dedicated",
 		"arg":"+set dedicated",
-		"type":"boolean"
+		"type":"boolean",
+        "standard":"1"
 	},
 	{
 		"name":"Server Name",

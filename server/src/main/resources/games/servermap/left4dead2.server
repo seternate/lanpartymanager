@@ -2,7 +2,8 @@
 	"parameters":[{
 		"name":"Dedicated",
 		"arg":"+sv_lan",
-		"type":"boolean"
+		"type":"boolean",
+        "standard":"1"
 	},
 	{
 		"name":"Map",
