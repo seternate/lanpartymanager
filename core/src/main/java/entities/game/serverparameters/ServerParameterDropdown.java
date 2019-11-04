@@ -25,7 +25,7 @@ public class ServerParameterDropdown extends ServerParameter {
             entries.put(entry.getKey(), entry.getValue().asText());
             dropdownText.add(entry.getKey());
         }
-        setArgValue(entries.get(dropdownText.get(0)));
+        setArgValue(dropdownText.get(0));
     }
 
     public ServerParameterDropdown(String name, String argKey, Map<String, String> entries){
@@ -44,16 +44,30 @@ public class ServerParameterDropdown extends ServerParameter {
 
     @Override
     String getParameterConsole() {
-        return getArgKey() + " " + entries.get(getArgValue());
+        return getArgKey() + " " + getArgValue();
     }
 
     @Override
     String getParameterWeb() {
-        return getArgKey() + entries.get(getArgValue());
+        return getArgKey() + getArgValue();
+    }
+
+    @Override
+    public void setArgValue(String argValue) {
+        super.setArgValue(entries.get(argValue));
     }
 
     public ArrayList<String> getDropdownText(){
         return dropdownText;
+    }
+
+    public String getKey(){
+        final String[] keyValue = new String[1];
+        entries.forEach((key, value) -> {
+            if(value.equals(getArgValue()))
+                keyValue[0] = key;
+        });
+        return keyValue[0];
     }
 
 }

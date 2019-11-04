@@ -65,7 +65,7 @@ public class ServerDetailController extends Controller {
         ObservableList<String> dropdownParameters = FXCollections.observableArrayList(parameter.getDropdownText());
         ComboBox<String> dropdown = new ComboBox<>();
         dropdown.setItems(dropdownParameters);
-        dropdown.getSelectionModel().selectFirst();
+        dropdown.getSelectionModel().select(parameter.getKey());
         dropdown.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
         return dropdown;
     }
