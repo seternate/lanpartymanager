@@ -47,5 +47,9 @@
         "An":"1",
         "Reflektiert":"2",
         "Geteilt":"3"
+    },
+    {
+        "arg":"+map_restart",
+        "type":"base"
     }]
 }

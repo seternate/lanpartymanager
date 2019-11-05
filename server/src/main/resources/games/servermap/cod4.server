@@ -103,5 +103,9 @@
         "arg":"+scr_hardpoint_allowuav",
         "type":"boolean",
         "standard":"1"
+    },
+    {
+        "arg":"+map_restart",
+        "type":"base"
     }]
 }

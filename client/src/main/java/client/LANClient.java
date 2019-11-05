@@ -1,8 +1,8 @@
 package client;
 
-import client.download.ImageDownload;
 import client.download.GameDownload;
 import client.download.GameDownloadManager;
+import client.download.ImageDownload;
 import client.filedrop.FileDropClient;
 import client.filedrop.FileDropServer;
 import client.monitor.*;
@@ -19,17 +19,11 @@ import entities.user.UserRunGamesList;
 import entities.user.UserRunServerList;
 import helper.GameFolderHelper;
 import helper.kryo.NetworkClassRegistrationHelper;
-import javafx.application.Platform;
 import message.*;
 import org.apache.log4j.Logger;
-import requests.ImageDownloadRequest;
 import requests.DownloadRequest;
+import requests.ImageDownloadRequest;
 
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
