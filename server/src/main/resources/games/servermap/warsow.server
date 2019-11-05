@@ -1,0 +1,105 @@
+{
+	"parameters":[{
+		"name":"Map",
+		"arg":"+set sv_defaultmap",
+		"type":"dropdown",
+		"Amphi":"wamphi1",
+		"Concrete Strike":"wbomb1",
+		"Reactors":"wbomb2",
+		"Alley":"wbomb3",
+		"Shepas":"wbomb4",
+		"Deleo":"wbomb5",
+		"Depot":"wbomb6",
+		"Funpark":"wca1",
+		"Russus":"wctf1",
+		"Jewels":"wctf2",
+		"Supersym":"wctf3",
+		"Chaser":"wctf4",
+		"Deflected & Reflected":"wctf6",
+		"Bobots Lair":"wda1",
+		"Meele":"wda2",
+		"Obey":"wda3",
+		"Airtime":"wda4",
+		"Octagon Obsession":"wda5",
+		"Flew Over":"wdm1",
+		"Deflected":"wdm10",
+		"Warehouse":"wdm11",
+		"Courtyard":"wdm12",
+		"Get Up Stand Up":"wdm13",
+		"Reflected":"wdm14",
+		"Simply Put":"wdm15",
+		"The Deepest Underground":"wdm16",
+		"Le Toxiquet":"wdm17",
+		"Praxtor":"wdm18",
+		"Beyond the Lair":"wdm19",
+		"Le Dream On":"wdm2",
+		"Hazard":"wdm4",
+		"Viciious Lair":"wdm5",
+		"Deeemsix":"wdm6",
+		"Crocinus Bridge":"wdm7",
+		"Supersym":"wdm9",
+		"Race through Space":"wrace1"
+	},
+	{
+	    "name":"Gametype",
+	    "arg":"+set g_gametype",
+	    "type":"dropdown",
+	    "Deathmatch":"dm",
+	    "Team Deathmatch":"tdm",
+	    "Capture the Flag":"ctf",
+	    "Duel Arena":"da",
+	    "Clan Arena":"ca",
+	    "Bomb & Defuse":"bomb",
+	    "Race":"race"
+	},
+	{
+		"name":"Server Name",
+		"arg":"+set sv_hostname",
+		"type":"literal",
+		"standard":"Lan Server"
+	},
+	{
+        "name":"Score Limit",
+        "arg":"+set g_scorelimit",
+        "type":"number",
+        "standard":100,
+        "upperbound":9999,
+        "lowerbound":0
+    },
+    {
+        "name":"Time Limit",
+        "arg":"+set g_timelimit",
+        "type":"number",
+        "standard":0,
+        "upperbound":9999,
+        "lowerbound":0
+    },
+    {
+        "name":"Instagib",
+        "arg":"+set g_instagib",
+        "type":"boolean"
+    },
+    {
+        "name":"Instajump",
+        "arg":"+set g_instajump",
+        "type":"boolean"
+    },
+    {
+        "name":"Instashield",
+        "arg":"+set g_instashield",
+        "type":"boolean"
+    },
+    {
+        "name":"Map Rotation",
+        "arg":"+set g_maprotation",
+        "type":"dropdown",
+        "Same Map":"0",
+        "In Order":"1",
+        "Random":"2"
+    },
+    {
+        "name":"Public Server",
+        "arg":"+set sv_public",
+        "type":"boolean"
+    }]
+}

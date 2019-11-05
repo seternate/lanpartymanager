@@ -2,7 +2,8 @@
 	"parameters":[{
 		"name":"Dedicated",
 		"arg":"+set dedicated",
-		"type":"boolean"
+		"type":"boolean",
+		"standard":"1"
 	},
 	{
 		"name":"Map",
@@ -33,9 +34,22 @@
 		"Headquater":"hq"
 	},
 	{
-		"name":"Host Name",
+		"name":"Server Name",
 		"arg":"+sv_hostname",
 		"type":"literal",
-		"standard":"Lan Server"
-	}]
+		"standard":"CallOfDuty2"
+	},
+	{
+        "name":"Teambeschuss",
+        "arg":"+scr_friendlyfire",
+        "type":"dropdown",
+        "Aus":"0",
+        "An":"1",
+        "Reflektiert":"2",
+        "Geteilt":"3"
+    },
+    {
+        "arg":"+map_restart",
+        "type":"base"
+    }]
 }

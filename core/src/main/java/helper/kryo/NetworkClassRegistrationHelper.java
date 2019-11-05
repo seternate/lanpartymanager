@@ -74,6 +74,8 @@ public abstract class NetworkClassRegistrationHelper {
         kryo.register(ServerParameterDropdown.class);
         kryo.register(ServerParameterBoolean.class);
         kryo.register(ServerParameterType.class);
+        kryo.register(ServerParameterFormat.class);
+        kryo.register(ServerParameterBase.class);
         kryo.register(HashMap.class);
     }
 

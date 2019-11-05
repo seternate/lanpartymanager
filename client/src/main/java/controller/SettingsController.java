@@ -25,7 +25,6 @@ public class SettingsController extends Controller{
 
     @FXML
     private void enter(KeyEvent event){
-        System.out.println("here");
         if(event.getCode() == KeyCode.ENTER){
             save();
         }

@@ -2,16 +2,25 @@ package entities.game.serverparameters;
 
 public abstract class ServerParameter {
 
-    private String name, argumentBase, standard;
+    final static String NAME = "name",
+                        ARG = "arg",
+                        STANDARD = "standard";
+
+    private String name, argKey, argValue;
     private ServerParameterType type;
+    private ServerParameterFormat format;
 
     public ServerParameter() { }
 
-    public ServerParameter(String name, String argumentBase, ServerParameterType type, String standard){
+    public ServerParameter(String name, String argKey, ServerParameterType type, String argValue){
         this.name = name;
-        this.argumentBase = argumentBase;
+        this.argKey = argKey;
         this.type = type;
-        this.standard = standard;
+        this.argValue = argValue;
+        if(argKey.contains("=") || argKey.isEmpty())
+            format = ServerParameterFormat.WEB;
+        else
+            format = ServerParameterFormat.CONSOLE;
     }
 
     public String getName(){
@@ -22,22 +31,40 @@ public abstract class ServerParameter {
         return type;
     }
 
-    public String getArgumentBase(){
-        return argumentBase;
+    public String getArgKey(){
+        return argKey;
     }
 
-    public abstract String getArgument(String suffix);
-
-    public String getArgument() {
-        return getArgument(getStandard());
+    public String getParameter(String argValue){
+        if(argValue.isEmpty())
+            return getParameter();
+        setArgValue(argValue);
+        return getParameter();
     }
 
-    public String getStandard(){
-        return standard;
+    abstract String getParameterConsole();
+
+    abstract String getParameterWeb();
+
+    public String getParameter() {
+        String parameter = "";
+        switch(getFormat()){
+            case CONSOLE:   parameter = getParameterConsole(); break;
+            case WEB:       parameter = getParameterWeb();
+        }
+        return parameter;
     }
 
-    void setStandard(String standard){
-        this.standard = standard;
+    public String getArgValue(){
+        return argValue;
+    }
+
+    public ServerParameterFormat getFormat(){
+        return format;
+    }
+
+    public void setArgValue(String argValue){
+        this.argValue = argValue;
     }
 
 }

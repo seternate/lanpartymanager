@@ -2,13 +2,14 @@
 	"parameters":[{
 		"name":"Dedicated",
 		"arg":"+set dedicated",
-		"type":"boolean"
+		"type":"boolean",
+        "standard":"1"
 	},
 	{
-		"name":"Host Name",
+		"name":"Server Name",
 		"arg":"+seta sv_hostname",
 		"type":"literal",
-		"standard":"Lan Server"
+		"standard":"Quake3"
 	},
 	{
 		"name":"Gametype",

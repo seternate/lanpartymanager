@@ -1,6 +1,7 @@
 package controller;
 
 import entities.game.Game;
+import entities.game.serverparameters.ServerParameterType;
 import entities.user.User;
 import guielements.Notification;
 import javafx.application.Platform;
@@ -102,8 +103,12 @@ public class ApplicationManager {
             serverstartstage = new ServerStartStage(game);
             serverstartstage.show();
         } else {
-            serverdetailstage = new ServerDetailStage(game);
-            serverdetailstage.show();
+            if(game.getServerParameters().size() == 1 && game.getServerParameters().get(0).getType() == ServerParameterType.BASE)
+                LanClient.client.startServer(game, game.getServerParameters().getParameter(), true);
+            else{
+                serverdetailstage = new ServerDetailStage(game);
+                serverdetailstage.show();
+            }
         }
     }
 

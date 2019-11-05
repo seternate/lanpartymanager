@@ -1,0 +1,62 @@
+{
+	"parameters":[{
+		"name":"Dedicated",
+		"arg":"+sv_lan",
+		"type":"boolean",
+        "standard":"1"
+	},
+	{
+		"name":"Map",
+		"arg":"+map",
+		"type":"dropdown",
+		"Dead Center 1.1: Hotel":"c1m1_hotel",
+		"Dead Center 1.2: Streets":"c1m2_streets",
+		"Dead Center 1.3: Mall":"c1m3_mall",
+		"Dead Center 1.4: Atrium":"c1m4_atrium",
+		"Dark Carnival 2.1: Highway":"c2m1_highway",
+		"Dark Carnival 2.2: Fairgrounds":"c2m2_fairgrounds",
+		"Dark Carnival 2.3: Coaster":"c2m3_coaster",
+		"Dark Carnival 2.4: Barns":"c2m4_barns",
+		"Dark Carnival 2.5: Concert":"c2m5_concert",
+		"Swamp Fever 3.1: Plankcountry":"c3m1_plankcountry",
+		"Swamp Fever 3.2: Swamp":"c3m2_swamp",
+		"Swamp Fever 3.3: Shantytown":"c3m3_shantytown",
+		"Swamp Fever 3.4: Plantation":"c3m4_plantation",
+		"Hard Rain 4.1: Milltown A":"c4m1_milltown_a",
+		"Hard Rain 4.2: Sugarmill A":"c4m2_sugarmill_a",
+		"Hard Rain 4.3: Sugarmill B":"c4m3_sugarmill_b",
+		"Hard Rain 4.4: Milltown B":"c4m4_milltown_b",
+		"Hard Rain 4.5: Milltown Escape":"c4m5_milltown_escape",
+		"The Parish 5.1: Waterfront":"c5m1_waterfront_sndscape",
+        "The Parish 5.2: Waterfront":"c5m1_waterfront",
+        "The Parish 5.3: Park":"c5m2_park",
+        "The Parish 5.4: Cementary":"c5m3_cementary",
+        "The Parish 5.5: Quater":"c5m4_quater",
+        "The Parish 5.6: Bridge":"c5m5_bridge"
+	},
+	{
+		"name":"Gametype",
+		"arg":"+mp_gamemode",
+		"type":"dropdown",
+		"Coop":"coop",
+		"Versus":"versus",
+		"Survival":"survival",
+		"Realism":"realism",
+		"Scavenge":"scavenge",
+		"Realism Versus":"mutation12"
+	},
+	{
+		"name":"Difficulty",
+		"arg":"+z_difficulty",
+		"type":"dropdown",
+		"Easy":"easy",
+		"Normal":"normal",
+		"Advanced":"advanced",
+		"Expert":"expert"
+	},
+	{
+    	"name":"Only lobby connect",
+    	"arg":"+sv_allow_lobby_connect_only",
+    	"type":"boolean"
+    }]
+}

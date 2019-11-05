@@ -106,7 +106,11 @@ public class ClientSettings extends Settings {
      * @since 1.0
      */
     public void setGamepath(String gamepath) {
-        setProperty("gamepath", gamepath);
+        StringBuilder path = new StringBuilder(gamepath);
+        if(!path.toString().endsWith("/")) {
+            path.append("/");
+        }
+        setProperty("gamepath", path.toString());
     }
 
 }

@@ -2,19 +2,22 @@
 	"parameters":[{
 		"name":"Dedicated",
 		"arg":"+set dedicated",
-		"type":"boolean"
+		"type":"boolean",
+		"standard":"1"
 	},
 	{
 		"name":"Map",
 		"arg":"+map",
 		"type":"dropdown",
 		"Ambush":"mp_convoy",
+		"Countdown":"mp_countdown",
 		"Backlot":"mp_backlot",
 		"Bloc":"mp_bloc",
 		"Bog":"mp_bog",
 		"Broadcast":"mp_broadcast",
 		"Chinatown":"mp_carentan",
 		"Crash":"mp_crash",
+		"Crash Snow":"mp_crash_snow",
 		"Creek":"mp_creek",
 		"Crossfire":"mp_crossfire",
 		"District":"mp_citystreets",
@@ -27,5 +30,82 @@
 		"Strike":"mp_strike",
 		"Vacant":"mp_vacant",
 		"Wet Work":"mp_cargoship"
-	}]
+	},
+	{
+    	"name":"Gametype",
+    	"arg":"+g_gametype",
+    	"type":"dropdown",
+    	"Deathmatch":"dm",
+    	"Team Deathmatch":"tdm",
+    	"Capture the Flag":"ctf",
+    	"Search and Destroy":"sd",
+    	"Headquater":"hq"
+    },
+    {
+    	"name":"Server Name",
+    	"arg":"+sv_hostname",
+    	"type":"literal",
+    	"standard":"CallOfDuty4"
+    },
+    {
+        "name":"Gravity",
+        "arg":"+g_gravity",
+        "type":"number",
+        "standard":800,
+        "lowerbound":0,
+        "upperbound":999999
+    },
+    {
+        "name":"Teambeschuss",
+        "arg":"+scr_team_fftype",
+        "type":"dropdown",
+        "Aus":"0",
+        "An":"1",
+        "Reflektiert":"2",
+        "Geteilt":"3"
+    },
+    {
+        "name":"Nur Headshots",
+        "arg":"+scr_game_onlyheadshots",
+        "type":"boolean"
+    },
+    {
+        "name":"Hardcore",
+        "arg":"+scr_hardcore",
+        "type":"boolean"
+    },
+    {
+        "name":"Verstärkung",
+        "arg":"+scr_game_hardpoints",
+        "type":"boolean",
+        "standard":"1"
+    },
+    {
+        "name":"Artillerie",
+        "arg":"+scr_hardpoint_allowartillery",
+        "type":"boolean",
+        "standard":"1"
+    },
+    {
+        "name":"Helikopter",
+        "arg":"+scr_hardpoint_allowhelicopter",
+        "type":"boolean",
+        "standard":"1"
+    },
+    {
+        "name":"Luftschlag",
+        "arg":"+scr_hardpoint_allowsupply",
+        "type":"boolean",
+        "standard":"1"
+    },
+    {
+        "name":"Radar",
+        "arg":"+scr_hardpoint_allowuav",
+        "type":"boolean",
+        "standard":"1"
+    },
+    {
+        "arg":"+map_restart",
+        "type":"base"
+    }]
 }

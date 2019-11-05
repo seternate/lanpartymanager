@@ -1,7 +1,11 @@
 {
 	"parameters":[{
+	    "arg":"server",
+	    "type":"base"
+	},
+	{
 		"name":"Map",
-		"arg":"server",
+		"arg":"",
 		"type":"dropdown",
 		"Arena [FFA]":"AOCFFA-Arena3_p",
 		"Darkforest Cistern [FFA]":"AOCFFA-Darkforest_Cistern_p",
@@ -36,7 +40,7 @@
 		"Hillside Pyre [TD]":"AOCTD-HillsidePyre_P",
 		"Hillside [TD]":"AOCTD-Hillside_P",
 		"Moor Large [TD]":"AOCTD-Moor_Large_p",
-		"Moor [TD]";"AOCTD-Moor_p",
+		"Moor [TD]":"AOCTD-Moor_p",
 		"Ruins Large [TD]":"AOCTD-Ruins_Large_P",
 		"Ruins [TD]":"AOCTD-Ruins_P",
 		"Stoneshill Village [TD]":"AOCTD-Stoneshill_Village_P",
@@ -49,6 +53,7 @@
 	{
 		"name":"Dedicated",
 		"arg":"dedicated=",
-		"type":"boolean"
+		"type":"boolean",
+		"standard":"1"
 	}]
 }

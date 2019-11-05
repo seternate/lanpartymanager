@@ -6,18 +6,22 @@ public class ServerParameterLiteral extends ServerParameter {
 
     public ServerParameterLiteral() { }
 
-    public ServerParameterLiteral(String name, String argumentBase, String standard){
-        super(name, argumentBase, ServerParameterType.LITERAL, standard);
+    public ServerParameterLiteral(JsonNode node){
+        this(node.get(NAME).asText(), node.get(ARG).asText(), node.get(STANDARD).asText());
     }
 
-    public ServerParameterLiteral(JsonNode node){
-        this(node.get("name").asText(), node.get("arg").asText(), node.get("standard").asText());
+    public ServerParameterLiteral(String name, String argKey, String argValue){
+        super(name, argKey, ServerParameterType.LITERAL, argValue);
     }
 
     @Override
-    public String getArgument(String suffix) {
-        if(suffix.isEmpty())
-            return getArgument();
-        return getArgumentBase() + " \"" + suffix + "\"";
+    String getParameterWeb(){
+        return getArgKey() + "\"" + getArgValue() + "\"";
     }
+
+    @Override
+    String getParameterConsole(){
+        return getArgKey() + " \"" + getArgValue() + "\"";
+    }
+
 }

@@ -1,0 +1,131 @@
+{
+	"parameters":[{
+		"name":"Dedicated",
+		"arg":"+set dedicated",
+		"type":"boolean",
+        "standard":"1"
+	},
+	{
+		"name":"Map",
+		"arg":"+map",
+		"type":"dropdown",
+		"Airfield":"mp_airfield",
+		"Asylum":"mp_asylum",
+		"Banzai":"mp_kwai",
+		"Battery":"mp_drum",
+		"Breach":"mp_bgate",
+		"Castle":"mp_castle",
+		"Cliffside":"mp_shrine",
+		"Corrosion":"mp_stalingrad",
+		"Courtyard":"mp_courtyard",
+		"Dome":"mp_dome",
+		"Downfall":"mp_downfall",
+		"Hangar":"mp_hangar",
+		"Knee Deep":"mp_kneedep",
+		"Makin":"mp_makin",
+		"Makin Day":"mp_makin_day",
+		"Nightfire":"mp_nachtfeuer",
+		"Outskirts":"mp_outskirts",
+		"Revolution":"mp_vodka",
+		"Roundhouse":"mp_roundhouse",
+		"Seelow":"mp_seelow",
+		"Station":"mp_subway",
+		"Sub Pens":"mp_docks",
+		"Upheaval":"mp_suburban",
+		"Nazi-Zombie Asylum":"nazi_zombie_asylum",
+		"Nazi-Zombie Factory":"nazi_zombie_factory",
+		"Nazi-Zombie Prototype":"nazi_zombie_prototype",
+		"Nazi-Zombie Sumpf":"nazi_zombie_sumpf"
+	},
+	{
+		"name":"Gametype",
+		"arg":"+g_gametype",
+		"type":"dropdown",
+		"Deathmatch":"dm",
+		"Team Deathmatch":"tdm",
+		"Capture the Flag":"ctf",
+		"Search and Destroy":"sd",
+		"Headquater":"hq"
+	},
+	{
+		"name":"Server Name",
+		"arg":"+sv_hostname",
+		"type":"literal",
+		"standard":"CallOfDuty5"
+	},
+	{
+        "name":"Gravity",
+        "arg":"+g_gravity",
+        "type":"number",
+        "standard":800,
+        "lowerbound":0,
+        "upperbound":999999
+    },
+    {
+        "name":"Movement Speed",
+        "arg":"+g_speed",
+        "type":"number",
+        "standard":190,
+        "lowerbound":0,
+        "upperbound":999999
+    },
+	{
+        "name":"Teambeschuss",
+        "arg":"+scr_team_fftype",
+        "type":"dropdown",
+        "Aus":"0",
+        "An":"1",
+        "Reflektiert":"2",
+        "Geteilt":"3"
+    },
+    {
+        "name":"Nur Headshots",
+        "arg":"+scr_game_onlyheadshots",
+        "type":"boolean"
+    },
+    {
+        "name":"Hardcore",
+        "arg":"+scr_hardcore",
+        "type":"boolean"
+    },
+    {
+        "name":"Verstärkung",
+        "arg":"+scr_game_hardpoints",
+        "type":"boolean",
+        "standard":"1"
+    },
+    {
+        "name":"Artillerie",
+        "arg":"+scr_hardpoint_allowartillery",
+        "type":"boolean",
+        "standard":"1"
+    },
+    {
+        "name":"Dogs",
+        "arg":"+scr_hardpoint_allowdogs",
+        "type":"boolean",
+        "standard":"1"
+    },
+    {
+        "name":"Radar2",
+        "arg":"+scr_hardpoint_allowradar",
+        "type":"boolean",
+        "standard":"1"
+    },
+    {
+        "name":"Luftschlag",
+        "arg":"+scr_hardpoint_allowsupply",
+        "type":"boolean",
+        "standard":"1"
+    },
+    {
+        "name":"Radar",
+        "arg":"+scr_hardpoint_allowuav",
+        "type":"boolean",
+        "standard":"1"
+    },
+    {
+        "arg":"+map_restart",
+        "type":"base"
+    }]
+}
