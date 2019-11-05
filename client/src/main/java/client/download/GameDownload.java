@@ -206,9 +206,6 @@ public class GameDownload extends Thread {
         try {
             new SevenZipHelper(gamepath, this.gamepath, false, null, this).extract();
             log.info("Unzipping of '" + game + "' finished successfully.");
-        } catch (SevenZipHelper.ExtractionException e) {
-            log.error("Unzipping of '" + game + "' to '" + gamepath + "' failed.", e);
-        } finally {
             //Delete 7zip file from the download
             File file = new File(gamepath);
             if(!file.delete())
@@ -216,6 +213,9 @@ public class GameDownload extends Thread {
             else {
                 log.info("Deleted 7zip file of '" + game + "'.");
             }
+        } catch (SevenZipHelper.ExtractionException e) {
+            log.error("Unzipping of '" + game + "' to '" + gamepath + "' failed.", e);
+        } finally {
             LanClient.client.getGameStatus(game).setExtracting(false);
             LanClient.client.getGameStatus(game).setLocal(game.isUptodate() == 0 || game.isUptodate() == -2 || game.isUptodate() == -3);
             LanClient.client.getGameStatus(game).setPlayable(game.isUptodate() == 0 || game.isUptodate() == -2);
