@@ -1,10 +1,8 @@
 package controller;
 
-import entities.game.Game;
 import client.monitor.GameStatus;
+import entities.game.Game;
 import javafx.application.Platform;
-import javafx.beans.Observable;
-import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -119,6 +117,8 @@ public class GameOverlayController extends Controller{
         if(gameStatus.isDownloading() || gameStatus.isExtracting()){
             ivDownloadGame.setImage(new Image(ClassLoader.getSystemResource("close.png").toString(), true));
         }
+        if(gameStatus.isRunning())
+            ivRunGame.setImage(new Image(ClassLoader.getSystemResource("close.png").toString(), true));
         if(gameStatus.isLocal()){
             lblGamename.setTextFill(Paint.valueOf("black"));
             lblVersion.setTextFill(Paint.valueOf("black"));
